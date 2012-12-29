@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Komodo Project File - DO NOT EDIT -->
+<project id="b8bca410-8734-483d-bc36-07895bcf3a96" kpf_version="5" name="AwardsPlugin.komodoproject">
+<preference-set idref="b8bca410-8734-483d-bc36-07895bcf3a96">
+  <string relative="path" id="import_dirname"></string>
+  <string id="import_exclude_matches">*.*~;*.bak;*.tmp;CVS;.#*;*.pyo;*.pyc;.svn;_svn;.git;.hg;.bzr;*%25*;tmp*.html;.DS_Store;*.swp;*.kpf;*.komodoproject;.komodotools;__pycache__</string>
+  <string id="import_include_matches"></string>
+  <string id="phpCommentStyle">//,#</string>
+  <string id="phpConfigFile">C:\wamp\bin\php\php5.4.3\php.ini</string>
+  <string id="phpDefaultInterpreter"></string>
+  <string id="phpExtraPaths">C:\wamp\www\vanilla</string>
+</preference-set>
+</project>
