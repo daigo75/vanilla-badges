@@ -45,9 +45,8 @@ class AwardsSchema extends PluginSchema {
 			->Column('UpdateUserID', 'int', TRUE)
 			->Set(FALSE, FALSE);
 
-		$this->AddForeignKey('AwardRules', 'FK_Awards', array('AwardID'),
+		$this->AddForeignKey('AwardRules', 'FK_AwardRules_Awards', array('AwardID'),
 												'Awards', array('AwardID'));
-		$this->AddIndex('AwardRules', 'IX_Awards', array('`AwardID` ASC'));
 	}
 
 	/**
@@ -67,17 +66,8 @@ class AwardsSchema extends PluginSchema {
 			->Column('UpdateUserID', 'int', TRUE)
 			->Set(FALSE, FALSE);
 
-		$Px = $this->Px;
-		// Add Foreign Key referencing AwardRules table
-		$SQL = "
-			ALTER TABLE `${Px}AwardRulesCriteria`
-				ADD CONSTRAINT `FK_AwardRule` FOREIGN KEY (`RuleID`)
-				REFERENCES `${Px}AwardsRules` (`RuleID`)
-				ON DELETE NO ACTION
-				ON UPDATE NO ACTION
-			, ADD INDEX `IX_AwardRules` (`RuleID` ASC)
-		";
-		$this->Construct->Query($SQL);
+		$this->AddForeignKey('AwardRulesCriteria', 'FK_AwardRulesCriteria_AwardRules', array('RuleID'),
+												'AwardRules', array('RuleID'));
 	}
 
 	/**
@@ -95,27 +85,10 @@ class AwardsSchema extends PluginSchema {
 			->Column('UpdateUserID', 'int', TRUE)
 			->Set(FALSE, FALSE);
 
-		$Px = $this->Px;
-		// Add Foreign Key referencing Users table
-		$SQL = "
-			ALTER TABLE `${Px}UserAwards`
-				ADD CONSTRAINT `FK_User` FOREIGN KEY (`UserID`)
-				REFERENCES `${Px}User` (`UserID`)
-				ON DELETE NO ACTION
-				ON UPDATE NO ACTION
-		";
-		$this->Construct->Query($SQL);
-
-		// Add Foreign Key referencing Awards table
-		$SQL = "
-			ALTER TABLE `${Px}UserAwards`
-				ADD CONSTRAINT `FK_Awards` FOREIGN KEY (`AwardID`)
-				REFERENCES `${Px}Awards` (`AwardID`)
-				ON DELETE NO ACTION
-				ON UPDATE NO ACTION
-			, ADD INDEX `IX_Awards` (`AwardID` ASC)
-		";
-		$this->Construct->Query($SQL);
+		$this->AddForeignKey('UserAwards', 'FK_UserAwards_User', array('UserID'),
+												'User', array('UserID'));
+		$this->AddForeignKey('UserAwards', 'FK_UserAwards_Awards', array('AwardID'),
+												'Awards', array('AwardID'));
 	}
 
 	/**
