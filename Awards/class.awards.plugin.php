@@ -184,21 +184,6 @@ class AwardsPlugin extends Gdn_Plugin {
 	}
 
 	/**
-	 * Renders the Criteria List page.
-	 *
-	 * @param object Sender Sending controller instance.
-	 */
-	public function Controller_CriteriaList($Sender) {
-		// Prevent non authorised Users from accessing this page
-		$Sender->Permission('Plugins.Awards.Manage');
-		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_CRITERIA_LIST_URL);
-
-		// TODO Implement Criteria List page
-
-		$Sender->Render($this->GetView('awards_criterialist_view.php'));
-	}
-
-	/**
 	 * Renders the User Awards List page.
 	 *
 	 * @param object Sender Sending controller instance.

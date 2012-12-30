@@ -44,7 +44,6 @@
 				echo RenderTabItem(T('View Award Classes'), AWARDS_PLUGIN_AWARDCLASSES_LIST_URL, $TabsClasses);
 				echo RenderTabItem(T('View Awards'), AWARDS_PLUGIN_AWARDS_LIST_URL, $TabsClasses);
 				echo RenderTabItem(T('View Rules'), AWARDS_PLUGIN_RULES_LIST_URL, $TabsClasses);
-				echo RenderTabItem(T('View Rules Criteria'), AWARDS_PLUGIN_CRITERIA_LIST_URL, $TabsClasses);
 				echo RenderTabItem(T('View User Awards'), AWARDS_PLUGIN_USERAWARDS_LIST_URL, $TabsClasses);
 			?>
 		</ul>
