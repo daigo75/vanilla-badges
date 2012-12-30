@@ -22,11 +22,19 @@ define('AWARDS_PLUGIN_VIEW_PATH', AWARDS_PLUGIN_PATH . '/views');
 // URLs
 define('AWARDS_PLUGIN_BASE_URL', '/plugin/awards');
 
+// URLs for Award Classes Management
+define('AWARDS_PLUGIN_AWARDCLASSES_LIST_URL', AWARDS_PLUGIN_BASE_URL . '/awardclasseslist');
+define('AWARDS_PLUGIN_AWARDCLASS_ADD_URL', AWARDS_PLUGIN_BASE_URL . '/awardclassadd');
+define('AWARDS_PLUGIN_AWARDCLASS_EDIT_URL', AWARDS_PLUGIN_BASE_URL . '/awardclassedit');
+define('AWARDS_PLUGIN_AWARDCLASS_DELETE_URL', AWARDS_PLUGIN_BASE_URL . '/awardclassdelete');
+define('AWARDS_PLUGIN_AWARDCLASS_CLONE_URL', AWARDS_PLUGIN_BASE_URL . '/awardclassclone');
+
 // URLs for Awards Management
 define('AWARDS_PLUGIN_AWARDS_LIST_URL', AWARDS_PLUGIN_BASE_URL . '/awardslist');
 define('AWARDS_PLUGIN_AWARD_ADD_URL', AWARDS_PLUGIN_BASE_URL . '/awardadd');
 define('AWARDS_PLUGIN_AWARD_EDIT_URL', AWARDS_PLUGIN_BASE_URL . '/awardedit');
 define('AWARDS_PLUGIN_AWARD_DELETE_URL', AWARDS_PLUGIN_BASE_URL . '/awarddelete');
+define('AWARDS_PLUGIN_AWARD_CLONE_URL', AWARDS_PLUGIN_BASE_URL . '/awardclone');
 
 // URLs for Rules Management
 define('AWARDS_PLUGIN_RULES_LIST_URL', AWARDS_PLUGIN_BASE_URL . '/ruleslist');
@@ -34,6 +42,7 @@ define('AWARDS_PLUGIN_RULE_ADD_URL', AWARDS_PLUGIN_BASE_URL . '/ruleadd');
 define('AWARDS_PLUGIN_RULE_EDIT_URL', AWARDS_PLUGIN_BASE_URL . '/ruleedit');
 define('AWARDS_PLUGIN_RULE_DELETE_URL', AWARDS_PLUGIN_BASE_URL . '/ruledelete');
 define('AWARDS_PLUGIN_RULE_ENABLE_URL', AWARDS_PLUGIN_BASE_URL . '/ruleenable');
+define('AWARDS_PLUGIN_RULE_CLONE_URL', AWARDS_PLUGIN_BASE_URL . '/ruleclone');
 
 // URLs for Criteria Management
 define('AWARDS_PLUGIN_CRITERIA_LIST_URL', AWARDS_PLUGIN_BASE_URL . '/criterialist');

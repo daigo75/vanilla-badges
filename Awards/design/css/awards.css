@@ -1,3 +1,16 @@
+/**
+{licence}
+*/
+
+/* General CSS for configuration pages sections */
+.AwardsPlugin legend {
+	width: 100% !important;
+}
+
+.AwardsPlugin fieldset p {
+	padding-left: 20px;
+}
+
 div.AwardsDescription {
    font-size: 85%;
 }

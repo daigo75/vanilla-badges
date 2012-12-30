@@ -23,7 +23,8 @@ $PluginInfo['Awards'] = array(
 	'SettingsPermission' => 'Garden.AdminUser.Only',
 	'Author' => 'D.Zanella',
 	'AuthorEmail' => 'diego@pathtoenlightenment.net',
-	'AuthorUrl' => 'http://dev.pathtoenlightenment.net'
+	'AuthorUrl' => 'http://dev.pathtoenlightenment.net',
+	'RegisterPermissions' => array('Plugins.Awards.Manage',),
 );
 
 class AwardsPlugin extends Gdn_Plugin {
@@ -91,8 +92,9 @@ class AwardsPlugin extends Gdn_Plugin {
 	 * @param object Sender Sending controller instance
 	 */
 	public function Controller_Settings($Sender) {
-		// Prevent non-admins from accessing this page
-		$Sender->Permission('Vanilla.Settings.Manage');
+		// Prevent non authorised Users from accessing this page
+		$Sender->Permission('Plugins.Awards.Manage');
+		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_GENERALSETTINGS_URL);
 
 		$Sender->SetData('PluginDescription',$this->GetPluginKey('Description'));
 
@@ -120,8 +122,7 @@ class AwardsPlugin extends Gdn_Plugin {
 			}
 		}
 
-		// GetView() looks for files inside plugins/PluginFolderName/views/ and returns their full path. Useful!
-		$Sender->Render($this->GetView('awards.php'));
+		$Sender->Render($this->GetView('awards_generalsettings_view.php'));
 	}
 
 	/**
@@ -138,12 +139,78 @@ class AwardsPlugin extends Gdn_Plugin {
 	}
 
 	/**
+	 * Renders the Award Classes List page.
+	 *
+	 * @param object Sender Sending controller instance.
+	 */
+	public function Controller_AwardClassesList($Sender) {
+		// Prevent non authorised Users from accessing this page
+		$Sender->Permission('Plugins.Awards.Manage');
+		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_AWARDCLASSES_LIST_URL);
+
+		// TODO Implement Awards List page
+
+		$Sender->Render($this->GetView('awards_awardclasseslist_view.php'));
+	}
+
+	/**
 	 * Renders the Awards List page.
 	 *
 	 * @param object Sender Sending controller instance.
 	 */
-	public function Controller_($Sender) {
-		$this->Controller_Settings($Sender);
+	public function Controller_AwardsList($Sender) {
+		// Prevent non authorised Users from accessing this page
+		$Sender->Permission('Plugins.Awards.Manage');
+		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_AWARDS_LIST_URL);
+
+		// TODO Implement Awards List page
+
+		$Sender->Render($this->GetView('awards_awardslist_view.php'));
+	}
+
+	/**
+	 * Renders the Awards Rules List page.
+	 *
+	 * @param object Sender Sending controller instance.
+	 */
+	public function Controller_RulesList($Sender) {
+		// Prevent non authorised Users from accessing this page
+		$Sender->Permission('Plugins.Awards.Manage');
+		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_RULES_LIST_URL);
+
+		// TODO Implement Awards Rules List page
+
+		$Sender->Render($this->GetView('awards_ruleslist_view.php'));
+	}
+
+	/**
+	 * Renders the Criteria List page.
+	 *
+	 * @param object Sender Sending controller instance.
+	 */
+	public function Controller_CriteriaList($Sender) {
+		// Prevent non authorised Users from accessing this page
+		$Sender->Permission('Plugins.Awards.Manage');
+		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_CRITERIA_LIST_URL);
+
+		// TODO Implement Criteria List page
+
+		$Sender->Render($this->GetView('awards_criterialist_view.php'));
+	}
+
+	/**
+	 * Renders the User Awards List page.
+	 *
+	 * @param object Sender Sending controller instance.
+	 */
+	public function Controller_UserAwardsList($Sender) {
+		// Prevent non authorised Users from accessing this page
+		$Sender->Permission('Plugins.Awards.Manage');
+		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_USERAWARDS_LIST_URL);
+
+		// TODO Implement User Awards List page
+
+		$Sender->Render($this->GetView('awards_userawardslist_view.php'));
 	}
 
 	/**
