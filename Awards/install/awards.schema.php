@@ -7,23 +7,43 @@ require('plugin.schema.php');
 
 class AwardsSchema extends PluginSchema {
 	/**
+	 * Create the table which will store the list of configured Award Classes.
+	 */
+	protected function create_awardclasses_table() {
+		Gdn::Structure()
+			->Table('AwardClasses')
+			->PrimaryKey('ClassID')
+			->Column('Name', 'varchar(100)', FALSE, 'unique')
+			->Column('Description', 'varchar(400)')
+			->Column('BackgroundImageFile', 'varchar(500)')
+			->Column('DateInserted', 'datetime', FALSE)
+			->Column('InsertUserID', 'int', TRUE)
+			->Column('DateUpdated', 'datetime', TRUE)
+			->Column('UpdateUserID', 'int', TRUE)
+			->Set(FALSE, FALSE);
+	}
+
+	/**
 	 * Create the table which will store the list of configured Awards.
 	 */
 	protected function create_awards_table() {
 		Gdn::Structure()
 			->Table('Awards')
 			->PrimaryKey('AwardID')
+			->Column('ClassID', 'int', FALSE)
 			->Column('Name', 'varchar(100)', FALSE, 'unique')
 			->Column('Description', 'varchar(400)')
-			->Column('ImageFileName', 'varchar(500)')
+			->Column('ImageFile', 'varchar(500)')
 			->Column('RankPoints', 'uint', 0)
 			->Column('IsEnabled', 'uint', 1, 'index')
-			->Column('Configuration', 'text', TRUE)
 			->Column('DateInserted', 'datetime', FALSE)
 			->Column('InsertUserID', 'int', TRUE)
 			->Column('DateUpdated', 'datetime', TRUE)
 			->Column('UpdateUserID', 'int', TRUE)
 			->Set(FALSE, FALSE);
+
+		$this->AddForeignKey('Awards', 'FK_Awards_AwardClasses', array('ClassID'),
+												'AwardClasses', array('ClassID'));
 	}
 
 	/**
@@ -33,7 +53,7 @@ class AwardsSchema extends PluginSchema {
 		Gdn::Structure()
 			->Table('AwardRules')
 			->PrimaryKey('RuleID')
-			->Column('AwardID', 'int', 0)
+			->Column('AwardID', 'int', FALSE)
 			->Column('Name', 'varchar(100)', FALSE, 'unique')
 			->Column('Description', 'varchar(400)')
 			->Column('Priority', 'uint', 1, 'index')
@@ -96,6 +116,7 @@ class AwardsSchema extends PluginSchema {
 	 * Create all the Database Objects in the appropriate order.
 	 */
 	protected function CreateObjects() {
+		$this->create_awardclasses_table();
 		$this->create_awards_table();
 		$this->create_awardrules_table();
 		$this->create_awardrulescriteria_table();
@@ -111,5 +132,6 @@ class AwardsSchema extends PluginSchema {
 		$this->DropTable('AwardRulesCriteria');
 		$this->DropTable('AwardsRules');
 		$this->DropTable('Awards');
+		$this->DropTable('AwardClasses');
 	}
 }
