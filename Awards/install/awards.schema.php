@@ -56,6 +56,21 @@ class AwardsSchema extends PluginSchema {
 			->Column('AwardID', 'int', FALSE)
 			->Column('Name', 'varchar(100)', FALSE, 'unique')
 			->Column('Description', 'varchar(400)')
+			// Field "Recurring" indicates if an Award Assignment Rule could have to
+			// run multiple times, even if the Award has been assigned. The value of
+			// this field will be determined by inspecting the Criteria composing the
+			// Rule. If rule contains at least one recurring Criterion (e.g. "every X
+			// posts") the Rule will be a Recurring Rule.
+			//
+			// Examples
+			// - Rule 1 indicates "Assign Award X when User votes for the first time".
+			//   This is NOT a recurring Rule, as User can vote for the first time only
+			//   once.
+			// - Rule 2 indicates "Assign Award Y for every year of subscription".
+			//   This is a recurring rule, as User would get the Award every year. For
+			//   such reason, the Rule must be processed every time, even if the award
+			//   was already assigned.
+			->Column('Recurring', 'uint', 0, 'index')
 			->Column('Priority', 'uint', 1, 'index')
 			->Column('IsEnabled', 'uint', 1, 'index')
 			->Column('Configuration', 'text', TRUE)
