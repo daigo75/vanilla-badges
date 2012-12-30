@@ -13,7 +13,7 @@
 			echo $this->Form->Open();
 			echo $this->Form->Errors();
 		?>
-		<fieldset>
+		<fieldset id="something" name="something">
 			<legend>
 				<h3><?php echo T('Awards List'); ?></h3>
 				<p>
@@ -40,6 +40,18 @@
 					//													 $AwardsLevels,
 					//													 array('id' => 'AwardsLevel',
 					//																 'value' => $CurrentAwardsLevel,));
+
+					echo $this->Form->CheckBox('Rule[]', '', array('value' => 'SomeRule',
+																										'id' => 'RuleX'));
+					echo $this->Form->TextBox('Field1', array('name' => 'SomeRule_Field1'));
+					echo $this->Form->TextBox('Field2', array('name' => 'SomeRule_Field2'));
+					echo $this->Form->TextBox('Field3', array('name' => 'SomeRule_Field3'));
+
+					echo $this->Form->CheckBox('Rule[]', '', array('value' => 'SomeOtherRule',
+																										'id' => 'RuleY'));
+					echo $this->Form->TextBox('Field1', array('name' => 'SomeOtherRule_Field1'));
+					echo $this->Form->TextBox('Field2', array('name' => 'SomeOtherRule_Field2'));
+					echo $this->Form->TextBox('Field3', array('name' => 'SomeOtherRule_Field3'));
 				?></li>
 			</ul>
 		</fieldset>
