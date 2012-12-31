@@ -11,8 +11,8 @@ class ModelEx extends Gdn_Model {
 	// Logger that will be used by derived Models
 	protected $Log;
 
-	public function _construct() {
-		parent::__construct();
+	public function __construct($TableName) {
+		parent::__construct($TableName);
 
 		$this->Log = LoggerPlugin::GetLogger();
 	}
