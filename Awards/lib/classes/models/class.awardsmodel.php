@@ -46,7 +46,7 @@ class AwardsModel extends ModelEx {
 			->Select('VAAL.AwardID')
 			->Select('VAAL.ClassID')
 			->Select('VAAL.AwardName')
-			->Select('VAAL.Description')
+			->Select('VAAL.AwardDescription')
 			->Select('VAAL.Recurring')
 			->Select('VAAL.IsEnabled')
 			->Select('VAAL.AwardImage')
@@ -56,7 +56,7 @@ class AwardsModel extends ModelEx {
 			->Select('VAAL.RuleName')
 			->Select('VAAL.RuleConfiguration')
 			->Select('VAAL.AwardClassName')
-			->Select('VAAL.BackgroundImageFile AS AwardClassBGImage')
+			->Select('VAAL.AwardClassBGImage')
 			->From('v_awards_awardslist VAAL');
 		return $Query;
 	}
@@ -73,7 +73,7 @@ class AwardsModel extends ModelEx {
 	 * @see AwardsModel::GetWhere()
 	 */
 	public function Get($Limit = 1000, $Offset = 0) {
-		return $this->GetWhere(NULL, $Limit, $Offset);
+		return $this->GetWhere(array(), $Limit, $Offset);
 	}
 
 	/**

@@ -14,3 +14,16 @@
 div.AwardsDescription {
    font-size: 85%;
 }
+
+#AwardsList td {
+	vertical-align: middle;
+}
+
+.AwardImage {
+	width: 50px;
+	height: 50px;
+}
+
+.Buttons .Button {
+	margin-left: 1em;
+}

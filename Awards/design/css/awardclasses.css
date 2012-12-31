@@ -1,0 +1,17 @@
+/**
+ * This file contains all the CSS Classes related derived from Award Classes and
+ * it's generated automatically by Awards Plugin. Don't change it manually,
+ * all changes will be overwritten by the Plugin when it runs.
+ */
+
+.Gold {
+	background: url("../images/awardclasses/gold.png") top left no-repeat;
+}
+
+.Silver {
+	background: url("../images/awardclasses/silver.png") top left no-repeat;
+}
+
+.Bronze {
+	background: url("../images/awardclasses/bronze.png") top left no-repeat;
+}

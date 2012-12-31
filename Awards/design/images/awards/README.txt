@@ -1,1 +1,1 @@
-This folder will contain all the images that will be assigned to the Awards.
+This folder will contain the images that will be assigned to the Awards.

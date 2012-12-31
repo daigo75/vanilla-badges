@@ -3,6 +3,17 @@
 {licence}
 */
 
+	// Indicates how many columns there are in the table that shows the list of
+	// configured Awards. It's mainly used to set the "colspan" attributes of
+	// single-valued table rows, such as Title, or the "No Results Found" message.
+	$AwardsTableColumns = 6;
+
+	// The following HTML will be displayed when the DataSet is empty.
+	$OutputForEmptyDataSet = Wrap(T('No Awards configured.'),
+																'td',
+																array('colspan' => $AwardsTableColumns,
+																			'class' => 'NoResultsFound',)
+																);
 ?>
 <div class="AwardsPlugin">
 	<div class="Header">
@@ -13,50 +24,102 @@
 			echo $this->Form->Open();
 			echo $this->Form->Errors();
 		?>
-		<fieldset id="something" name="something">
-			<legend>
-				<h3><?php echo T('Awards List'); ?></h3>
-				<p>
-					<?php
-					echo T('Here you can see the list of configured Awards.');
-					?>
-				</p>
-			</legend>
-			<ul>
-				<li><?php
+		<h3><?php echo T('User Statistics API Awards'); ?></h3>
+		<div class="Info">
+			<?php
+				echo Wrap(T('Here you can configure the Awards that can be assigned to the Users.'), 'p');
+			?>
+		</div>
+		<div class="FilterMenu">
+		<?php
+			echo Anchor(T('Add Award'), AWARDS_PLUGIN_AWARDCLASS_ADDEDIT_URL, 'Button');
+		?>
+		</div>
+		<table id="AwardsList" class="display AltRows">
+			<thead>
+				<tr>
+					<th><?php echo T('Award Name'); ?></th>
+					<th><?php echo T('Icon'); ?></th>
+					<th><?php echo T('Class'); ?></th>
+					<th><?php echo T('Description'); ?></th>
+					<th><?php echo T('Enabled?'); ?></th>
+					<th>&nbsp;</th>
+				</tr>
+			</thead>
+			<tfoot>
+			</tfoot>
+			<tbody>
+				<?php
 					// TODO Display list of configured Awards
 					// TODO Display Add button
 					// TODO Display Edit button
 					// TODO Display Clone button
 					// TODO Display, next to each Award, how many times it has been awarded
 
-					//echo $this->Form->Label(T('Awards Level'), 'Plugin.Awards.LogLevel');
-					//echo Wrap(T('Select the Log Level. Messages with a level lower than the one selected ' .
-					//						'will be ignored. <strong>Example</strong>: if you select "<i>Warning</i>", ' .
-					//						'messages logged as <i>Trace</i>, <i>Debug</i> and <i>Info</i> will be ignored.'),
-					//					'div',
-					//					array('class' => 'Info',));
-					//echo $this->Form->DropDown('Plugin.Awards.LogLevel',
-					//													 $AwardsLevels,
-					//													 array('id' => 'AwardsLevel',
-					//																 'value' => $CurrentAwardsLevel,));
+					$AwardsDataSet = $this->Data['AwardsDataSet'];
 
-					echo $this->Form->CheckBox('Rule[]', '', array('value' => 'SomeRule',
-																										'id' => 'RuleX'));
-					echo $this->Form->TextBox('Field1', array('name' => 'SomeRule_Field1'));
-					echo $this->Form->TextBox('Field2', array('name' => 'SomeRule_Field2'));
-					echo $this->Form->TextBox('Field3', array('name' => 'SomeRule_Field3'));
+					// If DataSet is empty, just print a message.
+					if(empty($AwardsDataSet)) {
+						echo $OutputForEmptyDataSet;
+					}
+					// TODO Implement Pager.
+					// Output the details of each row in the DataSet
+					foreach($AwardsDataSet as $Award) {
+						echo "<tr>\n";
+						// Output Award Name and Description
+						echo Wrap(Gdn_Format::Text($Award->AwardName), 'td', array('class' => 'AwardName',));
 
-					echo $this->Form->CheckBox('Rule[]', '', array('value' => 'SomeOtherRule',
-																										'id' => 'RuleY'));
-					echo $this->Form->TextBox('Field1', array('name' => 'SomeOtherRule_Field1'));
-					echo $this->Form->TextBox('Field2', array('name' => 'SomeOtherRule_Field2'));
-					echo $this->Form->TextBox('Field3', array('name' => 'SomeOtherRule_Field3'));
-				?></li>
-			</ul>
-		</fieldset>
+						echo Wrap(Img($Award->AwardImage,
+													array('class' => 'AwardImage ' . $Award->AwardClassName,)),
+											'td',
+											array('class' => 'AwardName',));
+
+						echo Wrap(Gdn_Format::Text($Award->AwardClassName), 'td', array('class' => 'AwardClassName',));
+						echo Wrap(Gdn_Format::Text($Award->AwardName), 'td', array('class' => 'AwardName',));
+
+						// Output "Enabled" indicator
+						$EnabledText = ($Award->IsEnabled == 1) ? T('Yes') : T('No');
+
+						// Display a convenient link to enable/disable the Award with a single click
+						$EnabledText = Anchor(Gdn_Format::Text($EnabledText),
+																	sprintf('%s?%s=%d&%s=%d',
+																					AWARDS_PLUGIN_AWARD_ENABLE_URL,
+																					LOGGER_ARG_APPENDERID,
+																					$Award->AwardID,
+																					AWARDS_PLUGIN_ARG_AWARDID,
+																					($Award->IsEnabled == 1 ? 0 : 1)),
+																	'EnableLink',
+																	array('title' => T('Click here to change Award status (Enabled/Disabled).'),)
+																	);
+
+						echo Wrap($EnabledText,
+											'td',
+											array('class' => 'Enabled',)
+											);
+
+						echo "<td class=\"Buttons\">\n";
+						// Output Add/Edit button
+						echo Anchor(T('Edit'),
+												sprintf('%s?%s=%s',
+																AWARDS_PLUGIN_AWARDCLASS_ADDEDIT_URL,
+																AWARDS_PLUGIN_ARG_AWARDID,
+																Gdn_Format::Url($Award->AwardID)),
+												'Button AddEditAward');
+						// Output Delete button
+						echo Anchor(T('Delete'),
+												sprintf('%s?%s=%s',
+																AWARDS_PLUGIN_AWARDCLASS_DELETE_URL,
+																AWARDS_PLUGIN_ARG_AWARDID,
+																Gdn_Format::Url($Award->AwardID)),
+												'Button DeleteAward');
+						echo "</td>\n";
+						echo "</tr>\n";
+					}
+				?>
+			 </tbody>
+		</table>
 		<?php
-			 echo $this->Form->Close('Save');
+			 echo $this->Form->Close();
 		?>
 	</div>
 </div>
