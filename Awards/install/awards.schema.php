@@ -134,7 +134,7 @@ class AwardsSchema extends PluginSchema {
 			,AC.BackgroundImageFile AS AwardClassBGImage
 		FROM
 			${Px}Awards A
-			JOIN
+			LEFT JOIN
 			${Px}AwardRules AR ON
 				(AR.AwardID = A.AwardID)
 			JOIN
