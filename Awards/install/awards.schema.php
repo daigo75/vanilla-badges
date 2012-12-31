@@ -112,6 +112,72 @@ class AwardsSchema extends PluginSchema {
 	}
 
 	/**
+	 * Creates a View that returns a list of the configured Awards.
+	 */
+	protected function create_awardslist_view() {
+		$Px = $this->Px;
+		$Sql = "
+		SELECT
+			A.AwardID
+			,A.ClassID
+			,A.`Name` AS AwardName
+			,A.Description
+			,A.Recurring
+			,A.IsEnabled
+			,A.ImageFile AS AwardImage
+			,A.RankPoints
+			,A.DateInserted
+			,A.DateUpdated
+			,AR.RuleName
+			,AR.Configuration AS RuleConfiguration
+			,AC.`Name` AS AwardClassName
+			,AC.BackgroundImageFile AS AwardClassBGImage
+		FROM
+			${Px}Awards A
+			JOIN
+			${Px}AwardRules AR ON
+				(AR.AwardID = A.AwardID)
+			JOIN
+			${Px}AwardClasses AC ON
+				(AC.ClassID = A.ClassID)
+		";
+		$this->Construct->View('v_awards_awardslist', $Sql);
+	}
+
+	/**
+	 * Creates a View that returns a list of the configured Awards.
+	 */
+	protected function create_userawardslist_view() {
+		$Px = $this->Px;
+		$Sql = "
+			SELECT
+				UA.UserID
+				,UA.DateInserted AS DateAwarded
+				,UA.RankPoints AS RankPointsEarned
+				,A.AwardID
+				,A.`Name` AS AwardName
+				,A.Description
+				,A.Recurring
+				,A.IsEnabled
+				,A.ImageFile AS AwardImage
+				,A.RankPoints
+				,A.DateInserted
+				,A.DateUpdated
+				,AC.`Name` AS AwardClassName
+				,AC.BackgroundImageFile AS AwardClassBGImage
+			FROM
+				${Px}UserAwards UA
+				JOIN
+				${Px}Awards A ON
+					(A.AwardID = UA.AwardID)
+				JOIN
+				${Px}AwardClasses AC ON
+					(AC.ClassID = A.ClassID)
+		";
+		$this->Construct->View('v_awards_userawardslist', $Sql);
+	}
+
+	/**
 	 * Create all the Database Objects in the appropriate order.
 	 */
 	protected function CreateObjects() {
@@ -119,13 +185,18 @@ class AwardsSchema extends PluginSchema {
 		$this->create_awards_table();
 		$this->create_awardrules_table();
 		$this->create_userawards_table();
+
+		$this->create_awardslist_view();
+		$this->create_userawardslist_view();
 	}
 
 	/**
 	 * Delete the Database Objects.
 	 */
 	protected function DropObjects() {
-		//$this->DropView('v_logger_appenders');
+		$this->DropView('v_awards_userawardslist');
+		$this->DropView('v_awards_awardlist');
+
 		$this->DropTable('UserAwards');
 		$this->DropTable('AwardsRules');
 		$this->DropTable('Awards');
