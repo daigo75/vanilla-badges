@@ -39,8 +39,7 @@ class AwardsModel extends ModelEx {
 	}
 
 	/**
-	 * Build SQL query to retrieve the Total amount of Threads, by type, created
-	 * by a User.
+	 * Build SQL query to retrieve the list of Awards.
 	 */
 	protected function PrepareAwardsQuery() {
 		$Query = $this->SQL
