@@ -65,10 +65,10 @@ class AwardsModel extends ModelEx {
 	 * Convenience method to returns a DataSet containing a list of all the
 	 * configured Awards.
 	 *
-	 * @param Limit Limit the amount of rows to be returned.
-	 * @param Offset Specifies from which rows the data should be returned. Used
+	 * @param int Limit Limit the amount of rows to be returned.
+	 * @param int Offset Specifies from which rows the data should be returned. Used
 	 * for pagination.
-	 * @return A DataSet containing a list of the configured Awards.
+	 * @return DataSet A DataSet containing a list of the configured Awards.
 	 *
 	 * @see AwardsModel::GetWhere()
 	 */
@@ -81,10 +81,10 @@ class AwardsModel extends ModelEx {
 	 *
 	 * @param array WhereClauses An associative array of WHERE clauses. They should
 	 * be passed as specified in Gdn_SQLDriver::Where() method.
-	 * @param int Limit the amount of rows to be returned.
+	 * @param int Limit Limits the amount of rows to be returned.
 	 * @param int Offset Specifies from which rows the data should be returned. Used
 	 * for pagination.
-	 * @return A DataSet containing a list of the configured Awards.
+	 * @return DataSet A DataSet containing a list of the configured Awards.
 	 *
 	 * @see Gdn_SQLDriver::Where()
 	 */
