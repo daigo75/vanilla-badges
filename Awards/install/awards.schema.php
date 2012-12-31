@@ -121,7 +121,7 @@ class AwardsSchema extends PluginSchema {
 			A.AwardID
 			,A.ClassID
 			,A.`Name` AS AwardName
-			,A.Description
+			,A.Description AS AwardDescription
 			,A.Recurring
 			,A.IsEnabled
 			,A.ImageFile AS AwardImage
@@ -156,7 +156,7 @@ class AwardsSchema extends PluginSchema {
 				,UA.RankPoints AS RankPointsEarned
 				,A.AwardID
 				,A.`Name` AS AwardName
-				,A.Description
+				,A.Description AS AwardDescription
 				,A.Recurring
 				,A.IsEnabled
 				,A.ImageFile AS AwardImage
