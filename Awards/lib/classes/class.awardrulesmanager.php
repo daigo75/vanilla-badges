@@ -7,10 +7,14 @@
  * Manages the list of all available Rules and provides convenience
  * functions to retrieve the Model, Validation and View for each one.
  */
-class RulesManager {
+class AwardRulesManager {
 	private $Log;
 	// @var array Contains a list of all available Rules.
 	public static $Rules = array();
+
+	public static function RegisterRule($RuleClass, array $RuleInfo) {
+		self::$Rules[$RuleClass] = $RuleInfo;
+	}
 
 	/**
 	 * Install an Rule Class's auxiliary classes into Vanilla Factories, for
@@ -28,11 +32,11 @@ class RulesManager {
 
 		Gdn::FactoryInstall($ConfigModelClass,
 												$ConfigModelClass,
-												AWARDS_PLUGIN_RULES_PATH . '/' . $RuleClass . '/models',
+												AWARDS_PLUGIN_RULES_PATH . '/' . strtolower($RuleClass) . '/models',
 												Gdn::FactorySingleton);
 		Gdn::FactoryInstall($ValidationClass,
 												$ValidationClass,
-												AWARDS_PLUGIN_RULES_PATH . '/' . $RuleClass . '/validators',
+												AWARDS_PLUGIN_RULES_PATH . '/' . strtolower($RuleClass) . '/validators',
 												Gdn::FactorySingleton);
 	}
 
@@ -43,6 +47,7 @@ class RulesManager {
 	 * @return void.
 	 */
 	protected function InstallRules() {
+		//var_dump(self::$Rules);
 		foreach(self::$Rules as $RuleClass => $RuleInfo) {
 			$this->InstallRule($RuleClass);
 		}
@@ -187,6 +192,45 @@ class RulesManager {
 	}
 
 	/**
+	 * Checks if the specified file name is a valid directory (i.e. it is a
+	 * directory, but not "." or "..").
+	 *
+	 * @param string Directory The directory where the file is located.
+	 * @param string FileName The file name to check.
+	 * @return bool True if the specified FileName is a directory, False if it is
+	 * not a directory, or if it is "." or "..".
+	 */
+	private function IsValidDirectory($Directory, $FileName) {
+		return ($FileName !== '.') &&
+					 ($FileName !== '..') &&
+					 (is_dir($Directory . '/' . $FileName));
+	}
+
+	/**
+	 * Loads all Rule files found in the specified folder.
+	 *
+	 * @param string RulesDir The folder where to look for Rule files.
+	 * @return bool False, if directory doesn't exist or could not be opened, True
+	 * if it exist and could be opened (regardless if any Rule file was loaded).
+	 */
+	private function LoadRuleFiles($RulesDir) {
+		$Handle = opendir($RulesDir);
+		if(empty($Handle)) {
+			return false;
+		}
+
+		// Load all Rule Files, so that they can add themselves to the list of
+		// installed Rules
+    while($File = readdir($Handle)) {
+      if(!is_dir($File) && preg_match('/^class\..+?rule/i', $File) == 1) {
+				include_once($RulesDir . '/' . $File);
+			}
+		}
+		closedir($Handle);
+		return true;
+	}
+
+	/**
 	 * Scans the Rules directory for all appender files and loads them, so
 	 * that they can add themselves to the list of available appenders.
 	 *
@@ -196,14 +240,14 @@ class RulesManager {
 		$RulesDir = sprintf('%s/rules', AWARDS_PLUGIN_CLASS_PATH);
 		$Handle = opendir($RulesDir);
 		if(empty($Handle)) {
-			return;
+			return false;
 		}
 
-		// Load all Rule Files, so that they can add themselves to the list of
-		// installed Rules
+		// Look for subfolders in Rules folder. Each Rule should be stored in its
+		// SubFolder.
     while($File = readdir($Handle)) {
-      if(strpos($File, 'class.rule') == 0) {
-				include_once(sprintf('%s/%s', $RulesDir, $File));
+			if($this->IsValidDirectory($RulesDir, $File)) {
+				$this->LoadRuleFiles($RulesDir . '/' . $File);
 			}
 		}
 		closedir($Handle);

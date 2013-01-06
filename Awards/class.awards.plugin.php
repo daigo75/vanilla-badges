@@ -28,6 +28,26 @@ $PluginInfo['Awards'] = array(
 );
 
 class AwardsPlugin extends Gdn_Plugin {
+	private $_RulesManager;
+
+
+	/**
+	 * Returns an instance of RulesManager. The function follows the principle
+	 * of lazy initialization, instantiating the class the first time it's
+	 * requested. This method is static because the RulesManager is required
+	 * by a global validation function.
+	 *
+	 * @return object An instance of RulesManager.
+	 */
+	public function RulesManager() {
+		if(empty($this->_RulesManager)) {
+			// Logger Rules Manager will be used to keep track of available
+			// Rules
+			$this->_RulesManager = new AwardRulesManager();
+		}
+
+		return $this->_RulesManager;
+	}
 
 	/**
 	 * Plugin constructor
@@ -188,6 +208,7 @@ class AwardsPlugin extends Gdn_Plugin {
 		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_RULES_LIST_URL);
 
 		// TODO Implement Awards Rules List page
+		$RulesManager = $this->RulesManager();
 
 		$Sender->Render($this->GetView('awards_ruleslist_view.php'));
 	}

@@ -4,9 +4,9 @@
 */
 
 /**
- * Award Assignment Base Rule Class.
+ * Base Award Assignment Rule Class.
  */
-class AwardBaseRule {
+class BaseAwardRule {
 	const NO_ASSIGNMENTS = 0;
 
 	/**
