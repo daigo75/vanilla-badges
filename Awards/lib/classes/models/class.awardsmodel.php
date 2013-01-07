@@ -68,12 +68,22 @@ class AwardsModel extends ModelEx {
 	 * @param int Limit Limit the amount of rows to be returned.
 	 * @param int Offset Specifies from which rows the data should be returned. Used
 	 * for pagination.
-	 * @return DataSet A DataSet containing a list of the configured Awards.
+	 * @return DataSet A DataSet containing Awards data.
 	 *
 	 * @see AwardsModel::GetWhere()
 	 */
 	public function Get($Limit = 1000, $Offset = 0) {
 		return $this->GetWhere(array(), $Limit, $Offset);
+	}
+
+	/**
+	 * Convenience method to return the data of a single Award.
+	 *
+	 * @param int AwardID The ID of the Award for which to retrieve the data.
+	 * @return DataSet A DataSet containing Awards data.
+	 */
+	public function GetAwardData($AwardID) {
+		return $this->GetWhere(array('AwardID' => $AwardID));
 	}
 
 	/**
