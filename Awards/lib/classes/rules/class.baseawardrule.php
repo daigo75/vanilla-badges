@@ -3,6 +3,11 @@
 {licence}
 */
 
+interface IAwardRule {
+	// @see BaseAwardRule::Process();
+	public function Process($UserID, $RuleConfig, array $EventInfo = null);
+}
+
 /**
  * Base Award Assignment Rule Class.
  */
