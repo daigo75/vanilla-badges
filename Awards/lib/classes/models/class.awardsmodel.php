@@ -53,7 +53,7 @@ class AwardsModel extends ModelEx {
 			->Select('VAAL.RankPoints')
 			->Select('VAAL.DateInserted')
 			->Select('VAAL.DateUpdated')
-			->Select('VAAL.RuleName')
+			->Select('VAAL.RuleClass')
 			->Select('VAAL.RuleConfiguration')
 			->Select('VAAL.AwardClassName')
 			->Select('VAAL.AwardClassBGImage')
@@ -68,7 +68,7 @@ class AwardsModel extends ModelEx {
 	 * @param int Limit Limit the amount of rows to be returned.
 	 * @param int Offset Specifies from which rows the data should be returned. Used
 	 * for pagination.
-	 * @return DataSet A DataSet containing Awards data.
+	 * @return Gdn_DataSet A DataSet containing Awards data.
 	 *
 	 * @see AwardsModel::GetWhere()
 	 */
@@ -80,7 +80,7 @@ class AwardsModel extends ModelEx {
 	 * Convenience method to return the data of a single Award.
 	 *
 	 * @param int AwardID The ID of the Award for which to retrieve the data.
-	 * @return DataSet A DataSet containing Awards data.
+	 * @return Gdn_DataSet A DataSet containing the data of the specified Award.
 	 */
 	public function GetAwardData($AwardID) {
 		return $this->GetWhere(array('AwardID' => $AwardID));
@@ -94,7 +94,7 @@ class AwardsModel extends ModelEx {
 	 * @param int Limit Limits the amount of rows to be returned.
 	 * @param int Offset Specifies from which rows the data should be returned. Used
 	 * for pagination.
-	 * @return DataSet A DataSet containing a list of the configured Awards.
+	 * @return Gdn_DataSet A DataSet containing a list of the configured Awards.
 	 *
 	 * @see Gdn_SQLDriver::Where()
 	 */
