@@ -68,11 +68,11 @@ class AwardsSchema extends PluginSchema {
 	protected function create_awardrules_table() {
 		Gdn::Structure()
 			->Table('AwardRules')
-			// Primary Key is formed by RuleID and RuleName. AwardID is a FK to
+			// Primary Key is formed by RuleID and RuleClass. AwardID is a FK to
 			// Awards table, while Rule Name will be extracted from the
 			// Rule class.
 			->Column('AwardID', 'int', FALSE, 'primary')
-			->Column('RuleName', 'varchar(100)', FALSE, 'primary')
+			->Column('RuleClass', 'varchar(100)', FALSE, 'primary')
 			->Column('IsEnabled', 'uint', 1, 'index')
 			->Column('Configuration', 'text', TRUE)
 			->Column('DateInserted', 'datetime', FALSE)
@@ -128,7 +128,7 @@ class AwardsSchema extends PluginSchema {
 			,A.RankPoints
 			,A.DateInserted
 			,A.DateUpdated
-			,AR.RuleName
+			,AR.RuleClass
 			,AR.Configuration AS RuleConfiguration
 			,AC.`Name` AS AwardClassName
 			,AC.ImageFile AS AwardClassBGImage
