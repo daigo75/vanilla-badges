@@ -82,6 +82,9 @@ class AwardsPlugin extends Gdn_Plugin {
 																							50,
 																							array('Crop' => true));
 
+			// TODO Check that uploaded image is cropped and saved correctly
+
+
 			// Build a picture URL from the uploaded file
 			return Url(AWARDS_PLUGIN_AWARDS_PICS_URL . '/' . $UploadedFileName);
 		}
