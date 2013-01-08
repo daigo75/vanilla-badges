@@ -44,19 +44,19 @@ class AwardsModel extends ModelEx {
 	protected function PrepareAwardsQuery() {
 		$Query = $this->SQL
 			->Select('VAAL.AwardID')
-			->Select('VAAL.ClassID')
+			->Select('VAAL.AwardClassID')
 			->Select('VAAL.AwardName')
 			->Select('VAAL.AwardDescription')
 			->Select('VAAL.Recurring')
-			->Select('VAAL.IsEnabled')
-			->Select('VAAL.AwardImage')
+			->Select('VAAL.AwardIsEnabled')
+			->Select('VAAL.AwardImageFile')
 			->Select('VAAL.RankPoints')
 			->Select('VAAL.DateInserted')
 			->Select('VAAL.DateUpdated')
 			->Select('VAAL.RuleClass')
 			->Select('VAAL.RuleConfiguration')
 			->Select('VAAL.AwardClassName')
-			->Select('VAAL.AwardClassBGImage')
+			->Select('VAAL.AwardClassImageFile')
 			->From('v_awards_awardslist VAAL');
 		return $Query;
 	}

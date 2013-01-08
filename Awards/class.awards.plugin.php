@@ -50,6 +50,50 @@ class AwardsPlugin extends Gdn_Plugin {
 	}
 
 	/**
+	 * Retrieves the picture file uploaded with a form and returns the full URL
+	 * to it. If a file has not been uploaded, the the method builds a URL uses
+	 * a default picture file name to build the URL.
+	 *
+	 * @param Gdn_Form Form The Form through which the Picture was uploaded.
+	 * @param string PictureField The name of the form field containing the
+	 * picture.
+	 * @param string DefaultPictureURLField The name of the form field containing
+	 * the URL of the picture to be used as a default.
+	 *
+	 */
+	private function GetPictureURL(Gdn_Form $Form, $PictureField = 'Picture', $DefaultPictureURLField = 'DefaultPictureURL') {
+		// If no file was uploaded, return the value of the Default Picture field
+		if(!array_key_exists($InputName, $_FILES)) {
+			return $Form->GetFormValue($DefaultPictureURLField, null);
+		}
+
+		$UploadImage = new Gdn_UploadImage();
+		try {
+			// Validate the upload
+			$TmpImage = $UploadImage->ValidateUpload('Picture');
+			//$UploadImage->GenerateTargetName(PATH_LOCAL_UPLOADS, '', TRUE));
+
+			$UploadedFileName = $UploadImage->GetUploadedFileName();
+
+			// Save the uploaded image
+			$ParsedValues = $UploadImage->SaveImageAs($TmpImage,
+																							AWARDS_PLUGIN_AWARD_PICS_PATH . '/' . $UploadedFileName,
+																							50,
+																							50,
+																							array('Crop' => true));
+
+			// Build a picture URL from the uploaded file
+			return Url(AWARDS_PLUGIN_AWARDS_PICS_URL . '/' . $UploadedFileName);
+		}
+		catch(Exception $e) {
+			$Form->AddError($e->getMessage());
+			// If no image was uploaded, or if uploaded image could not be processed,
+			// return the URL contained in the DefaultPictureURL field, or null if
+			// not even that is found
+			return $Form->GetFormValue($DefaultPictureURLField, null);
+		}
+	}
+	/**
 	 * Plugin constructor
 	 *
 	 * This fires once per page load, during execution of bootstrap.php. It is a decent place to perform
@@ -57,7 +101,7 @@ class AwardsPlugin extends Gdn_Plugin {
 	 * as it runs every page load and could slow down your forum.
 	 */
 	public function __construct() {
-
+		parent::__construct();
 	}
 
 	/**
@@ -113,9 +157,9 @@ class AwardsPlugin extends Gdn_Plugin {
 	 * @param object Sender Sending controller instance
 	 */
 	public function Controller_Settings($Sender) {
+		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_GENERALSETTINGS_URL);
 		// Prevent non authorised Users from accessing this page
 		$Sender->Permission('Plugins.Awards.Manage');
-		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_GENERALSETTINGS_URL);
 
 		$Sender->SetData('PluginDescription',$this->GetPluginKey('Description'));
 
@@ -165,9 +209,9 @@ class AwardsPlugin extends Gdn_Plugin {
 	 * @param object Sender Sending controller instance.
 	 */
 	public function Controller_AwardClassesList($Sender) {
+		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_AWARDCLASSES_LIST_URL);
 		// Prevent non authorised Users from accessing this page
 		$Sender->Permission('Plugins.Awards.Manage');
-		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_AWARDCLASSES_LIST_URL);
 
 		// TODO Implement Awards List page
 
@@ -182,11 +226,10 @@ class AwardsPlugin extends Gdn_Plugin {
 	 * @param object Sender Sending controller instance.
 	 */
 	public function Controller_AwardsList($Sender) {
+		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_AWARDS_LIST_URL);
 		// Prevent non authorised Users from accessing this page
 		$Sender->Permission('Plugins.Awards.Manage');
-		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_AWARDS_LIST_URL);
 
-		// TODO Implement Awards List page
 		$AwardsModel = new AwardsModel();
 		// TODO Handle Limit and Offset
 		$AwardsDataSet = $AwardsModel->Get();
@@ -198,14 +241,78 @@ class AwardsPlugin extends Gdn_Plugin {
 	}
 
 	/**
+	 * Renders the page to Add/Edit an Award.
+	 *
+	 * @param object Sender Sending controller instance.
+	 */
+	public function Controller_AwardAddEdit($Sender) {
+		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_AWARDS_ADDEDIT_URL);
+		// Prevent non authorised Users from accessing this page
+		$Sender->Permission('Plugins.Awards.Manage');
+
+		// Retrieve the Award ID passed as an argument (if any)
+		$AwardID = $Sender->Request->GetValue(AWARDS_PLUGIN_ARG_AWARDID, null);
+
+		$AwardsModel = new AwardsModel();
+		$Sender->Form->SetModel($AwardsModel);
+
+		if(isset($AwardID)) {
+			$AwardDataSet = $AwardsModel->GetAwardData($AwardID);
+			//var_dump($AwardDataSet);
+			$Sender->Form->SetData($AwardDataSet->FirstRow());
+			$Sender->SetData('AwardDataSet', $AwardDataSet);
+		}
+
+		// If seeing the form for the first time...
+		if ($Sender->Form->AuthenticatedPostBack() === FALSE) {
+			// Just show the form with the default values
+
+		}
+		else {
+			// The field named "Save" is actually the Save button. If it exists, it means
+			// that the User chose to save the changes.
+			$Data = $Sender->Form->FormValues();
+
+			// If User Canceled, go back to the List
+			if($Data['Cancel']) {
+				Redirect(AWARDS_PLUGIN_AWARDS_LIST_URL);
+			}
+
+			// Validate PostBack
+			if(Gdn::Session()->ValidateTransientKey($Data['TransientKey']) && $Data['Save']) {
+				// Retrieve the URL of the Picture associated with the Award
+				$ImageFile = $this->GetPictureURL($Sender->Form, 'Picture', 'ImageFile');
+				//var_dump($ImageFile);
+
+				// Add the Picture URL to the Form
+				$Sender->Form->SetFormValue('ImageFile', $ImageFile);
+
+				// Save Awards settings
+				$Saved = $Sender->Form->Save();
+
+				if ($Saved) {
+					$Sender->InformMessage(T('Your changes have been saved.'));
+					$this->FireEvent('ConfigChanged');
+
+					// Once changes have been saved, redurect to the main page
+					Redirect(AWARDS_PLUGIN_AWARDS_LIST_URL);
+				}
+			}
+		}
+
+		// Retrieve the View that will be used to configure the Award
+		$Sender->Render($this->GetView('awards_award_addedit_view.php'));
+	}
+
+	/**
 	 * Renders the Awards Rules List page.
 	 *
 	 * @param object Sender Sending controller instance.
 	 */
 	public function Controller_RulesList($Sender) {
+		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_RULES_LIST_URL);
 		// Prevent non authorised Users from accessing this page
 		$Sender->Permission('Plugins.Awards.Manage');
-		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_RULES_LIST_URL);
 
 		// TODO Implement Awards Rules List page
 		$RulesManager = $this->RulesManager();
@@ -219,9 +326,9 @@ class AwardsPlugin extends Gdn_Plugin {
 	 * @param object Sender Sending controller instance.
 	 */
 	public function Controller_UserAwardsList($Sender) {
+		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_USERAWARDS_LIST_URL);
 		// Prevent non authorised Users from accessing this page
 		$Sender->Permission('Plugins.Awards.Manage');
-		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_USERAWARDS_LIST_URL);
 
 		// TODO Implement User Awards List page
 
@@ -277,8 +384,8 @@ class AwardsPlugin extends Gdn_Plugin {
 
 			// Create a list of configuration arrays for each of the enabled rules
 			$RulesParams = array();
-			foreach($Fields['Rule'] as $RuleName) {
-				$RulesParams[$RuleName] = array();
+			foreach($Fields['Rule'] as $RuleClass) {
+				$RulesParams[$RuleClass] = array();
 			}
 
 			// Parse each of the fields returned by the form, and assign each one to
@@ -288,13 +395,13 @@ class AwardsPlugin extends Gdn_Plugin {
 			foreach($Fields as $Name => $Value) {
 				if(strpos($Name, '_') > 0) {
 					$FieldParts = explode('_', $Name);
-					$RuleName = array_shift($FieldParts);
+					$RuleClass = array_shift($FieldParts);
 					$ParamName = array_shift($FieldParts);
 
 					// A Field value will be considered only if the Rule it belongs to has
 					// been enabled
-					if(isset($RulesParams[$RuleName])) {
-						$RulesParams[$RuleName][$ParamName] = $Value;
+					if(isset($RulesParams[$RuleClass])) {
+						$RulesParams[$RuleClass][$ParamName] = $Value;
 					}
 				}
 			}

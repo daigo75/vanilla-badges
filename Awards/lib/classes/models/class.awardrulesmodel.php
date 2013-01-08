@@ -45,7 +45,7 @@ class AwardRulesModel extends ModelEx {
 	protected function PrepareAwardRulesQuery() {
 		$Query = $this->SQL
 			->Select('AR.AwardID')
-			->Select('AR.RuleName')
+			->Select('AR.RuleClass')
 			->Select('AR.IsEnabled')
 			->Select('AR.Configuration')
 			->Select('AR.DateInserted')
@@ -98,7 +98,7 @@ class AwardRulesModel extends ModelEx {
 		}
 
 		$Result = $this->SQL
-			->OrderBy('AR.RuleName')
+			->OrderBy('AR.RuleClass')
 			->Limit($Limit, $Offset)
 			->Get();
 
@@ -125,12 +125,12 @@ class AwardRulesModel extends ModelEx {
 
 		// Get the Award ID and Rule Name posted via the form
 		$AwardID = GetValue('AwardID', $FormPostValues, false);
-		$RuleName = GetValue('RuleName', $FormPostValues, false);
+		$RuleClass = GetValue('RuleClass', $FormPostValues, false);
 
 		// See if an Award Rule with the same key already exists, to decide if the action
 		// should be an INSERT or an UPDATE
 		$Insert = ($this->GetWhere(array('AwardID' => $AwardID,
-																		 'RuleName' => $RuleName))->FirstRow() === false);
+																		 'RuleClass' => $RuleClass))->FirstRow() === false);
 
 		// Prepare all the validated fields to be passed to an INSERT/UPDATE query
 		$Fields = &$this->Validation->ValidationFields();
@@ -143,7 +143,7 @@ class AwardRulesModel extends ModelEx {
 			$this->Update($Fields, array($this->PrimaryKey => $AwardID));
 		}
 
-		$Result = array($AwardID, $RuleName);
+		$Result = array($AwardID, $RuleClass);
 
 		return $Result;
 	}

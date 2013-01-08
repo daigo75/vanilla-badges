@@ -12,8 +12,30 @@ class AwardRulesManager {
 	// @var array Contains a list of all available Rules.
 	public static $Rules = array();
 
+	/**
+	 * Registers a Rule to the array of available Rules.
+	 *
+	 * @param string RuleClass The name of the Rule Class.
+	 * @param array An associative array of Rule Information.
+	 * @throws An Exception if the Rule Class doesn't exist.
+	 */
 	public static function RegisterRule($RuleClass, array $RuleInfo) {
+		if(!class_exists($RuleClass)) {
+			throw new Exception(sprintf(T('Attempted to register non-existant Rule Class: "%s"'), $RuleClass))
+		}
 		self::$Rules[$RuleClass] = $RuleInfo;
+	}
+
+	/**
+	 * Returns the Rule Information array associated to a Rule Class.
+	 *
+	 * @param string RuleClass The Rule Class for which to retrieve the
+	 * information.
+	 * @return array|null An associative array of Rule Information, or null, if
+	 * the Rule Class could not be found.
+	 */
+	public static function GetRuleInfo($RuleClass) {
+		return GetValue($RuleClass, self::$Rules, null);
 	}
 
 	/**

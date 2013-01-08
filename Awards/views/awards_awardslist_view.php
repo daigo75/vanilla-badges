@@ -24,7 +24,7 @@
 			echo $this->Form->Open();
 			echo $this->Form->Errors();
 		?>
-		<h3><?php echo T('User Statistics API Awards'); ?></h3>
+		<h3><?php echo T('Configured Awards'); ?></h3>
 		<div class="Info">
 			<?php
 				echo Wrap(T('Here you can configure the Awards that can be assigned to the Users.'), 'p');
@@ -32,7 +32,7 @@
 		</div>
 		<div class="FilterMenu">
 		<?php
-			echo Anchor(T('Add Award'), AWARDS_PLUGIN_AWARDCLASS_ADDEDIT_URL, 'Button');
+			echo Anchor(T('Add Award'), AWARDS_PLUGIN_AWARD_ADDEDIT_URL, 'Button');
 		?>
 		</div>
 		<table id="AwardsList" class="display AltRows">
@@ -69,7 +69,7 @@
 						// Output Award Name and Description
 						echo Wrap(Gdn_Format::Text($Award->AwardName), 'td', array('class' => 'AwardName',));
 
-						echo Wrap(Img($Award->AwardImage,
+						echo Wrap(Img($Award->AwardImageFile,
 													array('class' => 'AwardImage ' . $Award->AwardClassName,)),
 											'td',
 											array('class' => 'AwardName',));
@@ -78,7 +78,7 @@
 						echo Wrap(Gdn_Format::Text($Award->AwardName), 'td', array('class' => 'AwardName',));
 
 						// Output "Enabled" indicator
-						$EnabledText = ($Award->IsEnabled == 1) ? T('Yes') : T('No');
+						$EnabledText = ($Award->AwardIsEnabled == 1) ? T('Yes') : T('No');
 
 						// Display a convenient link to enable/disable the Award with a single click
 						$EnabledText = Anchor(Gdn_Format::Text($EnabledText),
@@ -87,7 +87,7 @@
 																					LOGGER_ARG_APPENDERID,
 																					$Award->AwardID,
 																					AWARDS_PLUGIN_ARG_AWARDID,
-																					($Award->IsEnabled == 1 ? 0 : 1)),
+																					($Award->AwardIsEnabled == 1 ? 0 : 1)),
 																	'EnableLink',
 																	array('title' => T('Click here to change Award status (Enabled/Disabled).'),)
 																	);
@@ -101,14 +101,14 @@
 						// Output Add/Edit button
 						echo Anchor(T('Edit'),
 												sprintf('%s?%s=%s',
-																AWARDS_PLUGIN_AWARDCLASS_ADDEDIT_URL,
+																AWARDS_PLUGIN_AWARD_ADDEDIT_URL,
 																AWARDS_PLUGIN_ARG_AWARDID,
 																Gdn_Format::Url($Award->AwardID)),
 												'Button AddEditAward');
 						// Output Delete button
 						echo Anchor(T('Delete'),
 												sprintf('%s?%s=%s',
-																AWARDS_PLUGIN_AWARDCLASS_DELETE_URL,
+																AWARDS_PLUGIN_AWARD_DELETE_URL,
 																AWARDS_PLUGIN_ARG_AWARDID,
 																Gdn_Format::Url($Award->AwardID)),
 												'Button DeleteAward');
@@ -119,7 +119,7 @@
 			 </tbody>
 		</table>
 		<?php
-			 echo $this->Form->Close();
+			 echo $this->Form->Close('Save');
 		?>
 	</div>
 </div>
