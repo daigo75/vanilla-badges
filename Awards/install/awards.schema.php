@@ -12,10 +12,10 @@ class AwardsSchema extends PluginSchema {
 	protected function create_awardclasses_table() {
 		Gdn::Structure()
 			->Table('AwardClasses')
-			->PrimaryKey('ClassID')
-			->Column('Name', 'varchar(100)', FALSE, 'unique')
-			->Column('Description', 'text')
-			->Column('ImageFile', 'text')
+			->PrimaryKey('AwardClassID')
+			->Column('AwardClassName', 'varchar(100)', FALSE, 'unique')
+			->Column('AwardClassDescription', 'text')
+			->Column('AwardClassImageFile', 'text')
 			->Column('DateInserted', 'datetime', FALSE)
 			->Column('InsertUserID', 'int', TRUE)
 			->Column('DateUpdated', 'datetime', TRUE)
@@ -30,9 +30,9 @@ class AwardsSchema extends PluginSchema {
 		Gdn::Structure()
 			->Table('Awards')
 			->PrimaryKey('AwardID')
-			->Column('ClassID', 'int', FALSE)
-			->Column('Name', 'varchar(100)', FALSE, 'unique')
-			->Column('Description', 'text')
+			->Column('AwardClassID', 'int', FALSE)
+			->Column('AwardName', 'varchar(100)', FALSE, 'unique')
+			->Column('AwardDescription', 'text')
 			// Field "Recurring" indicates if an Award could be assigned multiple
 			// times. The value of this field will be determined by inspecting the
 			// Rules for the assignment of the Award. If rules contains at least one
@@ -48,8 +48,8 @@ class AwardsSchema extends PluginSchema {
 			//   such reason, the rules must be processed every time, even if the Award
 			//   was already assigned.
 			->Column('Recurring', 'uint', 0, 'index')
-			->Column('IsEnabled', 'uint', 1, 'index')
-			->Column('ImageFile', 'text')
+			->Column('AwardIsEnabled', 'uint', 1, 'index')
+			->Column('AwardImageFile', 'text')
 			->Column('RankPoints', 'uint', 0)
 			->Column('IsEnabled', 'uint', 1, 'index')
 			->Column('DateInserted', 'datetime', FALSE)
@@ -58,8 +58,8 @@ class AwardsSchema extends PluginSchema {
 			->Column('UpdateUserID', 'int', TRUE)
 			->Set(FALSE, FALSE);
 
-		$this->AddForeignKey('Awards', 'FK_Awards_AwardClasses', array('ClassID'),
-												'AwardClasses', array('ClassID'));
+		$this->AddForeignKey('Awards', 'FK_Awards_AwardClasses', array('AwardClassID'),
+												'AwardClasses', array('AwardClassID'));
 	}
 
 	/**
@@ -73,8 +73,8 @@ class AwardsSchema extends PluginSchema {
 			// Rule class.
 			->Column('AwardID', 'int', FALSE, 'primary')
 			->Column('RuleClass', 'varchar(100)', FALSE, 'primary')
-			->Column('IsEnabled', 'uint', 1, 'index')
-			->Column('Configuration', 'text', TRUE)
+			->Column('RuleIsEnabled', 'uint', 1, 'index')
+			->Column('RuleConfiguration', 'text', TRUE)
 			->Column('DateInserted', 'datetime', FALSE)
 			->Column('InsertUserID', 'int', TRUE)
 			->Column('DateUpdated', 'datetime', TRUE)
@@ -97,7 +97,7 @@ class AwardsSchema extends PluginSchema {
 			// the creation of Foreign Keys on such fields
 			->Column('UserID', 'int', FALSE)
 			->Column('AwardID', 'int', FALSE)
-			->Column('RankPoints', 'uint', 0)
+			->Column('AwardedRankPoints', 'uint', 0)
 			->Column('DateInserted', 'datetime', FALSE)
 			->Column('InsertUserID', 'int', TRUE)
 			->Column('DateUpdated', 'datetime', TRUE)
@@ -119,19 +119,19 @@ class AwardsSchema extends PluginSchema {
 		$Sql = "
 		SELECT
 			A.AwardID
-			,A.ClassID
-			,A.`Name` AS AwardName
-			,A.Description AS AwardDescription
+			,A.AwardClassID
+			,A.AwardName
+			,A.AwardDescription
 			,A.Recurring
-			,A.IsEnabled
-			,A.ImageFile AS AwardImage
+			,A.AwardIsEnabled
+			,A.AwardImageFile
 			,A.RankPoints
 			,A.DateInserted
 			,A.DateUpdated
 			,AR.RuleClass
-			,AR.Configuration AS RuleConfiguration
-			,AC.`Name` AS AwardClassName
-			,AC.ImageFile AS AwardClassBGImage
+			,AR.RuleConfiguration AS RuleConfiguration
+			,AC.AwardClassName
+			,AC.AwardClassImageFile
 		FROM
 			${Px}Awards A
 			LEFT JOIN
@@ -139,7 +139,7 @@ class AwardsSchema extends PluginSchema {
 				(AR.AwardID = A.AwardID)
 			JOIN
 			${Px}AwardClasses AC ON
-				(AC.ClassID = A.ClassID)
+				(AC.AwardClassID = A.AwardClassID)
 		";
 		$this->Construct->View('v_awards_awardslist', $Sql);
 	}
@@ -153,18 +153,18 @@ class AwardsSchema extends PluginSchema {
 			SELECT
 				UA.UserID
 				,UA.DateInserted AS DateAwarded
-				,UA.RankPoints AS RankPointsEarned
+				,UA.AwardedRankPoints
 				,A.AwardID
-				,A.`Name` AS AwardName
-				,A.Description AS AwardDescription
+				,A.AwardName
+				,A.AwardDescription
 				,A.Recurring
-				,A.IsEnabled
-				,A.ImageFile AS AwardImage
+				,A.AwardIsEnabled
+				,A.AwardImageFile
 				,A.RankPoints
 				,A.DateInserted
 				,A.DateUpdated
-				,AC.`Name` AS AwardClassName
-				,AC.ImageFile AS AwardClassBGImage
+				,AC.AwardClassName
+				,AC.AwardClassImageFile
 			FROM
 				${Px}UserAwards UA
 				JOIN
@@ -172,7 +172,7 @@ class AwardsSchema extends PluginSchema {
 					(A.AwardID = UA.AwardID)
 				JOIN
 				${Px}AwardClasses AC ON
-					(AC.ClassID = A.ClassID)
+					(AC.AwardClassID = A.AwardClassID)
 		";
 		$this->Construct->View('v_awards_userawardslist', $Sql);
 	}
@@ -196,7 +196,7 @@ class AwardsSchema extends PluginSchema {
 					(UA.AwardID = VAAL.AwardID)
 			WHERE
 				-- Awards must be enabled to be available
-				(VAAL.IsEnabled = 1) AND
+				(VAAL.AwardIsEnabled = 1) AND
 				-- An Award is available if it was never assigned before, or if it is
 				-- recurring (i.e. it can be assigned multiple times)
 				((UA.AwardID IS NULL) OR (VAAL.Recurring = 1))
