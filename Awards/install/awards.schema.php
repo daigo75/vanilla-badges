@@ -15,7 +15,7 @@ class AwardsSchema extends PluginSchema {
 			->PrimaryKey('ClassID')
 			->Column('Name', 'varchar(100)', FALSE, 'unique')
 			->Column('Description', 'varchar(400)')
-			->Column('BackgroundImageFile', 'varchar(500)')
+			->Column('ImageFile', 'text')
 			->Column('DateInserted', 'datetime', FALSE)
 			->Column('InsertUserID', 'int', TRUE)
 			->Column('DateUpdated', 'datetime', TRUE)
@@ -49,7 +49,7 @@ class AwardsSchema extends PluginSchema {
 			//   was already assigned.
 			->Column('Recurring', 'uint', 0, 'index')
 			->Column('IsEnabled', 'uint', 1, 'index')
-			->Column('ImageFile', 'varchar(500)')
+			->Column('ImageFile', 'text')
 			->Column('RankPoints', 'uint', 0)
 			->Column('IsEnabled', 'uint', 1, 'index')
 			->Column('DateInserted', 'datetime', FALSE)
@@ -131,7 +131,7 @@ class AwardsSchema extends PluginSchema {
 			,AR.RuleName
 			,AR.Configuration AS RuleConfiguration
 			,AC.`Name` AS AwardClassName
-			,AC.BackgroundImageFile AS AwardClassBGImage
+			,AC.ImageFile AS AwardClassBGImage
 		FROM
 			${Px}Awards A
 			LEFT JOIN
@@ -164,7 +164,7 @@ class AwardsSchema extends PluginSchema {
 				,A.DateInserted
 				,A.DateUpdated
 				,AC.`Name` AS AwardClassName
-				,AC.BackgroundImageFile AS AwardClassBGImage
+				,AC.ImageFile AS AwardClassBGImage
 			FROM
 				${Px}UserAwards UA
 				JOIN
