@@ -89,7 +89,7 @@ class AwardRulesManager {
 
 	/**
 	 * Builds and returns the full name of the View to be used as an interface to
-	 * configure Rule.
+	 * configure a Rule.
 	 *
 	 * @param RuleClass The class of Rule for which to retrieve the
 	 * View.
