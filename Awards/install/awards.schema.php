@@ -14,7 +14,7 @@ class AwardsSchema extends PluginSchema {
 			->Table('AwardClasses')
 			->PrimaryKey('ClassID')
 			->Column('Name', 'varchar(100)', FALSE, 'unique')
-			->Column('Description', 'varchar(400)')
+			->Column('Description', 'text')
 			->Column('ImageFile', 'text')
 			->Column('DateInserted', 'datetime', FALSE)
 			->Column('InsertUserID', 'int', TRUE)
@@ -32,7 +32,7 @@ class AwardsSchema extends PluginSchema {
 			->PrimaryKey('AwardID')
 			->Column('ClassID', 'int', FALSE)
 			->Column('Name', 'varchar(100)', FALSE, 'unique')
-			->Column('Description', 'varchar(400)')
+			->Column('Description', 'text')
 			// Field "Recurring" indicates if an Award could be assigned multiple
 			// times. The value of this field will be determined by inspecting the
 			// Rules for the assignment of the Award. If rules contains at least one
