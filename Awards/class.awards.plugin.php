@@ -216,7 +216,7 @@ class AwardsPlugin extends Gdn_Plugin {
 		// Prevent non authorised Users from accessing this page
 		$Sender->Permission('Plugins.Awards.Manage');
 
-		// TODO Implement Awards List page
+		// TODO Implement Awards Classes List page
 
 		// TODO Implement automatic generation of CSS file containing the styles for each Award Class
 

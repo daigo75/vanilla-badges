@@ -109,8 +109,8 @@ $this->Data['AwardClasses'] = array(1 => 'Gold',
 						echo $OutputForNoRules;
 					}
 
-					// TODO Output the configuration section for each Award Rule
 					foreach($AwardDataSet as $AwardRule) {
+					// TODO Output the configuration section for each Award Rule
 					}
 				?>
 			</li>
