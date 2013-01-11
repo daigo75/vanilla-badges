@@ -30,87 +30,50 @@ $PluginInfo['Awards'] = array(
 class AwardsPlugin extends Gdn_Plugin {
 	private $_RulesManager;
 
+	/**
+	 * Returns an instance of a Class and stores it as a property of this class.
+	 * The function follows the principle of lazy initialization, instantiating
+	 * the class the first time it's requested.
+	 *
+	 * @param string ClassName The Class to instantiate.
+	 * @param array Args An array of Arguments to pass to the Class' constructor.
+	 * @return object An instance of the specified class.
+	 * @throws An Exception if the specified class does not exist.
+	 */
+	private function GetInstance($ClassName) {
+		$FieldName = '_' . $ClassName;
+		$Args = func_get_args();
+		// Discard the first argument, as it is the Class Name, which doesn't have
+		// to be passed to the instance of the Class
+		array_shift($Args);
+
+		if(empty($this->$FieldName)) {
+			$Reflect  = new ReflectionClass($ClassName);
+
+			$this->$FieldName = $Reflect->newInstanceArgs($Args);
+		}
+
+		return $this->$FieldName;
+	}
 
 	/**
-	 * Returns an instance of RulesManager. The function follows the principle
-	 * of lazy initialization, instantiating the class the first time it's
-	 * requested. This method is static because the RulesManager is required
-	 * by a global validation function.
+	 * Returns an instance of RulesManager.
 	 *
-	 * @return object An instance of RulesManager.
+	 * @see AwardsPlugin::GetInstance()
 	 */
 	public function RulesManager() {
-		if(empty($this->_RulesManager)) {
-			// Logger Rules Manager will be used to keep track of available
-			// Rules
-			$this->_RulesManager = new AwardRulesManager();
-		}
-
-		return $this->_RulesManager;
+		return $this->GetInstance('RulesManager');
 	}
 
 	/**
-	 * Retrieves the picture file uploaded with a form and returns the full URL
-	 * to it. If a file has not been uploaded, the the method builds a URL uses
-	 * a default picture file name to build the URL.
+	 * Returns an instance of AwardsController.
 	 *
-	 * @param Gdn_Form Form The Form through which the Picture was uploaded.
-	 * @param string PictureField The name of the form field containing the
-	 * picture.
-	 * @param string DefaultPictureURLField The name of the form field containing
-	 * the URL of the picture to be used as a default.
-	 *
+	 * @see AwardsPlugin::GetInstance()
 	 */
-	private function GetPictureURL(Gdn_Form $Form, $PictureField = 'Picture', $DefaultPictureURLField = 'DefaultPictureURL') {
-		// If no file was uploaded, return the value of the Default Picture field
-		if(!array_key_exists($PictureField, $_FILES)) {
-			return $Form->GetFormValue($DefaultPictureURLField, null);
-		}
-
-		$UploadImage = new Gdn_UploadImage();
-		try {
-			// Validate the upload
-			$TmpImage = $UploadImage->ValidateUpload('Picture');
-			$TargetImage = $UploadImage->GenerateTargetName(PATH_LOCAL_UPLOADS, '', TRUE);
-
-			// Save the uploaded image
-			$ParsedValues = $UploadImage->SaveImageAs($TmpImage,
-																							basename($TargetImage),
-																							50,
-																							50,
-																							array('Crop' => true));
-
-			// TODO Check that uploaded image is cropped and saved correctly
-
-			$UploadedFileName = $UploadImage->GetUploadedFileName();
-			$PictureFileName = AWARDS_PLUGIN_AWARD_PICS_PATH . '/' . $UploadedFileName;
-
-			/* Move the uploaded file into a subfolder inside plugin's folder. This
-			 * will allow to easily export all Awards' pictures by simply copying the
-			 * whole folder plugin.
-			 * Note: it's not necessary to use move_uploaded_file() because such
-			 * command was already invoked by Gdn_UploadImage::SaveAs(). The file we
-			 * are moving here is, therefore.
-			 */
-			if(rename($ParsedValues['SaveName'], $PictureFileName) === false) {
-				throw new Exception(sprintf('Could not rename file "%s" to "%s". Please make sure ' .
-																		'that the destination directory exists and that it is writable',
-																		$ParsedValues['SaveName'],
-																		$PictureFileName));
-			}
-
-			// Build a picture URL from the uploaded file
-			//var_dump(Url(AWARDS_PLUGIN_AWARDS_PICS_URL . '/' . $UploadedFileName));
-			return AWARDS_PLUGIN_AWARDS_PICS_URL . '/' . $UploadedFileName;
-		}
-		catch(Exception $e) {
-			$Form->AddError($e->getMessage());
-			// If no image was uploaded, or if uploaded image could not be processed,
-			// return the URL contained in the DefaultPictureURL field, or null if
-			// not even that is found
-			return $Form->GetFormValue($DefaultPictureURLField, null);
-		}
+	public function AwardsManager() {
+		return $this->GetInstance('AwardsManager');
 	}
+
 	/**
 	 * Plugin constructor
 	 *
@@ -244,18 +207,7 @@ class AwardsPlugin extends Gdn_Plugin {
 	 * @param object Sender Sending controller instance.
 	 */
 	public function Controller_AwardsList($Sender) {
-		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_AWARDS_LIST_URL);
-		// Prevent non authorised Users from accessing this page
-		$Sender->Permission('Plugins.Awards.Manage');
-
-		$AwardsModel = new AwardsModel();
-		// TODO Handle Limit and Offset
-		$AwardsDataSet = $AwardsModel->Get();
-		// TODO Add Pager
-
-		$Sender->SetData('AwardsDataSet', $AwardsDataSet);
-
-		$Sender->Render($this->GetView('awards_awardslist_view.php'));
+		return $this->AwardsManager()->AwardsList($this, $Sender);
 	}
 
 	/**
@@ -264,62 +216,7 @@ class AwardsPlugin extends Gdn_Plugin {
 	 * @param object Sender Sending controller instance.
 	 */
 	public function Controller_AwardAddEdit($Sender) {
-		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_AWARDS_ADDEDIT_URL);
-		// Prevent non authorised Users from accessing this page
-		$Sender->Permission('Plugins.Awards.Manage');
-
-		// Retrieve the Award ID passed as an argument (if any)
-		$AwardID = $Sender->Request->GetValue(AWARDS_PLUGIN_ARG_AWARDID, null);
-
-		$AwardsModel = new AwardsModel();
-		$Sender->Form->SetModel($AwardsModel);
-
-		if(isset($AwardID)) {
-			$AwardDataSet = $AwardsModel->GetAwardData($AwardID);
-			//var_dump($AwardDataSet);
-			$Sender->Form->SetData($AwardDataSet->FirstRow());
-			$Sender->SetData('AwardDataSet', $AwardDataSet);
-		}
-
-		// If seeing the form for the first time...
-		if ($Sender->Form->AuthenticatedPostBack() === FALSE) {
-			// Just show the form with the default values
-
-		}
-		else {
-			// The field named "Save" is actually the Save button. If it exists, it means
-			// that the User chose to save the changes.
-			$Data = $Sender->Form->FormValues();
-
-			// If User Canceled, go back to the List
-			if($Data['Cancel']) {
-				Redirect(AWARDS_PLUGIN_AWARDS_LIST_URL);
-			}
-
-			// Validate PostBack
-			if(Gdn::Session()->ValidateTransientKey($Data['TransientKey']) && $Data['Save']) {
-				// Retrieve the URL of the Picture associated with the Award
-				$ImageFile = $this->GetPictureURL($Sender->Form, 'Picture', 'AwardImageFile');
-
-				// Add the Picture URL to the Form
-				$Sender->Form->SetFormValue('AwardImageFile', $ImageFile);
-
-				// Save Awards settings
-				$Saved = $Sender->Form->Save();
-
-				if ($Saved) {
-					$Sender->InformMessage(T('Your changes have been saved.'));
-					$this->FireEvent('ConfigChanged');
-
-					// Once changes have been saved, redurect to the main page
-					//Redirect(AWARDS_PLUGIN_AWARDS_LIST_URL);
-					$this->Controller_AwardsList($Sender);
-				}
-			}
-		}
-
-		// Retrieve the View that will be used to configure the Award
-		$Sender->Render($this->GetView('awards_award_addedit_view.php'));
+		return $this->AwardsManager()->AwardAddEdit($this, $Sender);
 	}
 
 	/**

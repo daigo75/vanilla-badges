@@ -1,4 +1,4 @@
-<?php if (!defined('APPLICATION')) exit();
+<?php if(!defined('APPLICATION')) exit();
 /**
 {licence}
 */
@@ -19,13 +19,11 @@ define('AWARDS_PLUGIN_MODEL_PATH', AWARDS_PLUGIN_CLASS_PATH . '/models');
 define('AWARDS_PLUGIN_EXTERNAL_PATH', AWARDS_PLUGIN_LIB_PATH . '/external');
 define('AWARDS_PLUGIN_VIEWS_PATH', AWARDS_PLUGIN_PATH . '/views');
 define('AWARDS_PLUGIN_RULES_PATH', AWARDS_PLUGIN_CLASS_PATH . '/rules');
-define('AWARDS_PLUGIN_AWARD_PICS_PATH', AWARDS_PLUGIN_PATH . '/design/images/awards');
-define('AWARDS_PLUGIN_AWARDCLASSES_PICS_PATH', AWARDS_PLUGIN_PATH . '/design/images/awards');
+define('AWARDS_PLUGIN_AWARD_PICS_PATH', 'plugins/Awards/design/images/awards');
+define('AWARDS_PLUGIN_AWARDCLASSES_PICS_PATH', 'plugins/awards/design/images/awardclasses');
 
 // URLs
 define('AWARDS_PLUGIN_BASE_URL', 'plugin/awards');
-define('AWARDS_PLUGIN_AWARDS_PICS_URL', 'plugins/awards/design/images/awards');
-define('AWARDS_PLUGIN_AWARDCLASSES_PICS_URL', 'plugins/awards/design/images/awardclasses');
 
 // URLs for Award Classes Management
 define('AWARDS_PLUGIN_AWARDCLASSES_LIST_URL', AWARDS_PLUGIN_BASE_URL . '/awardclasseslist');
