@@ -63,7 +63,7 @@ class AwardsPlugin extends Gdn_Plugin {
 	 */
 	private function GetPictureURL(Gdn_Form $Form, $PictureField = 'Picture', $DefaultPictureURLField = 'DefaultPictureURL') {
 		// If no file was uploaded, return the value of the Default Picture field
-		if(!array_key_exists($InputName, $_FILES)) {
+		if(!array_key_exists($PictureField, $_FILES)) {
 			return $Form->GetFormValue($DefaultPictureURLField, null);
 		}
 
@@ -71,22 +71,37 @@ class AwardsPlugin extends Gdn_Plugin {
 		try {
 			// Validate the upload
 			$TmpImage = $UploadImage->ValidateUpload('Picture');
-			//$UploadImage->GenerateTargetName(PATH_LOCAL_UPLOADS, '', TRUE));
-
-			$UploadedFileName = $UploadImage->GetUploadedFileName();
+			$TargetImage = $UploadImage->GenerateTargetName(PATH_LOCAL_UPLOADS, '', TRUE);
 
 			// Save the uploaded image
 			$ParsedValues = $UploadImage->SaveImageAs($TmpImage,
-																							AWARDS_PLUGIN_AWARD_PICS_PATH . '/' . $UploadedFileName,
+																							basename($TargetImage),
 																							50,
 																							50,
 																							array('Crop' => true));
 
 			// TODO Check that uploaded image is cropped and saved correctly
 
+			$UploadedFileName = $UploadImage->GetUploadedFileName();
+			$PictureFileName = AWARDS_PLUGIN_AWARD_PICS_PATH . '/' . $UploadedFileName;
+
+			/* Move the uploaded file into a subfolder inside plugin's folder. This
+			 * will allow to easily export all Awards' pictures by simply copying the
+			 * whole folder plugin.
+			 * Note: it's not necessary to use move_uploaded_file() because such
+			 * command was already invoked by Gdn_UploadImage::SaveAs(). The file we
+			 * are moving here is, therefore.
+			 */
+			if(rename($ParsedValues['SaveName'], $PictureFileName) === false) {
+				throw new Exception(sprintf('Could not rename file "%s" to "%s". Please make sure ' .
+																		'that the destination directory exists and that it is writable',
+																		$ParsedValues['SaveName'],
+																		$PictureFileName));
+			}
 
 			// Build a picture URL from the uploaded file
-			return Url(AWARDS_PLUGIN_AWARDS_PICS_URL . '/' . $UploadedFileName);
+			//var_dump(Url(AWARDS_PLUGIN_AWARDS_PICS_URL . '/' . $UploadedFileName));
+			return AWARDS_PLUGIN_AWARDS_PICS_URL . '/' . $UploadedFileName;
 		}
 		catch(Exception $e) {
 			$Form->AddError($e->getMessage());
@@ -284,11 +299,10 @@ class AwardsPlugin extends Gdn_Plugin {
 			// Validate PostBack
 			if(Gdn::Session()->ValidateTransientKey($Data['TransientKey']) && $Data['Save']) {
 				// Retrieve the URL of the Picture associated with the Award
-				$ImageFile = $this->GetPictureURL($Sender->Form, 'Picture', 'ImageFile');
-				//var_dump($ImageFile);
+				$ImageFile = $this->GetPictureURL($Sender->Form, 'Picture', 'AwardImageFile');
 
 				// Add the Picture URL to the Form
-				$Sender->Form->SetFormValue('ImageFile', $ImageFile);
+				$Sender->Form->SetFormValue('AwardImageFile', $ImageFile);
 
 				// Save Awards settings
 				$Saved = $Sender->Form->Save();
@@ -298,7 +312,8 @@ class AwardsPlugin extends Gdn_Plugin {
 					$this->FireEvent('ConfigChanged');
 
 					// Once changes have been saved, redurect to the main page
-					Redirect(AWARDS_PLUGIN_AWARDS_LIST_URL);
+					//Redirect(AWARDS_PLUGIN_AWARDS_LIST_URL);
+					$this->Controller_AwardsList($Sender);
 				}
 			}
 		}

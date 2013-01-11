@@ -23,9 +23,9 @@ define('AWARDS_PLUGIN_AWARD_PICS_PATH', AWARDS_PLUGIN_PATH . '/design/images/awa
 define('AWARDS_PLUGIN_AWARDCLASSES_PICS_PATH', AWARDS_PLUGIN_PATH . '/design/images/awards');
 
 // URLs
-define('AWARDS_PLUGIN_BASE_URL', '/plugin/awards');
-define('AWARDS_PLUGIN_AWARDS_PICS_URL', 'plugins/Awards/design/images/awards');
-define('AWARDS_PLUGIN_AWARDCLASSES_PICS_URL', 'plugins/Awards/design/images/awardclasses');
+define('AWARDS_PLUGIN_BASE_URL', 'plugin/awards');
+define('AWARDS_PLUGIN_AWARDS_PICS_URL', 'plugins/awards/design/images/awards');
+define('AWARDS_PLUGIN_AWARDCLASSES_PICS_URL', 'plugins/awards/design/images/awardclasses');
 
 // URLs for Award Classes Management
 define('AWARDS_PLUGIN_AWARDCLASSES_LIST_URL', AWARDS_PLUGIN_BASE_URL . '/awardclasseslist');
