@@ -68,8 +68,7 @@ class AwardsManager extends BaseManager {
 			if(Gdn::Session()->ValidateTransientKey($Data['TransientKey']) && $Data['Save']) {
 				try {
 					// Retrieve the URL of the Picture associated with the Award
-					$ImageFile = PictureManager::GetPictureURL($Sender->Form,
-																										 AWARDS_PLUGIN_AWARD_PICS_PATH,
+					$ImageFile = PictureManager::GetPictureURL(AWARDS_PLUGIN_AWARD_PICS_PATH,
 																										 'Picture',
 																										 $Sender->Form->GetFormValue('AwardImageFile'));
 					// Add the Picture URL to the Form
