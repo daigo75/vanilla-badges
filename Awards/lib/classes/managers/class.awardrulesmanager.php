@@ -9,7 +9,7 @@
  */
 class AwardRulesManager extends BaseManager {
 	// @var array Contains a list of all available Rules.
-	public static $Rules = array();
+	private static $Rules = array();
 
 	/**
 	 * Registers a Rule to the array of available Rules.
@@ -34,6 +34,10 @@ class AwardRulesManager extends BaseManager {
 		return GetValue($RuleClass, self::$Rules, null);
 	}
 
+	public function GetRules() {
+		return self::$Rules;
+	}
+
 	/**
 	 * Install an Rule Class's auxiliary classes into Vanilla Factories, for
 	 * later use.
@@ -47,6 +51,10 @@ class AwardRulesManager extends BaseManager {
 		// the management of Singletons
 		$ConfigModelClass = $this->GetConfigModelClass($RuleClass);
 		$ValidationClass = $this->GetValidationClass($RuleClass);
+
+		// Instantiate the Rule to have it readily available when required. This will
+		// also prevent the need of instantiating the same rule multiple times
+		self::$Rules[$RuleClass]['Instance'] = new $RuleClass();
 
 		Gdn::FactoryInstall($ConfigModelClass,
 												$ConfigModelClass,

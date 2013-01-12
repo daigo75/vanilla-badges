@@ -6,12 +6,13 @@
 interface IAwardRule {
 	// @see BaseAwardRule::Process();
 	public function Process($UserID, $RuleConfig, array $EventInfo = null);
+	public function GetConfigUI();
 }
 
 /**
  * Base Award Assignment Rule Class.
  */
-class BaseAwardRule {
+class BaseAwardRule extends Gdn_Controller {
 	const NO_ASSIGNMENTS = 0;
 
 	/**
@@ -25,5 +26,14 @@ class BaseAwardRule {
 	 */
 	public function Process($UserID, $RuleConfig, array $EventInfo = null) {
 		return self::NO_ASSIGMENTS;
+	}
+
+	public function GetConfigUI() {
+		$Reflector = new ReflectionClass(get_class($this));
+		return dirname($Reflector->getFileName()) . '/views/settings_view.php';
+	}
+
+	public function __construct() {
+		parent::__construct();
 	}
 }

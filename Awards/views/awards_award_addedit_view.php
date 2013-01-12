@@ -119,15 +119,18 @@ $this->Data['AwardClasses'] = array(1 => 'Gold',
 		<ul>
 			<li>
 				<?php
-					$AwardDataSet = GetValue('$AwardDataSet', $this->Data, array());
+					$AwardRules = GetValue('AwardRules', $this->Data, array());
 
 					// If DataSet is empty, just print a message.
-					if(empty($AwardDataSet)) {
+					if(empty($AwardRules)) {
 						echo $OutputForNoRules;
 					}
 
-					foreach($AwardDataSet as $AwardRule) {
-					// TODO Output the configuration section for each Award Rule
+					foreach($AwardRules as $AwardRule) {
+						// TODO Output the configuration section for each Award Rule
+						//var_dump($AwardRule);
+						//var_dump($this);die();
+						include($AwardRule['Instance']->GetConfigUI());
 					}
 				?>
 			</li>

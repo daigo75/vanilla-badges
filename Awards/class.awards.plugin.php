@@ -62,7 +62,7 @@ class AwardsPlugin extends Gdn_Plugin {
 	 * @see AwardsPlugin::GetInstance()
 	 */
 	public function RulesManager() {
-		return $this->GetInstance('RulesManager');
+		return $this->GetInstance('AwardRulesManager');
 	}
 
 	/**

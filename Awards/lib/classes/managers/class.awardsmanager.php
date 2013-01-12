@@ -7,10 +7,10 @@ class AwardsManager extends BaseManager {
 	/**
 	 * Renders the Awards List page.
 	 *
-	 * @param Gdn_Plugin Caller The Plugin which called the method.
+	 * @param AwardsPlugin Caller The Plugin who called the method.
 	 * @param object Sender Sending controller instance.
 	 */
-	public function AwardsList(Gdn_Plugin $Caller, $Sender) {
+	public function AwardsList(AwardsPlugin $Caller, $Sender) {
 		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_AWARDS_LIST_URL);
 		// Prevent non authorised Users from accessing this page
 		$Sender->Permission('Plugins.Awards.Manage');
@@ -28,10 +28,10 @@ class AwardsManager extends BaseManager {
 	/**
 	 * Renders the page to Add/Edit an Award.
 	 *
-	 * @param Gdn_Plugin Caller The Plugin which called the method.
+	 * @param AwardsPlugin Caller The Plugin which called the method.
 	 * @param object Sender Sending controller instance.
 	 */
-	public function AwardAddEdit(Gdn_Plugin $Caller, $Sender) {
+	public function AwardAddEdit(AwardsPlugin $Caller, $Sender) {
 		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_AWARDS_ADDEDIT_URL);
 		// Prevent non authorised Users from accessing this page
 		$Sender->Permission('Plugins.Awards.Manage');
@@ -93,6 +93,8 @@ class AwardsManager extends BaseManager {
 				}
 			}
 		}
+
+		$Sender->SetData('AwardRules', $Caller->RulesManager()->GetRules());
 
 		// Retrieve the View that will be used to configure the Award
 		$Sender->Render($Caller->GetView('awards_award_addedit_view.php'));
