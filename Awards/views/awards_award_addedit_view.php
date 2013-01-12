@@ -22,7 +22,7 @@ $this->Data['AwardClasses'] = array(1 => 'Gold',
 																		3 => 'Bronze',);
 
 ?>
-<div class="UserStats ClientEdit">
+<div class="AwardsPlugin ClientEdit">
 	<?php
 		echo $this->Form->Open(array('enctype' => 'multipart/form-data'));
 		echo $this->Form->Errors();
@@ -46,17 +46,34 @@ $this->Data['AwardClasses'] = array(1 => 'Gold',
 					echo $this->Form->TextBox('AwardName');
 				?>
 			</li>
-			<li>
+			<li class="clearfix">
       <?php
 				// TODO Display Award Picture to the left of the Upload File control
 				echo $this->Form->Label(T('Award Picture'), 'Picture');
-				echo Wrap(T('Select an image on your computer (2mb max) to be used as an icon for the Award.'),
-									'p');
-				echo Wrap(T('<strong>Important</strong>: if you upload a file with the same '.
-										'name of one you uploaded before, the old file will be overwritten.'),
-									'p');
-				echo $this->Form->Input('Picture', 'file');
 			?>
+			<div class="AwardImageColumn">
+			<?php
+				echo Wrap(T('Current Image'), 'h5');
+				echo Wrap(Wrap(Img($this->Form->GetValue('AwardImageFile'),
+													 array('class' => 'AwardImage',)),
+											 'td'),
+									'div',
+									array('class' => 'AwardImageWrapper'));
+			?>
+			</div>
+			<div class="ImageSelector">
+				<?php
+					echo Wrap(T('Select new Image'), 'h5');
+					// TODO Get picture size from configuration
+					echo Wrap(T('Select an image on your computer (2mb max) to be used as an icon for the Award. ' .
+											'Image will be resized to 50x50 pixels.'),
+										'p');
+					echo Wrap(T('<strong>Important</strong>: if you upload a file with the same '.
+											'name of one you uploaded before, the old file will be overwritten.'),
+										'p');
+					echo $this->Form->Input('Picture', 'file');
+				?>
+			</div>
 			</li>
 			<li>
 				<?php
@@ -102,7 +119,7 @@ $this->Data['AwardClasses'] = array(1 => 'Gold',
 		<ul>
 			<li>
 				<?php
-					$AwardDataSet = $this->Data['$AwardDataSet'];
+					$AwardDataSet = GetValue('$AwardDataSet', $this->Data, array());
 
 					// If DataSet is empty, just print a message.
 					if(empty($AwardDataSet)) {

@@ -75,7 +75,7 @@ class AwardsManager extends BaseManager {
 					$Sender->Form->SetFormValue('AwardImageFile', $ImageFile);
 				}
 				catch(Exception $e) {
-					$Form->AddError($e->getMessage());
+					$Sender->Form->AddError($e->getMessage());
 					// If no image was uploaded, or if uploaded image could not be processed,
 					// return the Default Picture URL
 				}
