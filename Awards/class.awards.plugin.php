@@ -207,7 +207,7 @@ class AwardsPlugin extends Gdn_Plugin {
 	 * @param object Sender Sending controller instance.
 	 */
 	public function Controller_AwardsList($Sender) {
-		return $this->AwardsManager()->AwardsList($this, $Sender);
+		$this->AwardsManager()->AwardsList($this, $Sender);
 	}
 
 	/**
@@ -216,7 +216,7 @@ class AwardsPlugin extends Gdn_Plugin {
 	 * @param object Sender Sending controller instance.
 	 */
 	public function Controller_AwardAddEdit($Sender) {
-		return $this->AwardsManager()->AwardAddEdit($this, $Sender);
+		$this->AwardsManager()->AwardAddEdit($this, $Sender);
 	}
 
 	/**
@@ -225,14 +225,7 @@ class AwardsPlugin extends Gdn_Plugin {
 	 * @param object Sender Sending controller instance.
 	 */
 	public function Controller_RulesList($Sender) {
-		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_RULES_LIST_URL);
-		// Prevent non authorised Users from accessing this page
-		$Sender->Permission('Plugins.Awards.Manage');
-
-		// TODO Implement Awards Rules List page
-		$RulesManager = $this->RulesManager();
-
-		$Sender->Render($this->GetView('awards_ruleslist_view.php'));
+		$this->RulesManager()->RulesList($this, $Sender);
 	}
 
 	/**
