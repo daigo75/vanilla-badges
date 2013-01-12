@@ -24,7 +24,8 @@ class PictureManager extends BaseManager {
 	 */
 	public static function GetPictureURL($DestinationDir, $PictureField = 'Picture', $DefaultPictureURL = null) {
 		// If no file was uploaded, return the value of the Default Picture field
-		if(!array_key_exists($PictureField, $_FILES)) {
+		if(!array_key_exists($PictureField, $_FILES) ||
+			 empty($_FILES['Picture']['name'])) {
 			return $DefaultPictureURL;
 		}
 
