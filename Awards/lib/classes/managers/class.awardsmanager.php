@@ -80,6 +80,8 @@ class AwardsManager extends BaseManager {
 					// return the Default Picture URL
 				}
 
+				// TODO Call validation of each enabled rule
+
 				// Save Awards settings
 				$Saved = $Sender->Form->Save();
 
@@ -94,6 +96,8 @@ class AwardsManager extends BaseManager {
 			}
 		}
 
+		// Pass the list of installed rules to the View, so that it can ask each
+		// one to render its configuration section
 		$Sender->SetData('AwardRules', $Caller->RulesManager()->GetRules());
 
 		// Retrieve the View that will be used to configure the Award
