@@ -16,8 +16,11 @@ interface IAwardRule {
  * Base Award Assignment Rule Class.
  */
 class BaseAwardRule extends Gdn_Controller {
-	// @var Logger Internal Logger
+	// @var Logger Internal Logger.
 	private $Log;
+
+	// @var Gdn_Validation Internal validator, used to validate Rule settings.
+	private $Validation;
 
 	const NO_ASSIGNMENTS = 0;
 
@@ -44,6 +47,44 @@ class BaseAwardRule extends Gdn_Controller {
 	public function GetConfigUI() {
 		$Reflector = new ReflectionClass(get_class($this));
 		return dirname($Reflector->getFileName()) . '/views/settings_view.php';
+	}
+
+	/**
+	 * Replaces aninput name with a hierarchical name, to allow grouping inputs
+	 * once they are submitted.
+	 * The result will be a name attribute such as Rules[RuleClass][GroupName][FieldName].
+	 *
+	 * @param string FieldName The name of the field to rename. It can be a simple
+	 * field name (e.g. "MyField") or a hierarchical name. In latter case, the
+	 * hierarchy must be indicated by underscores (e.g. Group_Field, Group_Subgroup_Field).
+	 * @return string The new field name, in format "Rules[RuleClass][GroupName][FieldName]".
+	 */
+	protected function RenameRuleField($FieldName) {
+		/* Split the field into its sub-parts. Rule field names should be declared
+		 * as follows:
+		 * - Simple fields - MyField, SomeField, etc.
+		 * - Grouped fields - Group_Field1, Group_Field2, etc. Separator must be an
+		 *   underscore.
+		 */
+		$FieldNameParts = explode('_', $FieldName);
+
+		/* Reformat Field Name by adding two prefixes:
+		 * - "Rules". This prefix will group all the Rules fields under a single
+		 *   array.
+		 * - Class Name. This prefix will group all the fields belonging to this
+		 *   Rule under their own array.
+		 *
+		 * The result will be a field named as follows:
+		 * Rules[RuleName][GroupName][FieldName]
+		 *
+		 * Using this convention, PHP will automatically create nested array of
+		 * fields and pass them into the $_POST variable. This will allow to group
+		 * all the fields belonging to a specific Rule without having to search for
+		 * them by using substring. Also, appending the Rule class to which the fields
+		 * belong will automatically resolve any ambiguity, allowing all Rules to
+		 * name their fields as they like.
+		 */
+		return 'Rules[' . get_called_class() . '][' . implode('][', $FieldNameParts) . ']';
 	}
 
 	/**
@@ -74,39 +115,40 @@ class BaseAwardRule extends Gdn_Controller {
 			$InputNameParts	= explode('/', $Input->{$InputAttribute});
 			$FieldName = array_pop($InputNameParts);
 
-			/* Split the field into its sub-parts. Rule field names should be declared
-			 * as follows:
-			 * - Simple fields - MyField, SomeField, etc.
-			 * - Grouped fields - Group_Field1, Group_Field2, etc. Separator must be an
-			 *   underscore.
-			 */
-			$FieldNameParts = explode('_', $FieldName);
-
-			/* Reformat Field Name by adding two prefixes:
-			 * - "Rules". This prefix will group all the Rules fields under a single
-			 *   array.
-			 * - Class Name. This prefix will group all the fields belonging to this
-			 *   Rule under their own array.
-			 *
-			 * The result will be a field named as follows:
-			 * Rules[RuleName][GroupName][FieldName]
-			 *
-			 * Using this convention, PHP will automatically create nested array of
-			 * fields and pass them into the $_POST variable. This will allow to group
-			 * all the fields belonging to a specific Rule without having to search for
-			 * them by using substring. Also, appending the Rule class to which the fields
-			 * belong will automatically resolve any ambiguity, allowing all Rules to
-			 * name their fields as they like.
-			 */
-			$FieldName = 'Rules[' . get_called_class() . '][' . implode('][', $FieldNameParts) . ']';
-
-			$InputNameParts[] = $FieldName;
+			// Process field name by transforming it into a hierarchical name
+			$InputNameParts[] = $this->RenameRuleField($FieldName);
 
 			// Replace the name in the processed HTML Input element
 			$Input->{$InputAttribute} = implode('/', $InputNameParts);
 		}
 
 		echo $HTMLObj;
+	}
+
+	/**
+	 * Sets the validation rules for the Rule Settings.
+	 * @throws A "not implemented" Exception. This method must be implemented by
+	 * descendat classes.
+	 */
+	protected function SetValidationRules() {
+		throw new Exception(T('Not implemented. Descendant classes must implement this method.'));
+	}
+
+	/**
+	 * Validates Rule settings.
+	 *
+	 * @param Gdn_Form Form The Form which will contain the validation results.
+	 * @param array Settings The Rule Settings to validate.
+	 * @return bool True, if Validation was successful, False otherwise.
+	 */
+	public function ValidateSettings(Gdn_Form $Form, array $Settings) {
+		$this->SetValidationRules();
+
+		if($Result = $this->Validation->Validate($Settings) == false) {
+			$Form->SetValidationResults($this->Validation->Results());
+		}
+
+		return $Result;
 	}
 
 	/**
@@ -117,5 +159,6 @@ class BaseAwardRule extends Gdn_Controller {
 	public function __construct() {
 		parent::__construct();
 		$this->Log = LoggerPlugin::GetLogger('AwardRule');
+		$this->Validation = new Gdn_Validation();
 	}
 }
