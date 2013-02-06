@@ -11,6 +11,17 @@ class AwardRulesManager extends BaseManager {
 	// @var array Contains a list of all available Rules.
 	private static $Rules = array();
 
+	const GROUP_GENERAL = 'general';
+	const GROUP_CUSTOM = 'custom';
+	const GROUP_UNSPECIFIED = 'unspecified';
+
+	const TYPE_CONTENT = 'content';
+	const TYPE_USER = 'user';
+	const TYPE_UNSPECIFIED = 'unspecified';
+
+	public static $RuleGroups = array();
+	public static $RuleTypes = array();
+
 	/**
 	 * Registers a Rule to the array of available Rules.
 	 *
@@ -20,6 +31,15 @@ class AwardRulesManager extends BaseManager {
 	 */
 	public static function RegisterRule($RuleClass, array $RuleInfo) {
 		self::$Rules[$RuleClass] = $RuleInfo;
+		// If a Rule Group was not specified, assign the Rule to the "Unspecified" group
+		if(empty(self::$Rules[$RuleClass]['Group'])) {
+			self::$Rules[$RuleClass]['Group'] = self::GROUP_UNSPECIFIED;
+		}
+
+		// If a Rule Type was not specified, assign the Rule to the "Unspecified" type
+		if(empty(self::$Rules[$RuleClass]['Type'])) {
+			self::$Rules[$RuleClass]['Type'] = self::TYPE_UNSPECIFIED;
+		}
 	}
 
 	/**
@@ -30,13 +50,35 @@ class AwardRulesManager extends BaseManager {
 	 * @return array|null An associative array of Rule Information, or null, if
 	 * the Rule Class could not be found.
 	 */
-	public static function GetRuleInfo($RuleClass) {
+	public function GetRuleInfo($RuleClass) {
 		return GetValue($RuleClass, self::$Rules, null);
 	}
 
+	/**
+	 * Getter for Rules property.
+	 *
+	 * @return array The value of Rules property.
+	 */
 	public function GetRules() {
 		return self::$Rules;
 	}
+
+	/**
+	 * Returns the instance of a previously loaded Rule.
+ 	 *
+	 * @param string RuleClass The Rule Class for which to retrieve the instance.
+	 * @return $RuleClass An instance of the specified Rule Class.
+	 * @throws InvalidArgumentException if the Rule Class is not registered.
+ 	 */
+	protected function GetRuleInstance($RuleClass) {
+		if(!$this->RuleExists($RuleClass)) {
+			$this->Log->error($ErrorMsg = sprintf(T('Requested instance for invalid class: %s.',
+																							$RuleClass)));
+			throw new InvalidArgumentException($ErrorMsg);
+		}
+		// Return the instance stored during the loading of Rule Classes
+		return self::$Rules[$RuleClass]['Instance'];
+ 	}
 
 	/**
 	 * Install an Rule Class's auxiliary classes into Vanilla Factories, for
@@ -45,25 +87,10 @@ class AwardRulesManager extends BaseManager {
 	 * @param Rule The Class of the Rule.
 	 * @return void.
 	 */
-	protected function InstallRule($RuleClass) {
-		// Install Rule's Model and Validation class names into Vanilla
-		// built-in factory. This will allow to leverage Vanilla's mechanisms for
-		// the management of Singletons
-		$ConfigModelClass = $this->GetConfigModelClass($RuleClass);
-		$ValidationClass = $this->GetValidationClass($RuleClass);
-
+	protected function LoadRule($RuleClass) {
 		// Instantiate the Rule to have it readily available when required. This will
 		// also prevent the need of instantiating the same rule multiple times
 		self::$Rules[$RuleClass]['Instance'] = new $RuleClass();
-
-		Gdn::FactoryInstall($ConfigModelClass,
-												$ConfigModelClass,
-												AWARDS_PLUGIN_RULES_PATH . '/' . strtolower($RuleClass) . '/models',
-												Gdn::FactorySingleton);
-		Gdn::FactoryInstall($ValidationClass,
-												$ValidationClass,
-												AWARDS_PLUGIN_RULES_PATH . '/' . strtolower($RuleClass) . '/validators',
-												Gdn::FactorySingleton);
 	}
 
 	/**
@@ -72,10 +99,10 @@ class AwardRulesManager extends BaseManager {
 	 *
 	 * @return void.
 	 */
-	protected function InstallRules() {
+	protected function LoadRules() {
 		//var_dump(self::$Rules);
 		foreach(self::$Rules as $RuleClass => $RuleInfo) {
-			$this->InstallRule($RuleClass);
+			$this->LoadRule($RuleClass);
 		}
 	}
 
@@ -284,6 +311,21 @@ class AwardRulesManager extends BaseManager {
 		$Sender->Render($this->GetView('awards_ruleslist_view.php'));
 	}
 
+	public function ValidateRulesSettings(Gdn_Form $Form) {
+		$RulesSettings = &$Form->GetFormValue('Rules');
+
+		if(empty($RulesSettings)) {
+			$Form->AddError(T('No Rules configured. Please enable and configure at least ' .
+												'one Rule.'));
+		}
+		foreach($RulesSettings as $RuleClass => $Settings) {
+			$RuleInstance = $this->GetRuleInstance($RuleClass);
+			if($ValidationResult = $RuleClass->Validate($Form, $Settings) !== AWARDS_PLUGIN_OK) {
+				return $ValidationResult;
+			}
+		}
+	}
+
 	/**
 	 * Constructor. It initializes the class and populates the list of available
 	 * Rules.
@@ -291,7 +333,14 @@ class AwardRulesManager extends BaseManager {
 	public function __construct() {
 		parent::__construct();
 
+		self::$RuleGroups = array(self::GROUP_GENERAL => T('General'),
+															self::GROUP_CUSTOM => T('Custom'));
+
+		self::$RuleTypes = array(self::TYPE_CONTENT => T('Content'),
+														 self::TYPE_USER => T('User'),
+														 self::TYPE_UNSPECIFIED => T('Misc.'));
+
 		$this->LoadRulesDefinitions();
-		$this->InstallRules();
+		$this->LoadRules();
 	}
 }
