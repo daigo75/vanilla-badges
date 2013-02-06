@@ -59,7 +59,7 @@ class BaseAwardRule extends Gdn_Controller {
 	 * hierarchy must be indicated by underscores (e.g. Group_Field, Group_Subgroup_Field).
 	 * @return string The new field name, in format "Rules[RuleClass][GroupName][FieldName]".
 	 */
-	protected function RenameRuleField($FieldName) {
+	protected static function RenameRuleField($FieldName) {
 		/* Split the field into its sub-parts. Rule field names should be declared
 		 * as follows:
 		 * - Simple fields - MyField, SomeField, etc.
@@ -116,7 +116,7 @@ class BaseAwardRule extends Gdn_Controller {
 			$FieldName = array_pop($InputNameParts);
 
 			// Process field name by transforming it into a hierarchical name
-			$InputNameParts[] = $this->RenameRuleField($FieldName);
+			$InputNameParts[] = self::RenameRuleField($FieldName);
 
 			// Replace the name in the processed HTML Input element
 			$Input->{$InputAttribute} = implode('/', $InputNameParts);
