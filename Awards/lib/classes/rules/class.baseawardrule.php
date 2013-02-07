@@ -10,6 +10,9 @@ interface IAwardRule {
 	public function Process($UserID, $RuleConfig, array $EventInfo = null);
 	public function GetConfigUI();
 	public function ValidateSettings(Gdn_Form $Form, array $Settings);
+	public function SaveSettings(array $Settings);
+
+	public static function RenderRuleField($InputHTML);
 }
 
 /**
@@ -18,9 +21,10 @@ interface IAwardRule {
 class BaseAwardRule extends Gdn_Controller {
 	// @var Logger Internal Logger.
 	protected $Log;
-
 	// @var Gdn_Validation Internal validator, used to validate Rule settings.
 	protected $Validation;
+	// @var AwardRuleModel Internal model, used to save Rule's settings.
+	protected $AwardRulesModel;
 
 	const NO_ASSIGNMENTS = 0;
 
@@ -140,29 +144,54 @@ class BaseAwardRule extends Gdn_Controller {
 	}
 
 	/**
-	 * Sets the validation rules for the Rule Settings.
+	 * Validates Rule Settings.
 	 * @throws A "not implemented" Exception. This method must be implemented by
 	 * descendat classes.
 	 */
-	protected function SetValidationRules() {
+	protected function _Validate() {
 		throw new Exception(T('Not implemented. Descendant classes must implement this method.'));
 	}
 
 	/**
-	 * Validates Rule settings.
+	 * Validates Rule settings. This method is a wrapper around
+	 * BaseAwardRule::_ValidateSettings(), which is the method that actually
+	 * performs the validation.
 	 *
 	 * @param Gdn_Form Form The Form which will contain the validation results.
 	 * @param array Settings The Rule Settings to validate.
 	 * @return bool True, if Validation was successful, False otherwise.
 	 */
 	public function ValidateSettings(Gdn_Form $Form, array $Settings) {
-		$this->SetValidationRules();
+		$this->_ValidateSettings($Settings);
 
-		if($Result = $this->Validation->Validate($Settings) == false) {
-			$Form->SetValidationResults($this->Validation->Results());
-		}
+		$Form->SetValidationResults($this->Validation->Results());
 
-		return $Result;
+		return (count($this->Validation->Results()) == 0);
+	}
+
+	/**
+	 * Checks if the Rule should be enabled or not, based on its Settings.
+	 * Descendant classes must implement this method.
+	 *
+	 * @param array Settings The Rule Settings.
+	 * @return bool True, if the Rule should be enabled, False otherwise.
+	 */
+	protected function IsRuleEnabled(array $Settings) {
+		throw new Exception(T('Not implemented. Descendant classes must implement this method.'));
+	}
+
+	// TODO Document method
+	public function SaveSettings($AwardID, array $Settings) {
+		$Values = array(
+			'AwardID' => $AwardID,
+			'RuleIsEnabled' => $this->IsRuleEnabled($Settings),
+			'RuleClass' => get_called_class(),
+			'RuleConfiguration' => json_encode($Settings),
+		);
+
+
+		$this->AwardRulesModel = new AwardRulesModel();
+		return $this->AwardRulesModel->Save($Values);
 	}
 
 	/**
