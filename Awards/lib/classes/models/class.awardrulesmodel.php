@@ -46,8 +46,8 @@ class AwardRulesModel extends ModelEx {
 		$Query = $this->SQL
 			->Select('AR.AwardID')
 			->Select('AR.RuleClass')
-			->Select('AR.IsEnabled')
-			->Select('AR.Configuration')
+			->Select('AR.RuleIsEnabled')
+			->Select('AR.RuleConfiguration')
 			->Select('AR.DateInserted')
 			->Select('AR.InsertUserID')
 			->Select('AR.DateUpdated')
