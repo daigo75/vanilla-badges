@@ -3,11 +3,11 @@
 {licence}
 */
 
-// File logger.defines.php must be included by manually specifying the whole
+// File awards.defines.php must be included by manually specifying the whole
 // path. It will then define some shortcuts for commonly used paths, such as
 // AWARDS_PLUGIN_LIB_PATH, used just below.
 require(PATH_PLUGINS . '/Awards/lib/awards.defines.php');
-// AWARDS_PLUGIN_LIB_PATH is defined in logger.defines.php.
+// AWARDS_PLUGIN_LIB_PATH is defined in awards.defines.php.
 require(AWARDS_PLUGIN_LIB_PATH . '/awards.validation.php');
 
 // Define the plugin:
