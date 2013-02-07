@@ -311,6 +311,7 @@ class AwardRulesManager extends BaseManager {
 		$Sender->Render($this->GetView('awards_ruleslist_view.php'));
 	}
 
+	// TODO Document method
 	public function ValidateRulesSettings(Gdn_Form $Form) {
 		$RulesSettings = &$Form->GetFormValue('Rules');
 
@@ -318,13 +319,34 @@ class AwardRulesManager extends BaseManager {
 			$Form->AddError(T('No Rules configured. Please enable and configure at least ' .
 												'one Rule.'));
 		}
+
+		$Result = true;
 		foreach($RulesSettings as $RuleClass => $Settings) {
 			$RuleInstance = $this->GetRuleInstance($RuleClass);
-			if($ValidationResult = $RuleClass->Validate($Form, $Settings) !== AWARDS_PLUGIN_OK) {
-				return $ValidationResult;
+
+			// Validate Rules settings and add the validation results to the form
+			$Result = $Result && $RuleInstance->ValidateSettings($Form, $Settings);
+		}
+
+		return $Result;
+	}
+
+	// TODO Document method
+	public function SaveRulesSettings(Gdn_Form $Form) {
+		$RulesSettings = &$Form->GetFormValue('Rules');
+
+		foreach($RulesSettings as $RuleClass => $Settings) {
+			$RuleInstance = $this->GetRuleInstance($RuleClass);
+
+			// Validate Rules settings and add the validation results to the form
+			if(!$RuleInstance->SaveSettings($Form->GetFormValue('AwardID'), $Settings)) {
+				return false;
 			}
 		}
+
+		return true;
 	}
+
 
 	/**
 	 * Constructor. It initializes the class and populates the list of available
