@@ -83,6 +83,10 @@ class AwardsPlugin extends Gdn_Plugin {
 	 */
 	public function __construct() {
 		parent::__construct();
+
+		// Instantiate specialised Controllers
+		$this->RulesManager();
+		$this->AwardsManager();
 	}
 
 	/**

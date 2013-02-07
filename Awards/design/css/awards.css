@@ -3,18 +3,22 @@
 */
 
 /* General CSS for configuration pages sections */
+.AwardsPlugin {
+}
+
+.AwardsPlugin .Numeric {
+	text-align: right;
+}
+
 .AwardsPlugin legend {
 	width: 100% !important;
 }
 
 .AwardsPlugin fieldset p {
-	font-size: 14px;
+	font-size: 100%;
 	padding-left: 20px;
 }
 
-.AwardsPlugin fieldset input {
-	font-size: 14px;
-}
 
 div.AwardsDescription {
    font-size: 85%;
@@ -56,6 +60,17 @@ div.AwardsDescription {
 	padding-left: 0 !important;
 }
 
-.Buttons .Button {
+.AwardsPlugin .Buttons .Button {
+	margin-left: 1em;
+}
+
+/* Classes for Rule Settings Pages */
+.AwardsPlugin .Rule ul li span {
+	display: inline;
+	margin-left: 1em;
+}
+
+.AwardsPlugin .Rule ul li input,
+.AwardsPlugin .Rule ul li select {
 	margin-left: 1em;
 }
