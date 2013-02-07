@@ -13,7 +13,7 @@ require(AWARDS_PLUGIN_LIB_PATH . '/awards.validation.php');
 // Define the plugin:
 $PluginInfo['Awards'] = array(
 	'Description' => 'Awards plugin for Vanilla Forums',
-	'Version' => '13.01.12 beta',
+	'Version' => '13.02.07 alpha',
 	'RequiredApplications' => array('Vanilla' => '2.0'),
 	'RequiredTheme' => FALSE,
 	'RequiredPlugins' => array('Logger' => '12.10.28'),
