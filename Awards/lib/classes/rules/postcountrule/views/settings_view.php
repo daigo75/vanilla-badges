@@ -3,6 +3,15 @@
 {licence}
 */
 
+/* Rules Settings have to be "moved" manually to Form Values because they are
+ * stored as JSON and, thus, must be decoded on the fly.
+ */
+$RuleSettings = $this->Data['RulesSettings']['PostCountRule'];
+$this->Form->SetFormValue('Discussions_Enabled', (int)GetValue('Enabled', $RuleSettings->Discussions));
+$this->Form->SetFormValue('Discussions_Amount', GetValue('Amount', $RuleSettings->Discussions));
+$this->Form->SetFormValue('Comments_Enabled', (int)GetValue('Enabled', $RuleSettings->Comments));
+$this->Form->SetFormValue('Comments_Amount', GetValue('Amount', $RuleSettings->Comments));
+
 ?>
 <fieldset class="Rule">
 	<ul>
