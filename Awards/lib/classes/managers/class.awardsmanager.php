@@ -4,6 +4,18 @@
 */
 
 class AwardsManager extends BaseManager {
+	private $_AwardsModel;
+
+	/**
+	 * Class constructor.
+	 *
+	 * @return AwardsManager
+	 */
+	public function __construct() {
+		parent::__construct();
+
+		$this->AwardsModel = new AwardsModel();
+	}
 	/**
 	 * Renders the Awards List page.
 	 *
@@ -15,14 +27,22 @@ class AwardsManager extends BaseManager {
 		// Prevent non authorised Users from accessing this page
 		$Sender->Permission('Plugins.Awards.Manage');
 
-		$AwardsModel = new AwardsModel();
 		// TODO Handle Limit and Offset
-		$AwardsDataSet = $AwardsModel->Get();
+		$AwardsDataSet = $this->AwardsModel->Get();
 		// TODO Add Pager
 
 		$Sender->SetData('AwardsDataSet', $AwardsDataSet);
 
 		$Sender->Render($Caller->GetView('awards_awardslist_view.php'));
+	}
+
+	private function GetRulesSettings(Gdn_DataSet $AwardDataSet) {
+		$RulesSettings = array();
+		foreach($AwardDataSet->Result(DATASET_TYPE_ARRAY) as $Row) {
+			$RulesSettings[$Row['RuleClass']] = json_decode($Row['RuleConfiguration']);
+		}
+
+		return $RulesSettings;
 	}
 
 	/**
@@ -39,14 +59,15 @@ class AwardsManager extends BaseManager {
 		// Retrieve the Award ID passed as an argument (if any)
 		$AwardID = $Sender->Request->GetValue(AWARDS_PLUGIN_ARG_AWARDID, null);
 
-		$AwardsModel = new AwardsModel();
-		$Sender->Form->SetModel($AwardsModel);
+		$Sender->Form->SetModel($this->AwardsModel);
 
 		if(isset($AwardID)) {
-			$AwardDataSet = $AwardsModel->GetAwardData($AwardID);
+			$AwardDataSet = $this->AwardsModel->GetAwardData($AwardID);
 			//var_dump($AwardDataSet);
 			$Sender->Form->SetData($AwardDataSet->FirstRow());
+
 			$Sender->SetData('AwardDataSet', $AwardDataSet);
+			$Sender->SetData('RulesSettings', $this->GetRulesSettings($AwardDataSet));
 		}
 
 		// If seeing the form for the first time...
@@ -67,7 +88,7 @@ class AwardsManager extends BaseManager {
 			// Validate PostBack
 			if(Gdn::Session()->ValidateTransientKey($Data['TransientKey']) && $Data['Save']) {
 				try {
-					// Retrieve the URL of the Picture associated with the Award
+					// Retrieve the URL of the Picture associated with the Award.
 					$ImageFile = PictureManager::GetPictureURL(AWARDS_PLUGIN_AWARD_PICS_PATH,
 																										 'Picture',
 																										 $Sender->Form->GetFormValue('AwardImageFile'));
@@ -76,16 +97,43 @@ class AwardsManager extends BaseManager {
 				}
 				catch(Exception $e) {
 					$Sender->Form->AddError($e->getMessage());
-					// If no image was uploaded, or if uploaded image could not be processed,
-					// return the Default Picture URL
 				}
 
-				// TODO Call validation of each enabled rule
+				// Validate settings for Award Rules
+				$RulesSettingsOK = $Caller->RulesManager()->ValidateRulesSettings($Sender->Form);
+				if($RulesSettingsOK) {
+					Gdn::Database()->BeginTransaction();
 
-				// Save Awards settings
-				$Saved = $Sender->Form->Save();
+					try{
+						// Save Awards settings
+						$Saved = $Sender->Form->Save();
 
-				if ($Saved) {
+						if($Saved) {
+							// TODO Save configuration for each enabled Award Rule
+							$Saved = $Caller->RulesManager()->SaveRulesSettings($Sender->Form);
+						}
+
+						// Use a transaction to either save ALL data (Award and Rules)
+						// successfully, or none of it. This will prevent partial saves and
+						// reduce inconsistencies
+						if($Saved) {
+							Gdn::Database()->CommitTransaction();
+						}
+						else {
+							Gdn::Database()->RollbackTransaction();
+						}
+					}
+					catch(Exception $e) {
+						Gdn::Database()->RollbackTransaction();
+						$this->Log->error($ErrorMsg = sprintf(T('Exception occurred while saving Award configuration. ' .
+																										'Award Name: %s. Error: %s.'),
+																									$Sender->Form->GetFormValue('AwardName'),
+																									$e->getMessage()));
+						throw $e;
+					}
+				}
+
+				if($Saved) {
 					$Sender->InformMessage(T('Your changes have been saved.'));
 					$Caller->FireEvent('ConfigChanged');
 
