@@ -12,7 +12,7 @@
  * class name contains "controller", it won't be loaded automatically.
  */
 class BaseManager extends Gdn_Plugin {
-	private $Log;
+	protected $Log;
 
 	/**
 	 * Class constructor.
