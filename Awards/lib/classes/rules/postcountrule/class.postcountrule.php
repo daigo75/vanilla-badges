@@ -7,6 +7,8 @@
 AwardRulesManager::RegisterRule('PostCountRule',
 																array('Label' => T('Post Count'),
 																			'Description' => T('Checks User\'s Post count'),
+																			'Type' => AwardRulesManager::TYPE_CONTENT,
+																			'Group' => AwardRulesManager::GROUP_GENERAL,
 																			)
 																);
 
@@ -34,12 +36,51 @@ class PostCountRule extends BaseAwardRule {
 		return self::NO_ASSIGMENTS;
 	}
 
+	/**
+	 * Validates Rule's settings.
+	 *
+	 * @param array Settings The array of settings to validate.
+	 * @return bool True, if all settings are valid, False otherwise.
+	 */
+	protected function _ValidateSettings(array $Settings) {
+		$Result = array();
+
+		// Check settings for Discussions threshold
+		$DiscussionsSettings = GetValue('Discussions', $Settings);
+		$DiscussionsThreshold = GetValue('Amount', $DiscussionsSettings);
+		if(GetValue('Enabled', $DiscussionsSettings) || !empty($DiscussionsThreshold)) {
+			if(!is_numeric($DiscussionsThreshold) || ($DiscussionsThreshold <= 0)) {
+				$this->Validation->AddValidationResult(self::RenameRuleField('Discussions_Amount'),
+																							 T('Discussions threshold must be a positive integer.'));
+			}
+		}
+
+		// Check settings for Comments  threshold
+		$CommentsSettings = GetValue('Comments', $Settings);
+		$CommentsThreshold = GetValue('Amount', $CommentsSettings);
+		if(GetValue('Enabled', $CommentsSettings) || !empty($CommentsThreshold)) {
+			if(!is_numeric($CommentsThreshold) || ($CommentsThreshold <= 0)) {
+				$this->Validation->AddValidationResult(self::RenameRuleField('Comments_Amount'),
+																							 T('Comments threshold must be a positive integer.'));
+			}
+		}
+		return (count($this->Validation->Results()) == 0);
+	}
+
+	protected function IsRuleEnabled(array $Settings) {
+		return GetValue('Discussions', $Settings) || GetValue('Comments', $Settings);
+	}
+
+	/**
+	 * Class constructor.
+	 *
+	 * @return PostCountRule.
+	 */
 	public function __construct() {
 		parent::__construct();
 		self::$CountTypes = array(1 => T('At'),
 															2 => T('Every'),);
 	}
 
-	// TODO Add View to configure the Rule
 	// TODO Add Model (if needed) to perform Rule checks
 }
