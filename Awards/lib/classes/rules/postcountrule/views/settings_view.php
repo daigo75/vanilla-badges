@@ -4,15 +4,13 @@
 */
 
 ?>
-<div class="Rule">
+<fieldset class="Rule">
 	<ul>
 		<li>
 			<div class="Discussions">
 			<?php
-				echo Wrap('Discussion', 'h3');
-				PostCountRule::RenderRuleField($this->Form->CheckBox('Discussions_Enabled', T('Discussions posted by the User')));
-				//echo $this->Form->CheckBox('PostCount_Discussions_Enabled', T('Discussions posted by the User'));
-				PostCountRule::RenderRuleField($this->Form->DropDown('Discussions_CountType', PostCountRule::$CountTypes));
+				echo Wrap('Discussions', 'h3');
+				PostCountRule::RenderRuleField($this->Form->CheckBox('Discussions_Enabled', T('User started at least X Discussions')));
 				PostCountRule::RenderRuleField($this->Form->TextBox('Discussions_Amount',
 																														array('class' => 'InputBox Numeric')));
 			?>
@@ -22,11 +20,9 @@
 			<div class="Comments">
 			<?php
 				echo Wrap('Comments', 'h3');
-				PostCountRule::RenderRuleField($this->Form->CheckBox('Comments_Enabled', T('Comments posted by the User')));
-				PostCountRule::RenderRuleField($this->Form->DropDown('Comments_CountType', PostCountRule::$CountTypes));
+				PostCountRule::RenderRuleField($this->Form->CheckBox('Comments_Enabled', T('User posted at least X Comments')));
 				PostCountRule::RenderRuleField($this->Form->TextBox('Comments_Amount',
 																														array('class' => 'InputBox Numeric')));
-				echo Wrap(T('Comments'));
 			?>
 			</div>
 		</li>
@@ -35,4 +31,4 @@
 			// TODO Implement interface for "at/every" X answers
 		?>
 	</ul>
-</div>
+</fieldset>
