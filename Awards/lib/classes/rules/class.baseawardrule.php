@@ -148,7 +148,7 @@ class BaseAwardRule extends Gdn_Controller {
 	 * @throws A "not implemented" Exception. This method must be implemented by
 	 * descendat classes.
 	 */
-	protected function _Validate() {
+	protected function _ValidateSettings() {
 		throw new Exception(T('Not implemented. Descendant classes must implement this method.'));
 	}
 
