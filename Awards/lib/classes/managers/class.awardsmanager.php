@@ -36,6 +36,17 @@ class AwardsManager extends BaseManager {
 		$Sender->Render($Caller->GetView('awards_awardslist_view.php'));
 	}
 
+	/**
+	 * Decodes the JSON containing the configuration for each Rule and adds its
+	 * data to an array, in form of objects. Each object will contain the
+	 * configuration for a Rule.
+	 *
+	 * @param Gdn_DataSet AwardDataSet The DataSet containing the configuration
+	 * for an Award. Each row should contain a "RuleClass" entry, associated to
+	 * a JSON string with the Rule Configuration.
+	 * @return array An associative array of RuleClass => Object, where each
+	 * object contains the configuration for the Rule.
+	 */
 	private function GetRulesSettings(Gdn_DataSet $AwardDataSet) {
 		$RulesSettings = array();
 		foreach($AwardDataSet->Result(DATASET_TYPE_ARRAY) as $Row) {
@@ -125,7 +136,7 @@ class AwardsManager extends BaseManager {
 					}
 					catch(Exception $e) {
 						Gdn::Database()->RollbackTransaction();
-						$this->Log->error($ErrorMsg = sprintf(T('Exception occurred while saving Award configuration. ' .
+						$this->Log()->error($ErrorMsg = sprintf(T('Exception occurred while saving Award configuration. ' .
 																										'Award Name: %s. Error: %s.'),
 																									$Sender->Form->GetFormValue('AwardName'),
 																									$e->getMessage()));
