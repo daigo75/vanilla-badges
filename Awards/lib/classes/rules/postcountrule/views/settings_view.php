@@ -4,7 +4,8 @@
 */
 
 /* Rules Settings have to be "moved" manually to Form Values because they are
- * stored as JSON and, thus, must be decoded on the fly.
+ * decoded from their JSON format and, therefore, returned as properties of an
+ * object.
  */
 $RuleSettings = $this->Data['RulesSettings']['PostCountRule'];
 $this->Form->SetFormValue('Discussions_Enabled', (int)GetValue('Enabled', $RuleSettings->Discussions));
