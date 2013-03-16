@@ -51,7 +51,6 @@ class AwardsSchema extends PluginSchema {
 			->Column('AwardIsEnabled', 'uint', 1, 'index')
 			->Column('AwardImageFile', 'text')
 			->Column('RankPoints', 'uint', 0)
-			->Column('IsEnabled', 'uint', 1, 'index')
 			->Column('DateInserted', 'datetime', FALSE)
 			->Column('InsertUserID', 'int', TRUE)
 			->Column('DateUpdated', 'datetime', TRUE)
@@ -187,7 +186,12 @@ class AwardsSchema extends PluginSchema {
 				UA.UserID
 				,VAAL.AwardID
 				,VAAL.AwardName
+				,VAAL.AwardDescription
+				,VAAL.Recurring
+				,VAAL.AwardIsEnabled
 				,VAAL.RankPoints
+				,VAAL.RuleClass
+				,VAAL.RuleConfiguration
 				,COUNT(UA.UserID) AS TimesAwarded
 			FROM
 				${Px}v_awards_awardslist VAAL
