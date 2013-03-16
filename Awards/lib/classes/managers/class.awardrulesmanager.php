@@ -1,4 +1,4 @@
-<?php if (!defined('APPLICATION')) exit();
+<?php if(!defined('APPLICATION')) exit();
 /**
 {licence}
 */
@@ -218,21 +218,67 @@ class AwardRulesManager extends BaseManager {
 	}
 
 	// TODO Document method
-	public function SaveRulesSettings(Gdn_Form $Form) {
-		$RulesSettings = &$Form->GetFormValue('Rules');
+	public function RulesSettingsToJSON(Gdn_Form $Form) {
+		$FormRulesSettings = &$Form->GetFormValue('Rules');
+
+		$Result = array();
+		foreach($FormRulesSettings as $RuleClass => $Settings) {
+			$RuleInstance = $this->GetRuleInstance($RuleClass);
+
+			// Prepares the Settings for being saved, by allowing the Rule to which
+			// they belong to add some extra information which was not passed by the
+			// form
+			$Result[] = $RuleInstance->PrepareSettings($Settings);
+		}
+
+		return json_encode($Result);
+	}
+
+	/**
+	 * Processes a set of Rules to see if an Award should be assigned to a User
+	 * and, in case, how many times it should be assigned. Multiple assigmnent in
+	 * a single process has been implemented to support recurring Awards.
+	 *
+	 * @param int UserID The ID of the User candidate to receive the Award.
+	 * @param array RulesSettings An array of Settings for each of the Rules to be
+	 * processed.
+	 * @return int A number indicating how many times the Award should be assigned
+	 * to the User. Zero means no assignment.
+	 */
+	public function ProcessRules($UserID, array $RulesSettings) {
+		$AwardAssignCount = 0;
 
 		foreach($RulesSettings as $RuleClass => $Settings) {
 			$RuleInstance = $this->GetRuleInstance($RuleClass);
 
-			// Validate Rules settings and add the validation results to the form
-			if(!$RuleInstance->SaveSettings($Form->GetFormValue('AwardID'), $Settings)) {
-				return false;
+			if(isset($RuleInstance) &&
+				 (GetValue('RuleIsEnabled', $Settings))) {
+				$this->Log()->debug(sprintf(T('Processing Rule "%s"...'), $RuleClass));
+
+				/* Plugin architecture allows to configure recurring Awards (e.g. a
+				 * "registration anniversary"). To handle them, each Rule returns the
+				 * amount of time that the Award should be assigned to the User, based
+				 * on the Rule's specific criteria. If User has been on the forum for
+				 * 3 years, then a registration anniversary rule might return "3" (if it
+				 * was never processed before), meaning that the Award should be
+				 * assigned three times.
+				 *
+				 * If a Rule returns zero, then the Award cannot be assigned, there is
+				 * no need to process other rules.
+				 */
+				$AwardAssignCountFromRule = $RuleInstance->Process($UserID, $Settings);
+
+				$this->Log()->debug(sprintf(T('Rule returned %d.'), $AwardAssignCountFromRule));
+				//var_dump($AwardAssignCountFromRule);
+				if($AwardAssignCountFromRule <= 0) {
+					break;
+				}
+
+				$AwardAssignCount = min($AwardAssignCount, $AwardAssignCountFromRule);
 			}
 		}
-
-		return true;
+		return $AwardAssignCount;
 	}
-
 
 	/**
 	 * Constructor. It initializes the class and populates the list of available

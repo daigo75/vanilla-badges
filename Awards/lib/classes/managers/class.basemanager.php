@@ -1,4 +1,4 @@
-<?php if (!defined('APPLICATION')) exit();
+<?php if(!defined('APPLICATION')) exit();
 /**
 {licence}
 */
@@ -25,6 +25,6 @@ class BaseManager extends Gdn_Plugin {
 			$this->_Log = LoggerPlugin::GetLogger();
 		}
 
-		return $this->_Log();
+		return $this->_Log;
 	}
 }

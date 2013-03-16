@@ -59,23 +59,6 @@ class AwardsModel extends ModelEx {
 			->From('v_awards_awardslist VAAL');
 		return $Query;
 	}
-	/**
-	 * Build SQL query to retrieve the list of Awards available for a User.
-	 */
-	protected function PrepareAvailableAwardsQuery() {
-		$Query = $this->SQL
-			->Select('VAAAL.UserID')
-			->Select('VAAAL.AwardID')
-			->Select('VAAAL.AwardName')
-			->Select('VAAAL.AwardDescription')
-			->Select('VAAAL.Recurring')
-			->Select('VAAAL.AwardIsEnabled')
-			->Select('VAAAL.RankPoints')
-			->Select('VAAAL.RulesSettings')
-			->Select('VAAAL.TimesAwarded')
-			->From('v_awards_availableawardslist VAAAL');
-		return $Query;
-	}
 
 	/**
 	 * Convenience method to returns a DataSet containing a list of all the
@@ -110,11 +93,23 @@ class AwardsModel extends ModelEx {
 	 * @return Gdn_DataSet A DataSet containing Awards data.
 	 */
 	public function GetAvailableAwards($UserID) {
-		$this->PrepareAvailableAwardsQuery();
+		$this->PrepareAwardsQuery();
 
 		$Result = $this->SQL
-			->Where('UserID', $UserID)
-			->OrderBy('VAAAL.AwardName')
+			->LeftJoin('UserAwards UA', '(UA.AwardID = VAAL.AwardID) AND (UA.UserID = ' . (int)$UserID . ')')
+			// Awards must be enabled to be available
+			->Where('VAAL.AwardIsEnabled', 1)
+			->BeginWhereGroup()
+			// An Award is available if it was never assigned before, or if it is
+			// recurring (i.e. it can be assigned multiple times)
+			->Where('UA.AwardID', NULL)
+			->OrWhere('VAAL.Recurring', 1)
+			->EndWhereGroup()
+			->GroupBy(array('UA.UserID',
+											'VAAL.AwardID',
+											'VAAL.AwardName',
+											'VAAL.RankPoints',))
+			//->OrderBy('VAAL.AwardName')
 			->Get();
 
 		return $Result;

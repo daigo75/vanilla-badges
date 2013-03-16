@@ -1,4 +1,4 @@
-<?php if (!defined('APPLICATION')) exit();
+<?php if(!defined('APPLICATION')) exit();
 /**
 {licence}
 */
@@ -92,15 +92,29 @@ class AwardsPlugin extends Gdn_Plugin {
 	}
 
 	/**
+	 * Processes all the Awards available to current User, eventually assigning
+	 * one or more to him.
+	 *
+	 * @param Gdn_Controller Sender Sending controller instance.
+	 */
+	 private function ProcessAwards(Gdn_Controller $Sender) {
+		// Can't process the Awards if no User is logged in
+		if(!Gdn::Session()->IsValid()) {
+			return;
+		}
+		$this->AwardsManager()->ProcessAwards($this, $Sender, Gdn::Session()->UserID);
+	}
+
+	/**
 	 * Base_Render_Before Event Hook
 	 *
 	 * This is a common hook that fires for all controllers (Base), on the Render method (Render), just
 	 * before execution of that method (Before). It is a good place to put UI stuff like CSS and Javascript
 	 * inclusions. Note that all the Controller logic has already been run at this point.
 	 *
-	 * @param $Sender Sending controller instance
+	 * @param Gdn_Controller Sender Sending controller instance.
 	 */
-	public function Base_Render_Before($Sender) {
+	public function Base_Render_Before(Gdn_Controller $Sender) {
 		// Files for Admin section
 		if(strcasecmp($Sender->Application, 'dashboard') == 0) {
 			$Sender->AddCssFile('awards_admin.css', 'plugins/Awards/design/css');
@@ -115,7 +129,9 @@ class AwardsPlugin extends Gdn_Plugin {
 		$Sender->AddCssFile('awardclasses.css', 'plugins/Awards/design/css');
 
 		// TODO Fire rule processing
+		$this->ProcessAwards($Sender);
 	}
+
 
 	/**
 	 * Create a method called "Awards" on the PluginController
@@ -180,7 +196,7 @@ class AwardsPlugin extends Gdn_Plugin {
 			// TODO Validate Configuration settings
 
 			$Saved = $Sender->Form->Save();
-			if ($Saved) {
+			if($Saved) {
 				$Sender->StatusMessage = T('Your changes have been saved.');
 			}
 		}
@@ -298,7 +314,7 @@ class AwardsPlugin extends Gdn_Plugin {
 }
 
 /*
-		if ($Sender->Form->AuthenticatedPostBack() === FALSE) {
+		if($Sender->Form->AuthenticatedPostBack() === FALSE) {
 
 			$Model->Save($Values);
 		}

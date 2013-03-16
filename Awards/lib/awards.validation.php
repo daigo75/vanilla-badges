@@ -1,9 +1,9 @@
-<?php if (!defined('APPLICATION')) exit();
+<?php if(!defined('APPLICATION')) exit();
 /**
 {licence}
 */
 
-if (!function_exists('ValidatePositiveInteger')) {
+if(!function_exists('ValidatePositiveInteger')) {
 	/**
 	 * Check that a value is a positive Integer.
 	 */

@@ -1,4 +1,4 @@
-<?php if (!defined('APPLICATION')) exit();
+<?php if(!defined('APPLICATION')) exit();
 /**
 {licence}
 */
@@ -37,21 +37,23 @@ class BaseAwardRule extends Gdn_Controller {
 
 	// @var Gdn_Validation Internal validator, used to validate Rule settings.
 	protected $Validation;
-	// @var AwardRuleModel Internal model, used to save Rule's settings.
-	protected $AwardRulesModel;
 
 	const NO_ASSIGNMENTS = 0;
+	const ASSIGN_ONE = 1;
 
 	/**
 	 * Runs the processing of the Rule, which will return how many times the Award
 	 * should be assigned to the User, based on the specified configuration.
 	 *
 	 * @param int UserID The ID of the User candidated to receive an Award.
-	 * @param mixed RuleConfig The configuration to be applied to the Rule.
+	 * @param string RuleConfig The configuration to be applied to the Rule, passed
+	 * as a JSON string.
 	 * @param array EventInfo Additional information passed with the event that
 	 * triggered the processing of Awards.
+	 * @return int A number indicating how many times the Award should be assigned
+	 * to the User, based on the logic of the rule.
 	 */
-	public function Process($UserID, $RuleConfig, array $EventInfo = null) {
+	public function Process($UserID, $Settings, array $EventInfo = null) {
 		return self::NO_ASSIGMENTS;
 	}
 
@@ -195,17 +197,30 @@ class BaseAwardRule extends Gdn_Controller {
 	}
 
 	// TODO Document method
-	public function SaveSettings($AwardID, array $Settings) {
-		$Values = array(
-			'AwardID' => $AwardID,
-			'RuleIsEnabled' => $this->IsRuleEnabled($Settings),
+	public function PrepareSettings(array $Settings) {
+		/* Add a flag that will indicate if, based on the other settings, the rule
+		 * will be enabled.
+		 */
+		$Settings['RuleIsEnabled'] = $this->IsRuleEnabled($Settings);
+		return array(
 			'RuleClass' => get_called_class(),
-			'RuleConfiguration' => json_encode($Settings),
+			'RuleConfiguration' => $Settings,
 		);
+	}
 
+	// TODO Document method
+	public function DecodeSettings($Configuration) {
+		// Checks that settings are valid. If they are not, logs an error and skips the rule
+		if(empty($Configuration) ||
+			 ($Settings = json_decode($Settings)) === null) {
+			$ErrorMsg = sprintf(T('Invalid JSON configuration specified for rule %s. Configuration received: "%s".'),
+													get_called_class(),
+													$Configuration);
+			$this->Log()->error($ErrorMsg);
+			return false;
+		}
 
-		$this->AwardRulesModel = new AwardRulesModel();
-		return $this->AwardRulesModel->Save($Values);
+		return $Settings;
 	}
 
 	/**

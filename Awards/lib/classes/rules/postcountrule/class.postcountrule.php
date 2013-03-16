@@ -1,4 +1,4 @@
-<?php if (!defined('APPLICATION')) exit();
+<?php if(!defined('APPLICATION')) exit();
 /**
 {licence}
 */
@@ -26,6 +26,60 @@ class PostCountRule extends BaseAwardRule {
 	 */
 	public static $CountTypes;
 
+	private function GetUserData($UserID) {
+		if(!isset($this->_UserData)) {
+			$UserModel = new UserModel();
+
+			$this->_UserData = $UserModel->GetID($UserID);
+		}
+
+		return $this->_UserData;
+	}
+
+	/**
+	 * Checks if the User posted enough Discussions to be assigned an Award based
+	 * on such criteria.
+	 *
+	 * @param int UserID The ID of the User.
+	 * @param stdClass RuleConfig The Rule configuration.
+	 * @return int "1" if check passed, "0" otherwise.
+	 */
+	private function CheckUserDiscussionsCount($UserID, stdClass $RuleConfig) {
+		$DiscussionsThreshold = $RuleConfig->Discussions->Amount;
+		$this->Log()->trace(sprintf(T('Checking "CountDiscussions" for User ID %d. Threshold: %d.'),
+																$UserID,
+																$DiscussionsThreshold));
+		//var_dump($this->GetUserData($UserID));
+		if($this->GetUserData($UserID)->CountDiscussions >= $DiscussionsThreshold) {
+			$this->Log()->trace(T('Passed.'));
+			return self::ASSIGN_ONE;
+		}
+		$this->Log()->trace(T('Failed.'));
+		return self::NO_ASSIGNMENTS;
+	}
+
+	/**
+	 * Checks if the User posted enough Comments to be assigned an Award based
+	 * on such criteria.
+	 *
+	 * @param int UserID The ID of the User.
+	 * @param stdClass RuleConfig The Rule configuration.
+	 * @return int "1" if check passed, "0" otherwise.
+	 */
+	private function CheckUserCommentsCount($UserID, stdClass $RuleConfig) {
+		$CommentsThreshold = $RuleConfig->Comments->Amount;
+		$this->Log()->trace(sprintf(T('Checking "CountComments" for User ID %d. Threshold: %d.'),
+																$UserID,
+																$CommentsThreshold));
+		//var_dump($this->GetUserData($UserID));
+		if($this->GetUserData($UserID)->CountComments >= $CommentsThreshold) {
+			$this->Log()->trace(T('Passed.'));
+			return self::ASSIGN_ONE;
+		}
+		$this->Log()->trace(T('Failed.'));
+		return self::NO_ASSIGNMENTS;
+	}
+
 	/**
 	 * Runs the processing of the Rule, which will return how many times the Award
 	 * should be assigned to the User, based on the specified configuration.
@@ -33,7 +87,23 @@ class PostCountRule extends BaseAwardRule {
 	 * @see AwardBaseRule::Process().
 	 */
 	public function Process($UserID, $RuleConfig, array $EventInfo = null) {
-		return self::NO_ASSIGMENTS;
+		if(!$RuleConfig->RuleIsEnabled) {
+			return null;
+		}
+
+		$Results = array();
+		// Check Discussion Count
+		if(GetValue('Enabled', $RuleConfig->Discussions) == 1) {
+			$Results[] = $this->CheckUserDiscussionsCount($UserID, $RuleConfig);
+		}
+
+		// Check Comment Count
+		if(GetValue('Enabled', $RuleConfig->Comments) == 1) {
+			$Results[] = $this->CheckUserCommentsCount($UserID, $RuleConfig);
+		}
+
+		var_dump("PostCountRule Result: " . min($Results));
+		return min($Results);
 	}
 
 	/**

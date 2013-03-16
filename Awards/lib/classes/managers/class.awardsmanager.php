@@ -47,13 +47,23 @@ class AwardsManager extends BaseManager {
 	 * @return array An associative array of RuleClass => Object, where each
 	 * object contains the configuration for the Rule.
 	 */
-	private function GetRulesSettings(Gdn_DataSet $AwardDataSet) {
-		$RulesSettings = array();
-		foreach($AwardDataSet->Result(DATASET_TYPE_ARRAY) as $Row) {
-			$RulesSettings[$Row['RuleClass']] = json_decode($Row['RuleConfiguration']);
+	private function GetRulesSettings(stdClass $AwardData) {
+		// Decode the JSON containing Rules Settings for processing
+		$RulesSettings = json_decode($AwardData->RulesSettings);
+
+		// If no settings are found, reflect it by returning an empty array
+		if(empty($RulesSettings)) {
+			return array();
 		}
 
-		return $RulesSettings;
+		$Result = array();
+		foreach($RulesSettings as $Settings) {
+			$Result[$Settings->RuleClass] = $Settings->RuleConfiguration;
+		}
+
+		//var_dump($Result);
+
+		return $Result;
 	}
 
 	// TODO Document method
@@ -102,18 +112,17 @@ class AwardsManager extends BaseManager {
 		$Sender->Form->SetModel($this->AwardsModel);
 
 		if(isset($AwardID)) {
-			$AwardDataSet = $this->AwardsModel->GetAwardData($AwardID);
+			$AwardData = $this->AwardsModel->GetAwardData($AwardID)->FirstRow();
 			//var_dump($AwardDataSet);
-			$Sender->Form->SetData($AwardDataSet->FirstRow());
+			$Sender->Form->SetData($AwardData);
 
-			$Sender->SetData('AwardDataSet', $AwardDataSet);
-			$Sender->SetData('RulesSettings', $this->GetRulesSettings($AwardDataSet));
+			//$Sender->SetData('AwardDataSet', $AwardDataSet);
+			$Sender->SetData('RulesSettings', $this->GetRulesSettings($AwardData));
 		}
 
 		// If seeing the form for the first time...
-		if ($Sender->Form->AuthenticatedPostBack() === FALSE) {
+		if($Sender->Form->AuthenticatedPostBack() === FALSE) {
 			// Just show the form with the default values
-
 		}
 		else {
 			// The field named "Save" is actually the Save button. If it exists, it means
@@ -145,13 +154,18 @@ class AwardsManager extends BaseManager {
 					Gdn::Database()->BeginTransaction();
 
 					try{
+						// Convert the Rules settings to JSON and add it to the data to be saved
+						$JSONRulesSettings = $Caller->RulesManager()->RulesSettingsToJSON($Sender->Form);
+						$Sender->Form->SetFormValue('RulesSettings', $JSONRulesSettings);
+
+						// If there are no Rule Settings, the Award is forcibly disabled.
+						// Without any Rule configuration it would never be assigned, anyway
+						if(empty($JSONRulesSettings)) {
+							$Sender->Form->SetFormValue('AwardIsEnabled', 0);
+						}
+
 						// Save Awards settings
 						$Saved = $Sender->Form->Save();
-
-						if($Saved) {
-							// TODO Save configuration for each enabled Award Rule
-							$Saved = $Caller->RulesManager()->SaveRulesSettings($Sender->Form);
-						}
 
 						// Use a transaction to either save ALL data (Award and Rules)
 						// successfully, or none of it. This will prevent partial saves and
@@ -195,10 +209,6 @@ class AwardsManager extends BaseManager {
 		$Sender->Render($Caller->GetView('awards_award_addedit_view.php'));
 	}
 
-	protected function ProcessRules(array $RulesSettings) {
-
-	}
-
 	/**
 	 * Process the Award Rules for the specified User ID.
 	 *
@@ -213,9 +223,19 @@ class AwardsManager extends BaseManager {
 		}
 
 		$AvailableAwardsDataSet = $this->AwardsModel->GetAvailableAwards(Gdn::Session()->UserID);
-		foreach($AvailableAwardsDataSet as $Award) {
-			// TODO Process each Award
+
+		// Debug - Rules to process
+		//var_dump($AvailableAwardsDataSet->Result());
+
+		foreach($AvailableAwardsDataSet->Result() as $AwardData) {
+			$this->Log()->debug(sprintf(T('Processing Award "%s"...'), $AwardData->AwardName));
+			var_dump($AwardData->AwardName);
+
+			$RulesSettings = $this->GetRulesSettings($AwardData);
+			$AwardAssignments = $Caller->RulesManager()->ProcessRules($UserID, $RulesSettings);
+			$this->Log()->debug(sprintf(T('Assigning Award %d time(s).'), $AwardAssignments));
+
+			// TODO Assign Award to User, if needed
 		}
-		//throw new Exception('Not implemented');
 	}
 }
