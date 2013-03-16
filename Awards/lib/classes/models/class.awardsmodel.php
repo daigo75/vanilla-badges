@@ -1,4 +1,4 @@
-<?php if (!defined('APPLICATION')) exit();
+<?php if(!defined('APPLICATION')) exit();
 /**
 {licence}
 */
@@ -53,8 +53,7 @@ class AwardsModel extends ModelEx {
 			->Select('VAAL.RankPoints')
 			->Select('VAAL.DateInserted')
 			->Select('VAAL.DateUpdated')
-			->Select('VAAL.RuleClass')
-			->Select('VAAL.RuleConfiguration')
+			->Select('VAAL.RulesSettings')
 			->Select('VAAL.AwardClassName')
 			->Select('VAAL.AwardClassImageFile')
 			->From('v_awards_awardslist VAAL');
@@ -72,8 +71,7 @@ class AwardsModel extends ModelEx {
 			->Select('VAAAL.Recurring')
 			->Select('VAAAL.AwardIsEnabled')
 			->Select('VAAAL.RankPoints')
-			->Select('VAAAL.RuleClass')
-			->Select('VAAAL.RuleConfiguration')
+			->Select('VAAAL.RulesSettings')
 			->Select('VAAAL.TimesAwarded')
 			->From('v_awards_availableawardslist VAAAL');
 		return $Query;
