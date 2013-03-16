@@ -13,11 +13,10 @@ class AwardRulesManager extends BaseManager {
 
 	const GROUP_GENERAL = 'general';
 	const GROUP_CUSTOM = 'custom';
-	const GROUP_UNSPECIFIED = 'unspecified';
 
 	const TYPE_CONTENT = 'content';
 	const TYPE_USER = 'user';
-	const TYPE_UNSPECIFIED = 'unspecified';
+	const TYPE_MISC = 'misc';
 
 	public static $RuleGroups = array();
 	public static $RuleTypes = array();
@@ -31,14 +30,19 @@ class AwardRulesManager extends BaseManager {
 	 */
 	public static function RegisterRule($RuleClass, array $RuleInfo) {
 		self::$Rules[$RuleClass] = $RuleInfo;
-		// If a Rule Group was not specified, assign the Rule to the "Unspecified" group
-		if(empty(self::$Rules[$RuleClass]['Group'])) {
-			self::$Rules[$RuleClass]['Group'] = self::GROUP_UNSPECIFIED;
+
+		$Group = GetValue('Group', self::$Rules[$RuleClass]);
+		// If a Rule Group is not specified, or it's not valid, assign the Rule to
+		// the "General" group
+		if(empty($Group) || !isset(self::$RuleGroups[$Group])) {
+			self::$Rules[$RuleClass]['Group'] = self::GROUP_GENERAL;
 		}
 
-		// If a Rule Type was not specified, assign the Rule to the "Unspecified" type
-		if(empty(self::$Rules[$RuleClass]['Type'])) {
-			self::$Rules[$RuleClass]['Type'] = self::TYPE_UNSPECIFIED;
+		$Type = GetValue('Type', self::$Rules[$RuleClass]);
+		// If a Rule Type is not specified, or it's not valid, assign the Rule to
+		// the "Miscellaneous" type
+		if(empty($Type) || !isset(self::$RuleTypes[$Type])) {
+			self::$Rules[$RuleClass]['Type'] = self::TYPE_MISC;
 		}
 	}
 
@@ -242,7 +246,7 @@ class AwardRulesManager extends BaseManager {
 
 		self::$RuleTypes = array(self::TYPE_CONTENT => T('Content'),
 														 self::TYPE_USER => T('User'),
-														 self::TYPE_UNSPECIFIED => T('Misc.'));
+														 self::TYPE_MISC => T('Misc.'));
 
 		$this->LoadRulesDefinitions();
 		$this->LoadRules();

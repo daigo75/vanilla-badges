@@ -4,9 +4,9 @@
 */
 
 /**
- * Constants used by Logger Plugin.
+ * Constants used by Awards Plugin.
  *
- * @package LoggerPlugin
+ * @package AwardsPlugin
  */
 
 // Default Configuration Settings

@@ -14,12 +14,12 @@ $this->Form->SetFormValue('Comments_Enabled', (int)GetValue('Enabled', $RuleSett
 $this->Form->SetFormValue('Comments_Amount', GetValue('Amount', $RuleSettings->Comments));
 
 ?>
-<fieldset class="Rule">
+<div class="Rule">
 	<ul>
 		<li>
 			<div class="Discussions">
 			<?php
-				echo Wrap('Discussions', 'h3');
+				echo Wrap('Discussions', 'h6');
 				PostCountRule::RenderRuleField($this->Form->CheckBox('Discussions_Enabled', T('User started at least X Discussions')));
 				PostCountRule::RenderRuleField($this->Form->TextBox('Discussions_Amount',
 																														array('class' => 'InputBox Numeric')));
@@ -29,7 +29,7 @@ $this->Form->SetFormValue('Comments_Amount', GetValue('Amount', $RuleSettings->C
 		<li>
 			<div class="Comments">
 			<?php
-				echo Wrap('Comments', 'h3');
+				echo Wrap('Comments', 'h6');
 				PostCountRule::RenderRuleField($this->Form->CheckBox('Comments_Enabled', T('User posted at least X Comments')));
 				PostCountRule::RenderRuleField($this->Form->TextBox('Comments_Amount',
 																														array('class' => 'InputBox Numeric')));
@@ -41,4 +41,4 @@ $this->Form->SetFormValue('Comments_Amount', GetValue('Amount', $RuleSettings->C
 			// TODO Implement interface for "at/every" X answers
 		?>
 	</ul>
-</fieldset>
+</div>

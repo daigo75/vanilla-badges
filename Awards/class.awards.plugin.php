@@ -16,7 +16,9 @@ $PluginInfo['Awards'] = array(
 	'Version' => '13.02.07 alpha',
 	'RequiredApplications' => array('Vanilla' => '2.0'),
 	'RequiredTheme' => FALSE,
-	'RequiredPlugins' => array('Logger' => '12.10.28'),
+	'RequiredPlugins' => array('Logger' => '12.10.28',
+														 'AeliaFoundationClasses' => '13.02.27',
+														 ),
 	'HasLocale' => FALSE,
 	'MobileFriendly' => TRUE,
 	'SettingsUrl' => '/plugin/awards',
@@ -85,8 +87,8 @@ class AwardsPlugin extends Gdn_Plugin {
 		parent::__construct();
 
 		// Instantiate specialised Controllers
-		$this->RulesManager();
-		$this->AwardsManager();
+		//$this->RulesManager();
+		//$this->AwardsManager();
 	}
 
 	/**
@@ -99,9 +101,18 @@ class AwardsPlugin extends Gdn_Plugin {
 	 * @param $Sender Sending controller instance
 	 */
 	public function Base_Render_Before($Sender) {
-		$Sender->AddCssFile($this->GetResource('design/css/awards.css', FALSE, FALSE));
-		$Sender->AddCssFile($this->GetResource('design/css/awardclasses.css', FALSE, FALSE));
-		$Sender->AddJsFile($this->GetResource('js/awards.js', FALSE, FALSE));
+		// Files for Admin section
+		if(strcasecmp($Sender->Application, 'dashboard') == 0) {
+			$Sender->AddCssFile('awards_admin.css', 'plugins/Awards/design/css');
+		}
+
+		// Files for frontend
+		if(strcasecmp($Sender->Application, 'vanilla') == 0) {
+			$Sender->AddJsFile('awards.js', 'plugins/Awards/js');
+		}
+
+		// Common files
+		$Sender->AddCssFile('awardclasses.css', 'plugins/Awards/design/css');
 	}
 
 	/**

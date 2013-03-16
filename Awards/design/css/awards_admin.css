@@ -65,6 +65,48 @@ div.AwardsDescription {
 }
 
 /* Classes for Rule Settings Pages */
+.AwardsPlugin #AwardRules {
+	padding-left: 20px;
+	border: 1px solid gray;
+}
+
+.AwardsPlugin #AwardRules h4 {
+	font-size: 120%;
+	font-weight: bold;
+	padding: 0;
+}
+
+.AwardsPlugin #AwardRules h5 {
+	font-size: 110%;
+	font-weight: bold;
+}
+
+.AwardsPlugin #AwardRules h6 {
+	font-size: 110%;
+	font-weight: bold;
+}
+
+.AwardsPlugin #AwardRules .RuleGroup,
+.AwardsPlugin #AwardRules .RuleType {
+	border: 1px solid silver;
+}
+
+.AwardsPlugin #AwardRules ul {
+	padding: 0;
+}
+
+.AwardsPlugin #AwardRules li {
+	margin-right: 0.5em;
+}
+
+.AwardsPlugin #AwardRules .Tabs a {
+	font-size: 110%;
+}
+
+.AwardsPlugin .Rule label {
+	display: inline-block;
+}
+
 .AwardsPlugin .Rule ul li span {
 	display: inline;
 	margin-left: 1em;

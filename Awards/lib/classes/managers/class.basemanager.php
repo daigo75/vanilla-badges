@@ -12,14 +12,19 @@
  * class name contains "controller", it won't be loaded automatically.
  */
 class BaseManager extends Gdn_Plugin {
-	protected $Log;
+	// @var Logger The Logger used by the class.
+	private $_Log;
 
 	/**
-	 * Class constructor.
+	 * Returns the instance of the Logger used by the class.
 	 *
-	 * @return BaseController An Instance of Base Controller.
+	 * @param Logger An instance of the Logger.
 	 */
-	public function __construct() {
-		$this->Log = $this->Log = LoggerPlugin::GetLogger('Awards');
+	protected function Log() {
+		if(empty($this->_Log)) {
+			$this->_Log = LoggerPlugin::GetLogger();
+		}
+
+		return $this->_Log();
 	}
 }

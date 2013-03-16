@@ -56,6 +56,29 @@ class AwardsManager extends BaseManager {
 		return $RulesSettings;
 	}
 
+	// TODO Document method
+	private function PrepareAwardRulesSections() {
+		$Result = array();
+		foreach(AwardRulesManager::$RuleGroups as $GroupID => $GroupLabel) {
+			$GroupSection = new stdClass();
+			$GroupSection->Label = $GroupLabel;
+			$GroupSection->TypeSections = array();
+			$GroupSection->CountRules = 0;
+
+			foreach(AwardRulesManager::$RuleTypes as $TypeID =>$TypeLabel) {
+				$TypeSection = new stdClass();
+				$TypeSection->Label = $TypeLabel;
+				$TypeSection->Rules = array();
+
+				$GroupSection->TypeSections[$TypeID] = $TypeSection;
+			}
+
+			$Result[$GroupID] = $GroupSection;
+		}
+
+		return $Result;
+	}
+
 	/**
 	 * Renders the page to Add/Edit an Award.
 	 *
@@ -63,9 +86,15 @@ class AwardsManager extends BaseManager {
 	 * @param object Sender Sending controller instance.
 	 */
 	public function AwardAddEdit(AwardsPlugin $Caller, $Sender) {
-		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_AWARDS_ADDEDIT_URL);
+		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_AWARD_ADDEDIT_URL);
 		// Prevent non authorised Users from accessing this page
 		$Sender->Permission('Plugins.Awards.Manage');
+
+		// Load jQuery UI from Google CDN, for faster delivery
+		$Sender->AddJsFile('http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/jquery-ui.min.js', '');
+		// Load auxiliary files
+		$Sender->AddJsFile('award_edit.js', 'plugins/Awards/js');
+
 
 		// Retrieve the Award ID passed as an argument (if any)
 		$AwardID = $Sender->Request->GetValue(AWARDS_PLUGIN_ARG_AWARDID, null);
@@ -92,7 +121,7 @@ class AwardsManager extends BaseManager {
 			$Data = $Sender->Form->FormValues();
 
 			// If User Canceled, go back to the List
-			if($Data['Cancel']) {
+			if(GetValue('Cancel', $Data, false)) {
 				Redirect(AWARDS_PLUGIN_AWARDS_LIST_URL);
 			}
 
@@ -158,6 +187,9 @@ class AwardsManager extends BaseManager {
 		// Pass the list of installed rules to the View, so that it can ask each
 		// one to render its configuration section
 		$Sender->SetData('AwardRules', $Caller->RulesManager()->GetRules());
+
+		// Builds a structure that will be used to group the Rules in sections
+		$Sender->SetData('AwardRulesSections', $this->PrepareAwardRulesSections());
 
 		// Retrieve the View that will be used to configure the Award
 		$Sender->Render($Caller->GetView('awards_award_addedit_view.php'));

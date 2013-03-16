@@ -1,14 +1,26 @@
 <?php	if (!defined('APPLICATION')) exit();
 /*
-Copyright 2012 Diego Zanella IT Services
-This file is part of UserStats Plugin for Vanilla Forums.
-
-UserStats Plugin is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.
-UserStats Plugin is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-You should have received a copy of the GNU General Public License along with UserStats Plugin .  If not, see <http://www.gnu.org/licenses/>.
-
-Contact Diego Zanella at diego [at] pathtoenlightenment [dot] net
+{licence}
 */
+
+//function LoadRuleUI(BaseAwardRule $Rule) {
+//	ob_start();
+//	include($Rule->GetConfigUI());
+//	$Result = ob_get_contents();
+//	@ob_end_clean();
+//	return $Result;
+//}
+
+function AddRuleToUI(array &$AwardRulesSections, array &$AwardRule) {
+	$RuleGroup = GetValue('Group', $AwardRule);
+	$RuleType = GetValue('Type', $AwardRule);
+
+	// Add the rule to the appropriate Group and Section
+	$AwardRulesSections[$RuleGroup]->TypeSections[$RuleType]->Rules[] = $AwardRule['Instance'];
+	$AwardRulesSections[$RuleGroup]->CountRules += 1;
+}
+
+$AwardRulesSections = $this->Data['AwardRulesSections'];
 
 // The following HTML will be displayed when the Awards DataSet doesn't contain Rules
 $OutputForNoRules = Wrap(T('No Award Rules installed.'),
@@ -34,6 +46,7 @@ $this->Data['AwardClasses'] = array(1 => 'Gold',
 		echo $this->Form->Hidden('AwardImageFile');
 	?>
 	<fieldset id="Award">
+		<legend><?php echo Wrap(T('Award Configuration'), 'h1'); ?></legend>
 		<ul>
 			<li>
 				<?php
@@ -116,25 +129,69 @@ $this->Data['AwardClasses'] = array(1 => 'Gold',
 		</ul>
 	</fieldset>
 	<fieldset id="AwardRules">
-		<ul>
-			<li>
-				<?php
-					$AwardRules = GetValue('AwardRules', $this->Data, array());
+		<legend><?php echo Wrap(T('Rules'), 'h2'); ?></legend>
+		<div class="Groups Tabs">
+			<?php
+				$AwardRules = GetValue('AwardRules', $this->Data, array());
 
-					// If DataSet is empty, just print a message.
-					if(empty($AwardRules)) {
-						echo $OutputForNoRules;
+				if(empty($AwardRules)) {
+					echo $OutputForNoRules;
+					// If there are no Rules, empty the Rule Sections, to avoid looping
+					// through them for nothing (they would not be rendered anyway)
+					$AwardRulesSections = array();
+				}
+
+				// Load the Configuration UI for each rule and add it to the appropriate
+				// section
+				foreach($AwardRules as $AwardRule) {
+					//var_dump($AwardRule);
+					//var_dump($this);die();
+					//include($AwardRule['Instance']->GetConfigUI());
+					AddRuleToUI($AwardRulesSections, $AwardRule);
+				}
+
+				// Render each Rule's Configuration UI
+				foreach($AwardRulesSections as $GroupID => $GroupInfo) {
+					if($GroupInfo->CountRules <= 0) {
+						continue;
 					}
 
-					foreach($AwardRules as $AwardRule) {
-						// TODO Output the configuration section for each Award Rule
-						//var_dump($AwardRule);
-						//var_dump($this);die();
-						include($AwardRule['Instance']->GetConfigUI());
+					// Render the Rule Group section
+					echo '<div id="RuleGroup-' . $GroupID. '" class="RuleGroup">';
+					echo Wrap($GroupInfo->Label,
+										'h4',
+										array('class' => 'Label')
+										);
+
+					foreach($GroupInfo->TypeSections as $TypeID => $TypeInfo) {
+						// Don't render empty sections
+						if(empty($TypeInfo->Rules)) {
+							continue;
+						}
+
+						// Render Rule Type section
+						echo '<div class="RuleType">';
+						echo Wrap($TypeInfo->Label,
+											'h5',
+											array('class' => 'Label')
+											);
+
+						echo '<ul class="Rules">';
+
+						// Render the Rule's Configuration UI
+						foreach($TypeInfo->Rules as $AwardRule) {
+							echo '<li>';
+							include($AwardRule->GetConfigUI());
+							echo '</li>';
+						}
+
+						echo '</ul>';
+						echo '</div>';
 					}
-				?>
-			</li>
-		</ul>
+					echo '</div>';
+				}
+			?>
+		</div>
 	</fieldset>
 	<fieldset id="Buttons">
 		<?php
