@@ -75,6 +75,7 @@ class AwardsSchema extends PluginSchema {
 			->Column('UserID', 'int', FALSE)
 			->Column('AwardID', 'int', FALSE)
 			->Column('AwardedRankPoints', 'uint', 0)
+			->Column('TimesAwarded', 'uint', 0)
 			->Column('DateInserted', 'datetime', FALSE)
 			->Column('InsertUserID', 'int', TRUE)
 			->Column('DateUpdated', 'datetime', TRUE)
