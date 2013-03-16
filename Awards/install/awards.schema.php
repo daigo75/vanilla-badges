@@ -1,4 +1,4 @@
-<?php if (!defined('APPLICATION')) exit();
+<?php if(!defined('APPLICATION')) exit();
 /**
 {licence}
 */
@@ -48,6 +48,7 @@ class AwardsSchema extends PluginSchema {
 			//   such reason, the rules must be processed every time, even if the Award
 			//   was already assigned.
 			->Column('Recurring', 'uint', 0, 'index')
+			->Column('RulesSettings', 'text')
 			->Column('AwardIsEnabled', 'uint', 1, 'index')
 			->Column('AwardImageFile', 'text')
 			->Column('RankPoints', 'uint', 0)
@@ -59,29 +60,6 @@ class AwardsSchema extends PluginSchema {
 
 		$this->AddForeignKey('Awards', 'FK_Awards_AwardClasses', array('AwardClassID'),
 												'AwardClasses', array('AwardClassID'));
-	}
-
-	/**
-	 * Create the table which will store the list of Rules to assign Awards.
-	 */
-	protected function create_awardrules_table() {
-		Gdn::Structure()
-			->Table('AwardRules')
-			// Primary Key is formed by RuleID and RuleClass. AwardID is a FK to
-			// Awards table, while Rule Name will be extracted from the
-			// Rule class.
-			->Column('AwardID', 'int', FALSE, 'primary')
-			->Column('RuleClass', 'varchar(100)', FALSE, 'primary')
-			->Column('RuleIsEnabled', 'uint', 1, 'index')
-			->Column('RuleConfiguration', 'text', TRUE)
-			->Column('DateInserted', 'datetime', FALSE)
-			->Column('InsertUserID', 'int', TRUE)
-			->Column('DateUpdated', 'datetime', TRUE)
-			->Column('UpdateUserID', 'int', TRUE)
-			->Set(FALSE, FALSE);
-
-		$this->AddForeignKey('AwardRules', 'FK_AwardRules_Awards', array('AwardID'),
-												'Awards', array('AwardID'));
 	}
 
 	/**
@@ -127,15 +105,11 @@ class AwardsSchema extends PluginSchema {
 			,A.RankPoints
 			,A.DateInserted
 			,A.DateUpdated
-			,AR.RuleClass
-			,AR.RuleConfiguration AS RuleConfiguration
+			,A.RulesSettings
 			,AC.AwardClassName
 			,AC.AwardClassImageFile
 		FROM
 			${Px}Awards A
-			LEFT JOIN
-			${Px}AwardRules AR ON
-				(AR.AwardID = A.AwardID)
 			JOIN
 			${Px}AwardClasses AC ON
 				(AC.AwardClassID = A.AwardClassID)
@@ -190,8 +164,7 @@ class AwardsSchema extends PluginSchema {
 				,VAAL.Recurring
 				,VAAL.AwardIsEnabled
 				,VAAL.RankPoints
-				,VAAL.RuleClass
-				,VAAL.RuleConfiguration
+				,VAAL.RulesSettings
 				,COUNT(UA.UserID) AS TimesAwarded
 			FROM
 				${Px}v_awards_awardslist VAAL
@@ -219,7 +192,6 @@ class AwardsSchema extends PluginSchema {
 	protected function CreateObjects() {
 		$this->create_awardclasses_table();
 		$this->create_awards_table();
-		$this->create_awardrules_table();
 		$this->create_userawards_table();
 
 		$this->create_awardslist_view();
@@ -236,7 +208,6 @@ class AwardsSchema extends PluginSchema {
 		$this->DropView('v_awards_awardlist');
 
 		$this->DropTable('UserAwards');
-		$this->DropTable('AwardsRules');
 		$this->DropTable('Awards');
 		$this->DropTable('AwardClasses');
 	}
