@@ -19,8 +19,22 @@ interface IAwardRule {
  * Base Award Assignment Rule Class.
  */
 class BaseAwardRule extends Gdn_Controller {
-	// @var Logger Internal Logger.
-	protected $Log;
+	// @var Logger The Logger used by the class.
+	private $_Log;
+
+	/**
+	 * Returns the instance of the Logger used by the class.
+	 *
+	 * @param Logger An instance of the Logger.
+	 */
+	protected function Log() {
+		if(empty($this->_Log)) {
+			$this->_Log = LoggerPlugin::GetLogger();
+		}
+
+		return $this->_Log;
+	}
+
 	// @var Gdn_Validation Internal validator, used to validate Rule settings.
 	protected $Validation;
 	// @var AwardRuleModel Internal model, used to save Rule's settings.
@@ -201,7 +215,6 @@ class BaseAwardRule extends Gdn_Controller {
 	 */
 	public function __construct() {
 		parent::__construct();
-		$this->Log = LoggerPlugin::GetLogger('AwardRule');
 		$this->Validation = new Gdn_Validation();
 	}
 }

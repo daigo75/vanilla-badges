@@ -168,7 +168,7 @@ class AwardsModel extends ModelEx {
 		}
 		catch(Exception $e) {
 			$this->Database->RollbackTransaction();
-			$this->Log->Error(sprintf(T('Exception occurred while saving Awards. Error: %s'),
+			$this->Log()->Error(sprintf(T('Exception occurred while saving Awards. Error: %s'),
 																$e->getMessage()));
 			return false;
 		}
