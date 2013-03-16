@@ -137,8 +137,10 @@ class PostCountRule extends BaseAwardRule {
 		return (count($this->Validation->Results()) == 0);
 	}
 
+	// TODO Document method
 	protected function IsRuleEnabled(array $Settings) {
-		return GetValue('Discussions', $Settings) || GetValue('Comments', $Settings);
+		return (GetValue('Discussions', $Settings) == 1) ||
+					 (GetValue('Comments', $Settings) == 1);
 	}
 
 	/**
