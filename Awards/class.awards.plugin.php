@@ -113,6 +113,8 @@ class AwardsPlugin extends Gdn_Plugin {
 
 		// Common files
 		$Sender->AddCssFile('awardclasses.css', 'plugins/Awards/design/css');
+
+		// TODO Fire rule processing
 	}
 
 	/**

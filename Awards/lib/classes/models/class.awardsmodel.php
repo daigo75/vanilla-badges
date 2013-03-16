@@ -39,7 +39,7 @@ class AwardsModel extends ModelEx {
 	}
 
 	/**
-	 * Build SQL query to retrieve the list of Awards.
+	 * Build SQL query to retrieve the list of configured Awards.
 	 */
 	protected function PrepareAwardsQuery() {
 		$Query = $this->SQL
@@ -58,6 +58,24 @@ class AwardsModel extends ModelEx {
 			->Select('VAAL.AwardClassName')
 			->Select('VAAL.AwardClassImageFile')
 			->From('v_awards_awardslist VAAL');
+		return $Query;
+	}
+	/**
+	 * Build SQL query to retrieve the list of Awards available for a User.
+	 */
+	protected function PrepareAvailableAwardsQuery() {
+		$Query = $this->SQL
+			->Select('VAAAL.UserID')
+			->Select('VAAAL.AwardID')
+			->Select('VAAAL.AwardName')
+			->Select('VAAAL.AwardDescription')
+			->Select('VAAAL.Recurring')
+			->Select('VAAAL.AwardIsEnabled')
+			->Select('VAAAL.RankPoints')
+			->Select('VAAAL.RuleClass')
+			->Select('VAAAL.RuleConfiguration')
+			->Select('VAAAL.TimesAwarded')
+			->From('v_awards_availableawardslist VAAAL');
 		return $Query;
 	}
 
@@ -84,6 +102,24 @@ class AwardsModel extends ModelEx {
 	 */
 	public function GetAwardData($AwardID) {
 		return $this->GetWhere(array('AwardID' => $AwardID));
+	}
+
+	/**
+	 * Retrieves a list of the Awards available to a specific User.
+	 *
+	 * @param int UserID The ID of the User for whom to retrieve the available
+	 * Awards.
+	 * @return Gdn_DataSet A DataSet containing Awards data.
+	 */
+	public function GetAvailableAwards($UserID) {
+		$this->PrepareAvailableAwardsQuery();
+
+		$Result = $this->SQL
+			->Where('UserID', $UserID)
+			->OrderBy('VAAAL.AwardName')
+			->Get();
+
+		return $Result;
 	}
 
 	/**

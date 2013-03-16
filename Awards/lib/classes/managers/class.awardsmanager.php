@@ -22,7 +22,7 @@ class AwardsManager extends BaseManager {
 	 * @param AwardsPlugin Caller The Plugin who called the method.
 	 * @param object Sender Sending controller instance.
 	 */
-	public function AwardsList(AwardsPlugin $Caller, $Sender) {
+	public function AwardsList(AwardsPlugin $Caller, Gdn_Controller $Sender) {
 		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_AWARDS_LIST_URL);
 		// Prevent non authorised Users from accessing this page
 		$Sender->Permission('Plugins.Awards.Manage');
@@ -193,5 +193,29 @@ class AwardsManager extends BaseManager {
 
 		// Retrieve the View that will be used to configure the Award
 		$Sender->Render($Caller->GetView('awards_award_addedit_view.php'));
+	}
+
+	protected function ProcessRules(array $RulesSettings) {
+
+	}
+
+	/**
+	 * Process the Award Rules for the specified User ID.
+	 *
+	 * @param AwardsPlugin Caller The Plugin who called the method.
+	 * @param object Sender Sending controller instance.
+	 * @param int UserID The ID of the User for which to process the Award Rules.
+	 */
+	public function ProcessAwards(AwardsPlugin $Caller, Gdn_Controller $Sender, $UserID) {
+		// TODO Implement Rule Processing
+		if(!Gdn::Session()->IsValid()) {
+			return;
+		}
+
+		$AvailableAwardsDataSet = $this->AwardsModel->GetAvailableAwards(Gdn::Session()->UserID);
+		foreach($AvailableAwardsDataSet as $Award) {
+			// TODO Process each Award
+		}
+		//throw new Exception('Not implemented');
 	}
 }
