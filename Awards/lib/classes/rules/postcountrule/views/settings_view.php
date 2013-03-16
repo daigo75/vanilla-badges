@@ -1,4 +1,4 @@
-<?php if (!defined('APPLICATION')) exit();
+<?php if(!defined('APPLICATION')) exit();
 /**
 {licence}
 */
@@ -7,7 +7,7 @@
  * decoded from their JSON format and, therefore, returned as properties of an
  * object.
  */
-$RuleSettings = $this->Data['RulesSettings']['PostCountRule'];
+$RuleSettings = GetValue('PostCountRule', $this->Data['RulesSettings']);
 $this->Form->SetFormValue('Discussions_Enabled', (int)GetValue('Enabled', $RuleSettings->Discussions));
 $this->Form->SetFormValue('Discussions_Amount', GetValue('Amount', $RuleSettings->Discussions));
 $this->Form->SetFormValue('Comments_Enabled', (int)GetValue('Enabled', $RuleSettings->Comments));
