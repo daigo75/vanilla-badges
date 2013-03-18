@@ -3,14 +3,6 @@
 {licence}
 */
 
-//function LoadRuleUI(BaseAwardRule $Rule) {
-//	ob_start();
-//	include($Rule->GetConfigUI());
-//	$Result = ob_get_contents();
-//	@ob_end_clean();
-//	return $Result;
-//}
-
 function AddRuleToUI(array &$AwardRulesSections, array &$AwardRule) {
 	$RuleGroup = GetValue('Group', $AwardRule);
 	$RuleType = GetValue('Type', $AwardRule);
@@ -68,7 +60,7 @@ $this->Data['AwardClasses'] = array(1 => 'Gold',
 			<?php
 				echo Wrap(T('Current Image'), 'h5');
 				echo Wrap(Wrap(Img($this->Form->GetValue('AwardImageFile'),
-													 array('class' => 'AwardImage',)),
+													 array('class' => 'AwardImage Large',)),
 											 'td'),
 									'div',
 									array('class' => 'AwardImageWrapper'));
@@ -78,8 +70,11 @@ $this->Data['AwardClasses'] = array(1 => 'Gold',
 				<?php
 					echo Wrap(T('Select new Image'), 'h5');
 					// TODO Get picture size from configuration
-					echo Wrap(T('Select an image on your computer (2mb max) to be used as an icon for the Award. ' .
-											'Image will be resized to 50x50 pixels.'),
+					echo Wrap(sprintf(T('Select an image on your computer (2mb max) to be used as ' .
+															'an icon for the Award. Image will be resized to %dx%d (width ' .
+															'x height) pixels.'),
+														PictureManager::DEFAULT_IMAGE_WIDTH,
+														PictureManager::DEFAULT_IMAGE_HEIGHT),
 										'p');
 					echo Wrap(T('<strong>Important</strong>: if you upload a file with the same '.
 											'name of one you uploaded before, the old file will be overwritten.'),

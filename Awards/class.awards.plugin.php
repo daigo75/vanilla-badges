@@ -13,11 +13,11 @@ require(AWARDS_PLUGIN_LIB_PATH . '/awards.validation.php');
 // Define the plugin:
 $PluginInfo['Awards'] = array(
 	'Description' => 'Awards plugin for Vanilla Forums',
-	'Version' => '13.02.07 alpha',
+	'Version' => '13.03.18 alpha',
 	'RequiredApplications' => array('Vanilla' => '2.0'),
 	'RequiredTheme' => FALSE,
 	'RequiredPlugins' => array('Logger' => '12.10.28',
-														 'AeliaFoundationClasses' => '13.02.27',
+														 //'AeliaFoundationClasses' => '13.02.27',
 														 ),
 	'HasLocale' => FALSE,
 	'MobileFriendly' => TRUE,
@@ -250,6 +250,15 @@ class AwardsPlugin extends Gdn_Plugin {
 	 */
 	public function Controller_AwardAddEdit($Sender) {
 		$this->AwardsManager()->AwardAddEdit($this, $Sender);
+	}
+
+	/**
+	 * Renders the page that allows Users to delete an Award.
+	 *
+	 * @param object Sender Sending controller instance.
+	 */
+	public function Controller_AwardDelete($Sender) {
+		$this->AwardsManager()->AwardDelete($this, $Sender);
 	}
 
 	/**

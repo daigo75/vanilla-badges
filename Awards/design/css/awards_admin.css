@@ -19,6 +19,19 @@
 	padding-left: 20px;
 }
 
+/* Warning message */
+.AwardsPlugin .Warning {
+	font-size: 120%;
+	color: maroon;
+	font-weight: bold;
+	border: 1px solid maroon;
+}
+
+.AwardsPlugin.ConfirmationDialog .Name {
+	font-weight: bold;
+	border-bottom: 1px dotted gray;
+}
+
 
 div.AwardsDescription {
    font-size: 85%;
@@ -29,6 +42,14 @@ div.AwardsDescription {
 }
 
 .AwardImage {
+}
+
+.AwardImage.Large {
+	width: 100px;
+	height: 100px;
+}
+
+.AwardImage.Medium {
 	width: 50px;
 	height: 50px;
 }

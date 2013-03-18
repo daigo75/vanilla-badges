@@ -85,7 +85,7 @@ class AwardsSchema extends PluginSchema {
 		$this->AddForeignKey('UserAwards', 'FK_UserAwards_User', array('UserID'),
 												'User', array('UserID'));
 		$this->AddForeignKey('UserAwards', 'FK_UserAwards_Awards', array('AwardID'),
-												'Awards', array('AwardID'));
+												'Awards', array('AwardID'), 'CASCADE');
 		$this->CreateIndex('UserAwards', 'IX_DateInserted', array('`DateInserted` DESC'));
 	}
 

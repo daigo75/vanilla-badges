@@ -70,7 +70,7 @@
 						echo Wrap(Gdn_Format::Text($Award->AwardName), 'td', array('class' => 'AwardName',));
 
 						echo Wrap(Img($Award->AwardImageFile,
-													array('class' => 'AwardImage ' . $Award->AwardClassName,)),
+													array('class' => 'AwardImage Medium ' . $Award->AwardClassName,)),
 											'td',
 											array('class' => 'AwardName',));
 

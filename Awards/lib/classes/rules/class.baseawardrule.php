@@ -7,7 +7,8 @@ require(AWARDS_PLUGIN_EXTERNAL_PATH . '/simple_html_dom/simple_html_dom.php');
 
 interface IAwardRule {
 	// @see BaseAwardRule::Process();
-	public function Process($UserID, $RuleConfig, array $EventInfo = null);
+	public function IsRuleEnabled(stdClass $Settings);
+	public function Process($UserID, stdClass $Settings, array $EventInfo = null);
 	public function GetConfigUI();
 	public function ValidateSettings(Gdn_Form $Form, array $Settings);
 	public function SaveSettings(array $Settings);
@@ -29,16 +30,25 @@ class BaseAwardRule extends Gdn_Controller {
 	 */
 	protected function Log() {
 		if(empty($this->_Log)) {
-			$this->_Log = LoggerPlugin::GetLogger();
+			$this->_Log = LoggerPlugin::GetLogger(get_called_class());
 		}
 
 		return $this->_Log;
 	}
 
+	// @var int Indicates that the Rule is enabled and should be processed.
+	const RULE_ENABLED = 0;
+	// @var int Indicates that the Rule is disabled and should not be processed.
+	const RULE_DISABLED = 1;
+	// @var int Indicates that the Rule is enabled and should be processed, but it cannot be due to a lack of requirements (e.g. missing plugins)
+	const RULE_ENABLED_CANNOT_PROCESS = 2;
+
 	// @var Gdn_Validation Internal validator, used to validate Rule settings.
 	protected $Validation;
 
+	// @var int Indicates that an Award should not be assigned, as the Rule checks did not pass.
 	const NO_ASSIGNMENTS = 0;
+	// @var int Indicates that an Award should be assigned once, as the Rule checks did pass.
 	const ASSIGN_ONE = 1;
 
 	/**
@@ -46,15 +56,49 @@ class BaseAwardRule extends Gdn_Controller {
 	 * should be assigned to the User, based on the specified configuration.
 	 *
 	 * @param int UserID The ID of the User candidated to receive an Award.
-	 * @param string RuleConfig The configuration to be applied to the Rule, passed
-	 * as a JSON string.
+	 * @param stdClass Settings The settings to be applied to the Rule, passed as
+	 * an object.
 	 * @param array EventInfo Additional information passed with the event that
 	 * triggered the processing of Awards.
 	 * @return int A number indicating how many times the Award should be assigned
 	 * to the User, based on the logic of the rule.
 	 */
-	public function Process($UserID, $Settings, array $EventInfo = null) {
+	protected function _Process($UserID, stdClass $Settings, array $EventInfo = null) {
 		return self::NO_ASSIGMENTS;
+	}
+
+	/**
+	 * Runs the processing of the Rule, which will return how many times the Award
+	 * should be assigned to the User, based on the specified configuration.
+	 *
+	 * NOTE: The actual processing occurs in method BaseAwardRule::_Process().
+	 * This method exists so that BaseAwardRule::IsRuleEnabled() is called before
+	 * the actual processing. It's true that IsRuleEnabled is normally called by
+	 * the RulesManager anyway, but it's double checked here for safety (processing
+	 * a rule by mistake could give unpredictable results).
+	 *
+	 * @param int UserID The ID of the User candidated to receive an Award.
+	 * @param stdClass Settings The settings to be applied to the Rule, passed as
+	 * an object.
+	 * @param array EventInfo Additional information passed with the event that
+	 * triggered the processing of Awards.
+	 * @return int A number indicating how many times the Award should be assigned
+	 * to the User, based on the logic of the rule.
+	 */
+	public function Process($UserID, stdClass $Settings, array $EventInfo = null) {
+		if($this->IsRuleEnabled($Settings) != self::RULE_ENABLED) {
+			$this->Log()->error(sprintf(T('Processing of rule "%s" was called even though ' .
+																		'the Rule was not enabled. Please check the Award ' .
+																		'configuration see what the Rule requirements are ' .
+																		'and make sure that it is configured correctly. If the ' .
+																		'error persists, please contact Support. Current Rule settings: "%s".'),
+																	get_called_class(),
+																	json_encode($Settings)
+																	));
+			return null;
+		}
+
+		return $this->_Process($UserID, $Settings, $EventInfo);
 	}
 
 	/**
@@ -186,40 +230,28 @@ class BaseAwardRule extends Gdn_Controller {
 	}
 
 	/**
-	 * Checks if the Rule should be enabled or not, based on its Settings.
+	 * Checks if the Rule is enabled, based on the settings and other criteria.
 	 * Descendant classes must implement this method.
 	 *
-	 * @param array Settings The Rule Settings.
-	 * @return bool True, if the Rule should be enabled, False otherwise.
+	 * @param stdClass Settings An object containing settings for the Rule.
+	 * @return int An integer value indicating if the Rule should is enabled.
+	 * Possible return values are:
+	 * - BaseAwardRule::RULE_ENABLED
+	 * - BaseAwardRule::RULE_DISABLED
+	 * - BaseAwardRule::RULE_ENABLED_CANNOT_PROCESS
 	 */
-	protected function IsRuleEnabled(array $Settings) {
+	public function IsRuleEnabled(stdClass $Settings) {
 		throw new Exception(T('Not implemented. Descendant classes must implement this method.'));
 	}
 
-	// TODO Document method
+	/**
+	 * Processes the settings to be used by the rule, eventually adding extra
+	 * information that may be required.
+	 *
+	 * @param array Settings An associative array of Rule Settings.
+	 * @return array An associative array of Rule Settings.
+	 */
 	public function PrepareSettings(array $Settings) {
-		/* Add a flag that will indicate if, based on the other settings, the rule
-		 * will be enabled.
-		 */
-		$Settings['RuleIsEnabled'] = $this->IsRuleEnabled($Settings);
-		return array(
-			'RuleClass' => get_called_class(),
-			'RuleConfiguration' => $Settings,
-		);
-	}
-
-	// TODO Document method
-	public function DecodeSettings($Configuration) {
-		// Checks that settings are valid. If they are not, logs an error and skips the rule
-		if(empty($Configuration) ||
-			 ($Settings = json_decode($Settings)) === null) {
-			$ErrorMsg = sprintf(T('Invalid JSON configuration specified for rule %s. Configuration received: "%s".'),
-													get_called_class(),
-													$Configuration);
-			$this->Log()->error($ErrorMsg);
-			return false;
-		}
-
 		return $Settings;
 	}
 

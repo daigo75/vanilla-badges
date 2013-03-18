@@ -7,6 +7,9 @@
  * Implements some methods to manage the pictures required by the plugin.
  */
 class PictureManager extends BaseManager {
+	const DEFAULT_IMAGE_WIDTH = 100;
+	const DEFAULT_IMAGE_HEIGHT = 100;
+
 	/**
 	 * Retrieves the picture file uploaded with a form and returns the full URL
 	 * to it. If a file has not been uploaded, the the method builds a URL uses
@@ -38,8 +41,8 @@ class PictureManager extends BaseManager {
 		// Save the uploaded image
 		$ParsedValues = $UploadImage->SaveImageAs($TmpImage,
 																						basename($TargetImage),
-																						50,
-																						50,
+																						self::DEFAULT_IMAGE_HEIGHT,
+																						self::DEFAULT_IMAGE_WIDTH,
 																						array('Crop' => true));
 
 		// TODO Check that uploaded image is cropped and saved correctly

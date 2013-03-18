@@ -41,11 +41,11 @@ class PostCountRule extends BaseAwardRule {
 	 * on such criteria.
 	 *
 	 * @param int UserID The ID of the User.
-	 * @param stdClass RuleConfig The Rule configuration.
+	 * @param stdClass Settings The Rule settings.
 	 * @return int "1" if check passed, "0" otherwise.
 	 */
-	private function CheckUserDiscussionsCount($UserID, stdClass $RuleConfig) {
-		$DiscussionsThreshold = $RuleConfig->Discussions->Amount;
+	private function CheckUserDiscussionsCount($UserID, stdClass $Settings) {
+		$DiscussionsThreshold = $Settings->Discussions->Amount;
 		$this->Log()->trace(sprintf(T('Checking "CountDiscussions" for User ID %d. Threshold: %d.'),
 																$UserID,
 																$DiscussionsThreshold));
@@ -63,11 +63,11 @@ class PostCountRule extends BaseAwardRule {
 	 * on such criteria.
 	 *
 	 * @param int UserID The ID of the User.
-	 * @param stdClass RuleConfig The Rule configuration.
+	 * @param stdClass Settings The Rule settings.
 	 * @return int "1" if check passed, "0" otherwise.
 	 */
-	private function CheckUserCommentsCount($UserID, stdClass $RuleConfig) {
-		$CommentsThreshold = $RuleConfig->Comments->Amount;
+	private function CheckUserCommentsCount($UserID, stdClass $Settings) {
+		$CommentsThreshold = $Settings->Comments->Amount;
 		$this->Log()->trace(sprintf(T('Checking "CountComments" for User ID %d. Threshold: %d.'),
 																$UserID,
 																$CommentsThreshold));
@@ -86,20 +86,15 @@ class PostCountRule extends BaseAwardRule {
 	 *
 	 * @see AwardBaseRule::Process().
 	 */
-	public function Process($UserID, $RuleConfig, array $EventInfo = null) {
-		if(!$RuleConfig->RuleIsEnabled) {
-			return null;
-		}
-
-		$Results = array();
+	protected function _Process($UserID, stdClass $Settings, array $EventInfo = null) {
 		// Check Discussion Count
-		if(GetValue('Enabled', $RuleConfig->Discussions) == 1) {
-			$Results[] = $this->CheckUserDiscussionsCount($UserID, $RuleConfig);
+		if(GetValue('Enabled', $Settings->Discussions) == 1) {
+			$Results[] = $this->CheckUserDiscussionsCount($UserID, $Settings);
 		}
 
 		// Check Comment Count
-		if(GetValue('Enabled', $RuleConfig->Comments) == 1) {
-			$Results[] = $this->CheckUserCommentsCount($UserID, $RuleConfig);
+		if(GetValue('Enabled', $Settings->Comments) == 1) {
+			$Results[] = $this->CheckUserCommentsCount($UserID, $Settings);
 		}
 
 		var_dump("PostCountRule Result: " . min($Results));
@@ -137,10 +132,19 @@ class PostCountRule extends BaseAwardRule {
 		return (count($this->Validation->Results()) == 0);
 	}
 
-	// TODO Document method
-	protected function IsRuleEnabled(array $Settings) {
-		return (GetValue('Discussions', $Settings) == 1) ||
-					 (GetValue('Comments', $Settings) == 1);
+	/**
+	 * Checks if the Rule is enabled, based on the settings and other criteria.
+	 *
+	 * @param stdClass Settings An object containing settings for the Rule.
+	 * @return int An integer value indicating if the Rule should is enabled.
+	 * Possible return values are:
+	 * - BaseAwardRule::RULE_ENABLED
+	 * - BaseAwardRule::RULE_DISABLED
+	 * - BaseAwardRule::RULE_ENABLED_CANNOT_PROCESS
+	 */
+	public function IsRuleEnabled(stdClass $Settings) {
+		return (GetValue('Enabled', $Settings->Discussions) == 1) ||
+					 (GetValue('Enabled', $Settings->Comments) == 1);
 	}
 
 	/**

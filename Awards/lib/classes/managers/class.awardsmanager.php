@@ -57,11 +57,11 @@ class AwardsManager extends BaseManager {
 		}
 
 		$Result = array();
-		foreach($RulesSettings as $Settings) {
-			$Result[$Settings->RuleClass] = $Settings->RuleConfiguration;
+		foreach($RulesSettings as $RuleClass => $Settings) {
+			$Result[$RuleClass] = $Settings;
 		}
 
-		//var_dump($Result);
+		//var_dump($AwardData->RulesSettings, $Result); die();
 
 		return $Result;
 	}
@@ -104,7 +104,6 @@ class AwardsManager extends BaseManager {
 		$Sender->AddJsFile('http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/jquery-ui.min.js', '');
 		// Load auxiliary files
 		$Sender->AddJsFile('award_edit.js', 'plugins/Awards/js');
-
 
 		// Retrieve the Award ID passed as an argument (if any)
 		$AwardID = $Sender->Request->GetValue(AWARDS_PLUGIN_ARG_AWARDID, null);
@@ -160,6 +159,7 @@ class AwardsManager extends BaseManager {
 
 						// If there are no Rule Settings, the Award is forcibly disabled.
 						// Without any Rule configuration it would never be assigned, anyway
+						//var_dump($JSONRulesSettings);
 						if(empty($JSONRulesSettings)) {
 							$Sender->Form->SetFormValue('AwardIsEnabled', 0);
 						}
@@ -209,6 +209,43 @@ class AwardsManager extends BaseManager {
 		$Sender->Render($Caller->GetView('awards_award_addedit_view.php'));
 	}
 
+
+	public function AwardDelete(AwardsPlugin $Caller, $Sender) {
+		// Prevent Users without proper permissions from accessing this page.
+		$Sender->Permission('Plugins.UserStats.Manage');
+
+		$Sender->Form->SetModel($this->AwardsModel);
+
+		// If seeing the form for the first time...
+		if ($Sender->Form->AuthenticatedPostBack() === FALSE) {
+			// Retrieve the Award ID passed as an argument (if any)
+			$AwardID = $Sender->Request->GetValue(AWARDS_PLUGIN_ARG_AWARDID, null);
+
+			// Load the data of the Client to be edited, if a Client ID is passed
+			$AwardData = $this->AwardsModel->GetAwardData($AwardID);
+			//var_dump($AwardID, $AwardData);
+			$Sender->Form->SetData($AwardData->FirstRow(DATASET_TYPE_ARRAY));
+
+			// Apply the config settings to the form.
+			$Sender->Render($Caller->GetView('awards_delete_confirm_view.php'));
+		}
+		else {
+			//var_dump($Sender->Form->FormValues());
+			$Data = $Sender->Form->FormValues();
+
+			// The field named "OK" is actually the OK button. If it exists, it means
+			// that the User confirmed the deletion.
+			if(Gdn::Session()->ValidateTransientKey($Data['TransientKey']) && $Sender->Form->ButtonExists('OK')) {
+				// Delete Client Id
+				$this->AwardsModel->Delete($Sender->Form->GetValue('AwardID'));
+
+				$Sender->InformMessage(T('Award deleted.'));
+			}
+			// Render Awards List page
+			$this->AwardsList($Caller, $Sender);
+		}
+	}
+
 	/**
 	 * Process the Award Rules for the specified User ID.
 	 *
@@ -229,9 +266,10 @@ class AwardsManager extends BaseManager {
 
 		foreach($AvailableAwardsDataSet->Result() as $AwardData) {
 			$this->Log()->debug(sprintf(T('Processing Award "%s"...'), $AwardData->AwardName));
-			var_dump($AwardData->AwardName);
+			//var_dump($AwardData->AwardName);
 
 			$RulesSettings = $this->GetRulesSettings($AwardData);
+
 			$AwardAssignments = $Caller->RulesManager()->ProcessRules($UserID, $RulesSettings);
 			$this->Log()->debug(sprintf(T('Assigning Award %d time(s).'), $AwardAssignments));
 

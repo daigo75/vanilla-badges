@@ -228,7 +228,7 @@ class AwardRulesManager extends BaseManager {
 			// Prepares the Settings for being saved, by allowing the Rule to which
 			// they belong to add some extra information which was not passed by the
 			// form
-			$Result[] = $RuleInstance->PrepareSettings($Settings);
+			$Result[$RuleClass] = $RuleInstance->PrepareSettings($Settings);
 		}
 
 		return json_encode($Result);
@@ -249,10 +249,43 @@ class AwardRulesManager extends BaseManager {
 		$AwardAssignCount = 0;
 
 		foreach($RulesSettings as $RuleClass => $Settings) {
+			// Retrieve the instance of the Rule to process
 			$RuleInstance = $this->GetRuleInstance($RuleClass);
 
-			if(isset($RuleInstance) &&
-				 (GetValue('RuleIsEnabled', $Settings))) {
+			// If Rule instance does not exist, log the fact and just skip it
+			if(!isset($RuleInstance)) {
+				$this->Log()->info(sprintf(T('Instance of Award Rule "%s" not found. Skipping Rule.'),
+																	 $RuleClass));
+				continue;
+			}
+
+			// Check if the Rule is enabled
+			switch($IsRuleEnabled = $RuleInstance->IsRuleEnabled($Settings)) {
+				// Disabled - Rule has not been configured and should not be processed
+				case BaseAwardRule::RULE_DISABLED:
+					$this->Log()->trace(sprintf(T('Rule "%s" disabled, skipping.'),
+																			$RuleClass));
+					continue;
+					break; // "break" Not really needed, left for consistency
+				case BaseAwardRule::RULE_ENABLED_CANNOT_PROCESS:
+					$this->Log()->error(sprintf(T('Rule "%s" enabled, but could not be processed due to ' .
+																				'missing requirements or misconfiguration. Award processing '.
+																				'aborted. Please check the Award configuration for more ' .
+																				'details on what could be misconfigured.'),
+																			$RuleClass));
+					return BaseAwardRule::NO_ASSIGNMENTS;
+					break; // "break" Not really needed, left for consistency
+				case BaseAwardRule::RULE_ENABLED:
+					// Do nothing and carry on
+					break;
+				default:
+					$this->Log()->error(sprintf(T('Unexpected value returned by %s::IsRuleEnabled(): %s. ' .
+																				'Award processing aborted.'),
+																			$RuleClass,
+																			$IsRuleEnabled));
+			}
+
+			if($RuleInstance->IsRuleEnabled($Settings)) {
 				$this->Log()->debug(sprintf(T('Processing Rule "%s"...'), $RuleClass));
 
 				/* Plugin architecture allows to configure recurring Awards (e.g. a
