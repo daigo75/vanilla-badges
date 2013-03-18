@@ -39,7 +39,7 @@
 			<thead>
 				<tr>
 					<th><?php echo T('Award Name'); ?></th>
-					<th><?php echo T('Icon'); ?></th>
+					<th class="Image"><?php echo T('Icon'); ?></th>
 					<th><?php echo T('Class'); ?></th>
 					<th><?php echo T('Description'); ?></th>
 					<th><?php echo T('Enabled?'); ?></th>
@@ -72,7 +72,7 @@
 						echo Wrap(Img($Award->AwardImageFile,
 													array('class' => 'AwardImage Medium ' . $Award->AwardClassName,)),
 											'td',
-											array('class' => 'AwardName',));
+											array('class' => 'Image',));
 
 						echo Wrap(Gdn_Format::Text($Award->AwardClassName), 'td', array('class' => 'AwardClassName',));
 						echo Wrap(Gdn_Format::Text($Award->AwardDescription), 'td', array('class' => 'AwardDescription',));
@@ -84,9 +84,9 @@
 						$EnabledText = Anchor(Gdn_Format::Text($EnabledText),
 																	sprintf('%s?%s=%d&%s=%d',
 																					AWARDS_PLUGIN_AWARD_ENABLE_URL,
-																					LOGGER_ARG_APPENDERID,
-																					$Award->AwardID,
 																					AWARDS_PLUGIN_ARG_AWARDID,
+																					$Award->AwardID,
+																					AWARDS_PLUGIN_ARG_ENABLEFLAG,
 																					($Award->AwardIsEnabled == 1 ? 0 : 1)),
 																	'EnableLink',
 																	array('title' => T('Click here to change Award status (Enabled/Disabled).'),)

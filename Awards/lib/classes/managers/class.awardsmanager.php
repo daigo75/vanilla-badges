@@ -209,10 +209,15 @@ class AwardsManager extends BaseManager {
 		$Sender->Render($Caller->GetView('awards_award_addedit_view.php'));
 	}
 
-
+	/**
+	 * Renders the page to Delete an Award.
+	 *
+	 * @param AwardsPlugin Caller The Plugin which called the method.
+	 * @param object Sender Sending controller instance.
+	 */
 	public function AwardDelete(AwardsPlugin $Caller, $Sender) {
 		// Prevent Users without proper permissions from accessing this page.
-		$Sender->Permission('Plugins.UserStats.Manage');
+		$Sender->Permission('Plugins.Awards.Manage');
 
 		$Sender->Form->SetModel($this->AwardsModel);
 
@@ -242,8 +247,31 @@ class AwardsManager extends BaseManager {
 				$Sender->InformMessage(T('Award deleted.'));
 			}
 			// Render Awards List page
-			$this->AwardsList($Caller, $Sender);
+			Redirect(AWARDS_PLUGIN_AWARDS_LIST_URL);
 		}
+	}
+
+	/**
+	 * Enables or disables an Award.
+	 *
+	 * @param AwardsPlugin Caller The Plugin which called the method.
+	 * @param object Sender Sending controller instance.
+	 */
+	public function AwardEnable(AwardsPlugin $Caller, $Sender) {
+		// Prevent Users without proper permissions from accessing this page.
+		$Sender->Permission('Plugins.Awards.Manage');
+
+		$AwardID = $Sender->Request->GetValue(AWARDS_PLUGIN_ARG_AWARDID, null);
+		$EnableFlag = $Sender->Request->GetValue(AWARDS_PLUGIN_ARG_ENABLEFLAG, null);
+
+		if(is_numeric($AwardID) && is_numeric($EnableFlag)) {
+			if($this->AwardsModel->EnableAward((int)$AwardID, (int)$EnableFlag)) {
+				$Sender->InformMessage(T('Your changes have been saved.'));
+			};
+		}
+
+		// Render Awards List page
+		Redirect(AWARDS_PLUGIN_AWARDS_LIST_URL);
 	}
 
 	/**

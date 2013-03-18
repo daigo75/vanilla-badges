@@ -85,7 +85,26 @@ div.AwardsDescription {
 	margin-left: 1em;
 }
 
-/* Classes for Rule Settings Pages */
+/* Awards List page */
+.AwardsPlugin #AwardsList .Enabled {
+	width: 4em;
+	text-align: center;
+}
+
+.AwardsPlugin #AwardsList .Image {
+	text-align: center;
+}
+
+.AwardsPlugin #AwardsList .AwardClassName,
+.AwardsPlugin #AwardsList .AwardName {
+	width: 10em;
+}
+
+.AwardsPlugin #AwardsList .AwardDescription {
+	width: 25em;
+}
+
+/* Rule Settings Pages */
 .AwardsPlugin #AwardRules {
 	padding-left: 20px;
 	border: 1px solid gray;

@@ -262,6 +262,15 @@ class AwardsPlugin extends Gdn_Plugin {
 	}
 
 	/**
+	 * Enables/disabled an Award.
+	 *
+	 * @param object Sender Sending controller instance.
+	 */
+	public function Controller_AwardEnable($Sender) {
+		$this->AwardsManager()->AwardEnable($this, $Sender);
+	}
+
+	/**
 	 * Renders the Awards Rules List page.
 	 *
 	 * @param object Sender Sending controller instance.

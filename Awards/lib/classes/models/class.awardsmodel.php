@@ -216,4 +216,28 @@ class AwardsModel extends ModelEx {
 
 		$this->SQL->Delete('Awards', array('AwardID' => $AwardID,));
 	}
+
+	/**
+	 * Enables/disables an Award.
+	 *
+	 * @param int AwardID The ID of the Award to enabler or disable.
+	 * @param int EnableFlag A flag indicating if the Award should be enabled.
+	 * It can be "1" for Enable and "0" for Disable.
+	 * @return bool True, if operation completed successfully, False otherwise.
+	 */
+	public function EnableAward($AwardID, $EnableFlag) {
+		// Award ID must be a number. There's no point in running a query if it is
+		// empty or non-numeric.
+		if(!is_numeric($AwardID) || !is_numeric($EnableFlag)) {
+			return null;
+		}
+
+		// Set the IsEnabled flag in Award configuration
+		$Result = $this->SQL->Update('Awards')
+								->Set('AwardIsEnabled', $EnableFlag)
+								->Where('AwardID', $AwardID)
+								->Put();
+
+		return $Result;
+	}
 }
