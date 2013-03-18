@@ -75,7 +75,7 @@
 											array('class' => 'AwardName',));
 
 						echo Wrap(Gdn_Format::Text($Award->AwardClassName), 'td', array('class' => 'AwardClassName',));
-						echo Wrap(Gdn_Format::Text($Award->AwardName), 'td', array('class' => 'AwardName',));
+						echo Wrap(Gdn_Format::Text($Award->AwardDescription), 'td', array('class' => 'AwardDescription',));
 
 						// Output "Enabled" indicator
 						$EnabledText = ($Award->AwardIsEnabled == 1) ? T('Yes') : T('No');
