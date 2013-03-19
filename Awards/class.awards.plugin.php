@@ -61,6 +61,7 @@ class AwardsPlugin extends Gdn_Plugin {
 	/**
 	 * Returns an instance of RulesManager.
 	 *
+	 * @return RulesManager An instance of RulesManager.
 	 * @see AwardsPlugin::GetInstance()
 	 */
 	public function RulesManager() {
@@ -68,12 +69,23 @@ class AwardsPlugin extends Gdn_Plugin {
 	}
 
 	/**
-	 * Returns an instance of AwardsController.
+	 * Returns an instance of AwardsManager.
 	 *
+	 * @return AwardsManager An instance of AwardsManager.
 	 * @see AwardsPlugin::GetInstance()
 	 */
 	public function AwardsManager() {
 		return $this->GetInstance('AwardsManager');
+
+	}
+	/**
+	 * Returns an instance of AwardClassesManager.
+	 *
+	 * @return AwardClassesManager An instance of AwardClassesManager.
+	 * @see AwardsPlugin::GetInstance()
+	 */
+	public function AwardClassesManager() {
+		return $this->GetInstance('AwardClassesManager');
 	}
 
 	/**
@@ -223,15 +235,25 @@ class AwardsPlugin extends Gdn_Plugin {
 	 * @param object Sender Sending controller instance.
 	 */
 	public function Controller_AwardClassesList($Sender) {
-		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_AWARDCLASSES_LIST_URL);
-		// Prevent non authorised Users from accessing this page
-		$Sender->Permission('Plugins.Awards.Manage');
+		$this->AwardClassesManager()->AwardClassesList($this, $Sender);
+	}
 
-		// TODO Implement Awards Classes List page
+	/**
+	 * Renders the page to Add/Edit an Award Class.
+	 *
+	 * @param object Sender Sending controller instance.
+	 */
+	public function Controller_AwardClassAddEdit($Sender) {
+		$this->AwardClassesManager()->AwardClassAddEdit($this, $Sender);
+	}
 
-		// TODO Implement automatic generation of CSS file containing the styles for each Award Class
-
-		$Sender->Render($this->GetView('awards_awardclasseslist_view.php'));
+	/**
+	 * Renders the page that allows Users to delete an Award Class.
+	 *
+	 * @param object Sender Sending controller instance.
+	 */
+	public function Controller_AwardClassDelete($Sender) {
+		$this->AwardClassesManager()->AwardClassDelete($this, $Sender);
 	}
 
 	/**

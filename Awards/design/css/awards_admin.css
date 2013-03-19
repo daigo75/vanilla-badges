@@ -6,6 +6,10 @@
 .AwardsPlugin {
 }
 
+.AwardsPlugin .Buttons {
+	margin-top: 1em;
+}
+
 .AwardsPlugin .Numeric {
 	text-align: right;
 }
@@ -17,6 +21,15 @@
 .AwardsPlugin fieldset p {
 	font-size: 100%;
 	padding-left: 20px;
+}
+
+.AwardsPlugin .Disabled {
+	background: silver;
+	color: whitesmoke;
+	margin-left: 1em;
+	border: 1px solid #aaa;
+	border-radius: 4px;
+	padding: 6px;
 }
 
 /* Warning message */
@@ -37,6 +50,7 @@ div.AwardsDescription {
    font-size: 85%;
 }
 
+#AwardClassesList td,
 #AwardsList td {
 	vertical-align: middle;
 }
@@ -44,12 +58,12 @@ div.AwardsDescription {
 .AwardImage {
 }
 
-.AwardImage.Large {
+img.Large {
 	width: 100px;
 	height: 100px;
 }
 
-.AwardImage.Medium {
+img.Medium {
 	width: 50px;
 	height: 50px;
 }
@@ -59,18 +73,20 @@ div.AwardsDescription {
 	border: 1px solid silver;
 }
 
-.AwardImageColumn {
+/* Award/Award Class edit page */
+.ImageColumn {
 	float: left;
 	text-align: center;
 }
 
-.AwardImageColumn h5,
+.ImageColumn h5,
 .ImageSelector h5 {
 	font-weight: bold;
 	padding: 0.5em 0;
 }
 
 .ImageSelector {
+	min-height: 14em;
 	float: left;
 	margin-left: 1em;
 	padding-left: 1em;
@@ -85,24 +101,42 @@ div.AwardsDescription {
 	margin-left: 1em;
 }
 
-/* Awards List page */
-.AwardsPlugin #AwardsList .Enabled {
+/* Awards and Award Classes List page */
+.AwardsPlugin .Enabled,
+.AwardsPlugin .Enabled {
 	width: 4em;
 	text-align: center;
 }
 
-.AwardsPlugin #AwardsList .Image {
+.AwardsPlugin .TotalAwardsUsingClass {
+	width: 10em;
 	text-align: center;
 }
 
-.AwardsPlugin #AwardsList .AwardClassName,
-.AwardsPlugin #AwardsList .AwardName {
+.AwardsPlugin .Image {
+	width: 50px;
+	text-align: center;
+}
+
+.AwardsPlugin .Name {
 	width: 10em;
 }
 
-.AwardsPlugin #AwardsList .AwardDescription {
+.AwardsPlugin .Description {
 	width: 25em;
 }
+
+/* Overrides for CodeMirror Syntax Highlighter */
+.CodeMirror {
+	border: 1px solid silver;
+}
+
+.CodeMirror span {
+	font-size: 15px;
+	display: inline !important;
+}
+
+
 
 /* Rule Settings Pages */
 .AwardsPlugin #AwardRules {

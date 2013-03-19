@@ -64,7 +64,7 @@ define('AWARDS_PLUGIN_ERR_AWARD_NO_RULES', 1002);
 
 // Http Arguments
 define('AWARDS_PLUGIN_ARG_AWARDID', 'award_id');
+define('AWARDS_PLUGIN_ARG_AWARDCLASSID', 'award_class_id');
 define('AWARDS_PLUGIN_ARG_RULEID', 'rule_id');
-define('AWARDS_PLUGIN_ARG_CRITERIONID', 'rule_id');
 
 define('AWARDS_PLUGIN_ARG_ENABLEFLAG', 'enable');

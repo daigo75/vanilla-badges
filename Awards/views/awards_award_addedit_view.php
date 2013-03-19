@@ -3,6 +3,7 @@
 {licence}
 */
 
+// TODO Document function
 function AddRuleToUI(array &$AwardRulesSections, array &$AwardRule) {
 	$RuleGroup = GetValue('Group', $AwardRule);
 	$RuleType = GetValue('Type', $AwardRule);
@@ -12,6 +13,7 @@ function AddRuleToUI(array &$AwardRulesSections, array &$AwardRule) {
 	$AwardRulesSections[$RuleGroup]->CountRules += 1;
 }
 
+// Retrieve the Sections to organise the Rules
 $AwardRulesSections = $this->Data['AwardRulesSections'];
 
 // The following HTML will be displayed when the Awards DataSet doesn't contain Rules
@@ -20,13 +22,11 @@ $OutputForNoRules = Wrap(T('No Award Rules installed.'),
 													array('class' => 'NoResultsFound',));
 
 
-// TODO Replace dummy array with a DataSet containing data retrieved from AwardClasses table
-$this->Data['AwardClasses'] = array(1 => 'Gold',
-																		2 => 'Silver',
-																		3 => 'Bronze',);
-
+// Check if we're configuring a new appender or editing an existing one.
+$AwardID = $this->Form->GetValue('AwardID');
+$IsNewAward = empty($AwardID) ? true : false;
 ?>
-<div class="AwardsPlugin ClientEdit">
+<div class="AwardsPlugin AwardEdit">
 	<?php
 		echo $this->Form->Open(array('enctype' => 'multipart/form-data'));
 		echo $this->Form->Errors();
@@ -56,7 +56,7 @@ $this->Data['AwardClasses'] = array(1 => 'Gold',
 				// TODO Display Award Picture to the left of the Upload File control
 				echo $this->Form->Label(T('Award Picture'), 'Picture');
 			?>
-			<div class="AwardImageColumn">
+			<div class="ImageColumn">
 			<?php
 				echo Wrap(T('Current Image'), 'h5');
 				echo Wrap(Wrap(Img($this->Form->GetValue('AwardImageFile'),
@@ -93,8 +93,10 @@ $this->Data['AwardClasses'] = array(1 => 'Gold',
 										array('class' => 'Info',));
 
 					echo $this->Form->DropDown('AwardClassID',
-																		 $this->Data['AwardClasses'],
-																		 array('id' => 'AwardClassID',));
+																		 GetValue('AwardClasses', $this->Data),
+																		 array('id' => 'AwardClassID',
+																					 'ValueField' => 'AwardClassID',
+																					 'TextField' => 'AwardClassName'));
 				?>
 			</li>
 			<li>
@@ -115,6 +117,10 @@ $this->Data['AwardClasses'] = array(1 => 'Gold',
 			</li>
 			<li>
 				<?php
+					// Set IsEnabled to True if we're adding a new Award
+					if($IsNewAward) {
+						$this->Form->SetValue('AwardIsEnabled', 1);
+					}
 					echo $this->Form->CheckBox('AwardIsEnabled',
 																		 T('<strong>Award is Enabled</strong>. Disabled Awards cannot be assigned, but ' .
 																			 'they will be displayed for Users who already obtained them.'),

@@ -2,7 +2,17 @@
 /**
 {licence}
 */
+	// Indicates how many columns there are in the table that shows the list of
+	// configured Award Classes. It's mainly used to set the "colspan" attributes of
+	// single-valued table rows, such as Title, or the "No Results Found" message.
+	$AwardClassesTableColumns = 5;
 
+	// The following HTML will be displayed when the DataSet is empty.
+	$OutputForEmptyDataSet = Wrap(T('No Award Classes configured.'),
+																'td',
+																array('colspan' => $AwardClassesTableColumns,
+																			'class' => 'NoResultsFound',)
+																);
 ?>
 <div class="AwardsPlugin">
 	<div class="Header">
@@ -13,38 +23,93 @@
 			echo $this->Form->Open();
 			echo $this->Form->Errors();
 		?>
-		<fieldset>
-			<legend>
-				<h3><?php echo T('Award Classes'); ?></h3>
-				<p>
-					<?php
-					echo T('Here you can see the list of configured Award Classes.');
-					?>
-				</p>
-			</legend>
-			<ul>
-				<li><?php
-					// TODO Display list of configured Award Classes
-					// TODO Display Add button
-					// TODO Display Edit button
-					// TODO Display Clone button
-					// TODO Display, next to each Class, how many Awards belong to it
-
-					//echo $this->Form->Label(T('Awards Level'), 'Plugin.Awards.LogLevel');
-					//echo Wrap(T('Select the Log Level. Messages with a level lower than the one selected ' .
-					//						'will be ignored. <strong>Example</strong>: if you select "<i>Warning</i>", ' .
-					//						'messages logged as <i>Trace</i>, <i>Debug</i> and <i>Info</i> will be ignored.'),
-					//					'div',
-					//					array('class' => 'Info',));
-					//echo $this->Form->DropDown('Plugin.Awards.LogLevel',
-					//													 $AwardsLevels,
-					//													 array('id' => 'AwardsLevel',
-					//																 'value' => $CurrentAwardsLevel,));
-				?></li>
-			</ul>
-		</fieldset>
+		<h3><?php echo T('Configured Award Classes'); ?></h3>
+		<div class="Info">
+			<?php
+				echo Wrap(T('Here you can configure the Award Classes. Classes are useful to group the ' .
+										'Awards, for example to distinguish between the ones easyto obtain from the ' .
+										'more difficult ones.'), 'p');
+			?>
+		</div>
+		<div class="FilterMenu">
 		<?php
-			 echo $this->Form->Close('Save');
+			echo Anchor(T('Add Award Class'), AWARDS_PLUGIN_AWARDCLASS_ADDEDIT_URL, 'Button');
+		?>
+		</div>
+		<table id="AwardClassesList" class="display AltRows">
+			<thead>
+				<tr>
+					<th class="Image"><?php echo T('Background Image'); ?></th>
+					<th class="AwardClassName"><?php echo T('Award Class Name'); ?></th>
+					<th class="AwardClassDescription"><?php echo T('Description'); ?></th>
+					<th class="TotalAwardsUsingClass"><?php echo T('Awards using Class'); ?></th>
+					<th>&nbsp;</th>
+				</tr>
+			</thead>
+			<tfoot>
+			</tfoot>
+			<tbody>
+				<?php
+					// TODO Display list of configured Award Classes
+					// TODO Display Clone button
+					$AwardClassesDataSet = $this->Data['AwardClassesDataSet'];
+
+					// If DataSet is empty, just print a message.
+					if(empty($AwardClassesDataSet)) {
+						echo $OutputForEmptyDataSet;
+					}
+					// TODO Implement Pager.
+					// Output the details of each row in the DataSet
+					foreach($AwardClassesDataSet as $AwardClass) {
+						echo "<tr>\n";
+						if(empty($AwardClass->AwardClassImageFile)) {
+							echo Wrap(Gdn_Format::Text(T('None')), 'td');
+						}
+						else {
+							echo Wrap(Img($AwardClass->AwardClassImageFile,
+														array('class' => 'AwardClassImage Medium ',)),
+												'td',
+												array('class' => 'Image',));
+						}
+						// Output Award Class Name and Description
+						echo Wrap(Gdn_Format::Text($AwardClass->AwardClassName), 'td', array('class' => 'AwardClassName',));
+
+						echo Wrap(Gdn_Format::Text($AwardClass->AwardClassDescription), 'td', array('class' => 'AwardClassDescription',));
+						echo Wrap(Gdn_Format::Text($AwardClass->TotalAwardsUsingClass), 'td', array('class' => 'TotalAwardsUsingClass',));
+
+						echo "<td class=\"Buttons\">\n";
+						// Output Add/Edit button
+						echo Anchor(T('Edit'),
+												sprintf('%s?%s=%s',
+																AWARDS_PLUGIN_AWARDCLASS_ADDEDIT_URL,
+																AWARDS_PLUGIN_ARG_AWARDCLASSID,
+																Gdn_Format::Url($AwardClass->AwardClassID)),
+												'Button AddEditAwardClass');
+						if($AwardClass->TotalAwardsUsingClass <= 0) {
+							// Output Delete button
+							echo Anchor(T('Delete'),
+													sprintf('%s?%s=%s',
+																	AWARDS_PLUGIN_AWARDCLASS_DELETE_URL,
+																	AWARDS_PLUGIN_ARG_AWARDCLASSID,
+																	Gdn_Format::Url($AwardClass->AwardClassID)),
+													'Button DeleteAwardClass disabled');
+						}
+						else {
+							echo Wrap(T('Cannot delete'),
+												'span',
+												array('class' => 'Disabled',
+															'title' => sprintf(T('Award Class "%s" cannot be deleted ' .
+																									 'because there are still Awards using it.'),
+																								 GetValue('AwardClassName', $AwardClass))));
+						}
+						echo "</td>\n";
+						echo "</tr>\n";
+					}
+				?>
+			 </tbody>
+		</table>
+		<?php
+			echo $this->Form->Close();
 		?>
 	</div>
 </div>

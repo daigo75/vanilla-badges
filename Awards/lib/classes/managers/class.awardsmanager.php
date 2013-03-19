@@ -20,7 +20,7 @@ class AwardsManager extends BaseManager {
 	 * Renders the Awards List page.
 	 *
 	 * @param AwardsPlugin Caller The Plugin who called the method.
-	 * @param object Sender Sending controller instance.
+	 * @param Gdn_Controller Sender Sending controller instance.
 	 */
 	public function AwardsList(AwardsPlugin $Caller, Gdn_Controller $Sender) {
 		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_AWARDS_LIST_URL);
@@ -93,29 +93,35 @@ class AwardsManager extends BaseManager {
 	 * Renders the page to Add/Edit an Award.
 	 *
 	 * @param AwardsPlugin Caller The Plugin which called the method.
-	 * @param object Sender Sending controller instance.
+	 * @param Gdn_Controller Sender Sending controller instance.
 	 */
 	public function AwardAddEdit(AwardsPlugin $Caller, $Sender) {
 		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_AWARD_ADDEDIT_URL);
 		// Prevent non authorised Users from accessing this page
 		$Sender->Permission('Plugins.Awards.Manage');
 
-		// Load jQuery UI from Google CDN, for faster delivery
-		$Sender->AddJsFile('http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/jquery-ui.min.js', '');
+		// Load jQuery UI
+		$this->LoadJQueryUI($Sender);
+
 		// Load auxiliary files
 		$Sender->AddJsFile('award_edit.js', 'plugins/Awards/js');
 
 		// Retrieve the Award ID passed as an argument (if any)
 		$AwardID = $Sender->Request->GetValue(AWARDS_PLUGIN_ARG_AWARDID, null);
 
+		// Set Award Data in the form
 		$Sender->Form->SetModel($this->AwardsModel);
 
+		// Load Award Classes
+		$AwardClassesModel = new AwardClassesModel();
+		$AwardClasses = $AwardClassesModel->Get();
+		$Sender->SetData('AwardClasses', $AwardClasses);
+
 		if(isset($AwardID)) {
+			// Load Award Data
 			$AwardData = $this->AwardsModel->GetAwardData($AwardID)->FirstRow();
-			//var_dump($AwardDataSet);
 			$Sender->Form->SetData($AwardData);
 
-			//$Sender->SetData('AwardDataSet', $AwardDataSet);
 			$Sender->SetData('RulesSettings', $this->GetRulesSettings($AwardData));
 		}
 
@@ -124,8 +130,6 @@ class AwardsManager extends BaseManager {
 			// Just show the form with the default values
 		}
 		else {
-			// The field named "Save" is actually the Save button. If it exists, it means
-			// that the User chose to save the changes.
 			$Data = $Sender->Form->FormValues();
 
 			// If User Canceled, go back to the List
@@ -134,6 +138,8 @@ class AwardsManager extends BaseManager {
 			}
 
 			// Validate PostBack
+			// The field named "Save" is actually the Save button. If it exists, it means
+			// that the User chose to save the changes.
 			if(Gdn::Session()->ValidateTransientKey($Data['TransientKey']) && $Data['Save']) {
 				try {
 					// Retrieve the URL of the Picture associated with the Award.
@@ -213,7 +219,7 @@ class AwardsManager extends BaseManager {
 	 * Renders the page to Delete an Award.
 	 *
 	 * @param AwardsPlugin Caller The Plugin which called the method.
-	 * @param object Sender Sending controller instance.
+	 * @param Gdn_Controller Sender Sending controller instance.
 	 */
 	public function AwardDelete(AwardsPlugin $Caller, $Sender) {
 		// Prevent Users without proper permissions from accessing this page.
@@ -226,13 +232,13 @@ class AwardsManager extends BaseManager {
 			// Retrieve the Award ID passed as an argument (if any)
 			$AwardID = $Sender->Request->GetValue(AWARDS_PLUGIN_ARG_AWARDID, null);
 
-			// Load the data of the Client to be edited, if a Client ID is passed
-			$AwardData = $this->AwardsModel->GetAwardData($AwardID);
+			// Load the data of the Award to be deleted, if an Award ID is passed
+			$AwardData = $this->AwardsModel->GetAwardData($AwardID)->FirstRow(DATASET_TYPE_ARRAY);
 			//var_dump($AwardID, $AwardData);
-			$Sender->Form->SetData($AwardData->FirstRow(DATASET_TYPE_ARRAY));
+			$Sender->Form->SetData($AwardData);
 
 			// Apply the config settings to the form.
-			$Sender->Render($Caller->GetView('awards_delete_confirm_view.php'));
+			$Sender->Render($Caller->GetView('awards_award_delete_confirm_view.php'));
 		}
 		else {
 			//var_dump($Sender->Form->FormValues());
@@ -255,7 +261,7 @@ class AwardsManager extends BaseManager {
 	 * Enables or disables an Award.
 	 *
 	 * @param AwardsPlugin Caller The Plugin which called the method.
-	 * @param object Sender Sending controller instance.
+	 * @param Gdn_Controller Sender Sending controller instance.
 	 */
 	public function AwardEnable(AwardsPlugin $Caller, $Sender) {
 		// Prevent Users without proper permissions from accessing this page.
@@ -278,7 +284,7 @@ class AwardsManager extends BaseManager {
 	 * Process the Award Rules for the specified User ID.
 	 *
 	 * @param AwardsPlugin Caller The Plugin who called the method.
-	 * @param object Sender Sending controller instance.
+	 * @param Gdn_Controller Sender Sending controller instance.
 	 * @param int UserID The ID of the User for which to process the Award Rules.
 	 */
 	public function ProcessAwards(AwardsPlugin $Caller, Gdn_Controller $Sender, $UserID) {

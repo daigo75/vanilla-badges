@@ -16,6 +16,7 @@ class AwardsSchema extends PluginSchema {
 			->Column('AwardClassName', 'varchar(100)', FALSE, 'unique')
 			->Column('AwardClassDescription', 'text')
 			->Column('AwardClassImageFile', 'text')
+			->Column('AwardClassCSS', 'text')
 			->Column('DateInserted', 'datetime', FALSE)
 			->Column('InsertUserID', 'int', TRUE)
 			->Column('DateUpdated', 'datetime', TRUE)
@@ -119,6 +120,37 @@ class AwardsSchema extends PluginSchema {
 	}
 
 	/**
+	 * Creates a View that returns a list of the configured Award Classes.
+	 */
+	protected function create_awardclasseslist_view() {
+		$Px = $this->Px;
+		$Sql = "
+		SELECT
+			AC.AwardClassID
+			,AC.AwardClassName
+			,AC.AwardClassDescription
+			,AC.AwardClassImageFile
+			,AC.AwardClassCSS
+			,AC.DateInserted
+			,AC.DateUpdated
+			,COUNT(A.AwardID) AS TotalAwardsUsingClass
+		FROM
+			${Px}AwardClasses AC
+			LEFT JOIN
+			${Px}Awards A ON
+				(A.AwardClassID = AC.AwardClassID)
+		GROUP BY
+			AC.AwardClassID
+			,AC.AwardClassName
+			,AC.AwardClassDescription
+			,AC.AwardClassImageFile
+			,AC.DateInserted
+			,AC.DateUpdated
+		";
+		$this->Construct->View('v_awards_awardclasseslist', $Sql);
+	}
+
+	/**
 	 * Creates a View that returns a list of the configured Awards.
 	 */
 	protected function create_userawardslist_view() {
@@ -196,6 +228,7 @@ class AwardsSchema extends PluginSchema {
 		$this->create_userawards_table();
 
 		$this->create_awardslist_view();
+		$this->create_awardclasseslist_view();
 		$this->create_userawardslist_view();
 		$this->create_availableawardslist_view();
 	}
@@ -206,6 +239,7 @@ class AwardsSchema extends PluginSchema {
 	protected function DropObjects() {
 		$this->DropView('v_awards_availableawardslist');
 		$this->DropView('v_awards_userawardslist');
+		$this->DropView('v_awards_awardclasseslist');
 		$this->DropView('v_awards_awardlist');
 
 		$this->DropTable('UserAwards');

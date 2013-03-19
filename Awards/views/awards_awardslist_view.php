@@ -2,7 +2,6 @@
 /**
 {licence}
 */
-
 	// Indicates how many columns there are in the table that shows the list of
 	// configured Awards. It's mainly used to set the "colspan" attributes of
 	// single-valued table rows, such as Title, or the "No Results Found" message.
@@ -38,11 +37,11 @@
 		<table id="AwardsList" class="display AltRows">
 			<thead>
 				<tr>
-					<th><?php echo T('Award Name'); ?></th>
 					<th class="Image"><?php echo T('Icon'); ?></th>
-					<th><?php echo T('Class'); ?></th>
-					<th><?php echo T('Description'); ?></th>
-					<th><?php echo T('Enabled?'); ?></th>
+					<th class="Name"><?php echo T('Award Name'); ?></th>
+					<th class="Name"><?php echo T('Class'); ?></th>
+					<th class="Description"><?php echo T('Description'); ?></th>
+					<th class="Enabled"><?php echo T('Enabled?'); ?></th>
 					<th>&nbsp;</th>
 				</tr>
 			</thead>
@@ -66,16 +65,20 @@
 					// Output the details of each row in the DataSet
 					foreach($AwardsDataSet as $Award) {
 						echo "<tr>\n";
+						if(empty($Award->AwardImageFile)) {
+							echo Wrap(Gdn_Format::Text(T('None')), 'td');
+						}
+						else {
+							echo Wrap(Img($Award->AwardImageFile,
+														array('class' => 'AwardImage Medium ' . $Award->AwardClassName,)),
+												'td',
+												array('class' => 'Image',));
+						}
 						// Output Award Name and Description
-						echo Wrap(Gdn_Format::Text($Award->AwardName), 'td', array('class' => 'AwardName',));
+						echo Wrap(Gdn_Format::Text($Award->AwardName), 'td', array('class' => 'Name',));
 
-						echo Wrap(Img($Award->AwardImageFile,
-													array('class' => 'AwardImage Medium ' . $Award->AwardClassName,)),
-											'td',
-											array('class' => 'Image',));
-
-						echo Wrap(Gdn_Format::Text($Award->AwardClassName), 'td', array('class' => 'AwardClassName',));
-						echo Wrap(Gdn_Format::Text($Award->AwardDescription), 'td', array('class' => 'AwardDescription',));
+						echo Wrap(Gdn_Format::Text($Award->AwardClassName), 'td', array('class' => 'Name',));
+						echo Wrap(Gdn_Format::Text($Award->AwardDescription), 'td', array('class' => 'Description',));
 
 						// Output "Enabled" indicator
 						$EnabledText = ($Award->AwardIsEnabled == 1) ? T('Yes') : T('No');
@@ -119,7 +122,7 @@
 			 </tbody>
 		</table>
 		<?php
-			 echo $this->Form->Close('Save');
+			echo $this->Form->Close();
 		?>
 	</div>
 </div>

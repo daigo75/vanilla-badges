@@ -22,9 +22,7 @@ class AwardsModel extends ModelEx {
 	}
 
 	/**
-	 * Set Validation Rules that apply when saving a new row in Cron Jobs History.
-	 *
-	 * @return void
+	 * Set Validation Rules that apply when saving a new Award.
 	 */
 	protected function _SetAwardsValidationRules() {
 		$Validation = new Gdn_Validation();
@@ -149,7 +147,7 @@ class AwardsModel extends ModelEx {
 	}
 
 	/**
-	 * Save an Awards into the database.
+	 * Save an Awards to the database.
 	 *
    * @param array $FormPostValues An associative array of $Field => $Value
    * pairs that represent data posted from the form in the $_POST or $_GET
@@ -207,13 +205,15 @@ class AwardsModel extends ModelEx {
 	 * Deletes an Award and its Rule settings from the Awards and AwardRules
 	 * tables.
 	 *
+	 * Note: all the assignments of the Award will be deleted with this operation.
+	 * That is, all Users who gained the Award will lose it permanently.
+	 *
 	 * @param AwardID The ID of the Award to be deleted.
 	 * @return AWARDS_OK if Award was deleted successfully, or a numeric error
 	 * code if deletion failed.
 	 */
 	public function Delete($AwardID) {
-		// TODO Delete the configuration of all Rules associated with the Award.
-
+		// TODO Transform physical deletion into a logical one
 		$this->SQL->Delete('Awards', array('AwardID' => $AwardID,));
 	}
 
