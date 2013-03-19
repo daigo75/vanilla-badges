@@ -155,11 +155,7 @@ class AwardClassesModel extends ModelEx {
 				$this->AddUpdateFields($Fields);
 				$this->Update($Fields, array($this->PrimaryKey => $AwardClassID));
 				$Result = $AwardClassID;
-
-				// TODO Delete the configuration of all Rules associated with the Award. New configuration will be saved later.
 			}
-
-			// TODO Save the configuration of all Rules associated with the Award
 
 			$this->Database->CommitTransaction();
 			return $Result;

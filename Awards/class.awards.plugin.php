@@ -140,7 +140,7 @@ class AwardsPlugin extends Gdn_Plugin {
 		// Common files
 		$Sender->AddCssFile('awardclasses.css', 'plugins/Awards/design/css');
 
-		// TODO Fire rule processing
+		// Process (and assign) Awards
 		$this->ProcessAwards($Sender);
 	}
 
@@ -361,40 +361,3 @@ class AwardsPlugin extends Gdn_Plugin {
 		AwardsSchema::Uninstall();
 	}
 }
-
-/*
-		if($Sender->Form->AuthenticatedPostBack() === FALSE) {
-
-			$Model->Save($Values);
-		}
-		else {
-			var_dump($Fields = $Sender->Form->FormValues());
-
-			// TODO Move this code to its own place
-
-			// Create a list of configuration arrays for each of the enabled rules
-			$RulesParams = array();
-			foreach($Fields['Rule'] as $RuleClass) {
-				$RulesParams[$RuleClass] = array();
-			}
-
-			// Parse each of the fields returned by the form, and assign each one to
-			// the Rule it belongs to. Since fields cannot be grouped, the Rule Name
-			// must be added to the field name, as a prefix, and separated from the
-			// field name by an underscore
-			foreach($Fields as $Name => $Value) {
-				if(strpos($Name, '_') > 0) {
-					$FieldParts = explode('_', $Name);
-					$RuleClass = array_shift($FieldParts);
-					$ParamName = array_shift($FieldParts);
-
-					// A Field value will be considered only if the Rule it belongs to has
-					// been enabled
-					if(isset($RulesParams[$RuleClass])) {
-						$RulesParams[$RuleClass][$ParamName] = $Value;
-					}
-				}
-			}
-			var_dump($RulesParams);
- die();
-		}*/

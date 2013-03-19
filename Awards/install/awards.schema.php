@@ -219,6 +219,8 @@ class AwardsSchema extends PluginSchema {
 		$this->Construct->View('v_awards_availableawardslist', $Sql);
 	}
 
+	// TODO Create view to list all the Users who got a specific Award
+
 	/**
 	 * Create all the Database Objects in the appropriate order.
 	 */

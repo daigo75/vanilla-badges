@@ -294,11 +294,11 @@ class AwardsManager extends BaseManager {
 	 * @param int UserID The ID of the User for which to process the Award Rules.
 	 */
 	public function ProcessAwards(AwardsPlugin $Caller, Gdn_Controller $Sender, $UserID) {
-		// TODO Implement Rule Processing
 		if(!Gdn::Session()->IsValid()) {
 			return;
 		}
 
+		// Retrieve the list of Awards still available to the User
 		$AvailableAwardsDataSet = $this->AwardsModel->GetAvailableAwards(Gdn::Session()->UserID);
 
 		// Debug - Rules to process

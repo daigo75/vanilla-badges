@@ -53,7 +53,6 @@ $IsNewAward = empty($AwardID) ? true : false;
 			</li>
 			<li class="clearfix">
       <?php
-				// TODO Display Award Picture to the left of the Upload File control
 				echo $this->Form->Label(T('Award Picture'), 'Picture');
 			?>
 			<div class="ImageColumn">
