@@ -17,6 +17,7 @@ class AwardsSchema extends PluginSchema {
 			->Column('AwardClassDescription', 'text')
 			->Column('AwardClassImageFile', 'text')
 			->Column('AwardClassCSS', 'text')
+			->Column('RankPoints', 'uint', 0)
 			->Column('DateInserted', 'datetime', FALSE)
 			->Column('InsertUserID', 'int', TRUE)
 			->Column('DateUpdated', 'datetime', TRUE)
@@ -110,6 +111,7 @@ class AwardsSchema extends PluginSchema {
 			,A.RulesSettings
 			,AC.AwardClassName
 			,AC.AwardClassImageFile
+			,AC.RankPoints AS AwardClassRankPoints
 		FROM
 			${Px}Awards A
 			JOIN
@@ -131,6 +133,7 @@ class AwardsSchema extends PluginSchema {
 			,AC.AwardClassDescription
 			,AC.AwardClassImageFile
 			,AC.AwardClassCSS
+			,AC.RankPoints
 			,AC.DateInserted
 			,AC.DateUpdated
 			,COUNT(A.AwardID) AS TotalAwardsUsingClass
@@ -171,6 +174,7 @@ class AwardsSchema extends PluginSchema {
 				,A.DateUpdated
 				,AC.AwardClassName
 				,AC.AwardClassImageFile
+				,AC.RankPoints AS AwardClassRankPoints
 			FROM
 				${Px}UserAwards UA
 				JOIN
@@ -197,6 +201,7 @@ class AwardsSchema extends PluginSchema {
 				,VAAL.Recurring
 				,VAAL.AwardIsEnabled
 				,VAAL.RankPoints
+				,VAAL.AwardClassRankPoints
 				,VAAL.RulesSettings
 				,COUNT(UA.UserID) AS TimesAwarded
 			FROM
