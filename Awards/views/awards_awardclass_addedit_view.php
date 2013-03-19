@@ -20,7 +20,9 @@
 			<li>
 				<?php
 					echo $this->Form->Label(T('Award Class Name'), 'AwardClassName');
-					echo Wrap(T('Enter a name for the Award Class. It must be unique, amongst the Award Classes.'),
+					echo Wrap(T('Enter a name for the Award Class. It must be unique amongst the Award ' .
+											'Classes and it must respect specifications for CSS class names (i.e. it ' .
+											'can only contain letters, numbers, hyphens and underscores).'),
 										'div',
 										array('class' => 'Info',
 													'maxlength' => '100',

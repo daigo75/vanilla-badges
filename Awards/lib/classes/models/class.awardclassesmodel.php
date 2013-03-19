@@ -28,6 +28,12 @@ class AwardClassesModel extends ModelEx {
 		$Validation = new Gdn_Validation();
 
 		// Add extra rules below
+		$Validation->AddRule('ValidateCSSClassName', 'function:ValidateCSSClassName');
+
+		// Validation rules for Allowed Anonymous IP List
+		$Validation->ApplyRule('AwardClassName', 'ValidateCSSClassName',
+													 T('Award Class Name must respect CSS Class Name specifications (see field ' .
+														 'description for a list of allowed characters).'));
 
 		// Set additional Validation Rules here. Please note that formal validation
 		// is done automatically by base Model Class, by retrieving Schema

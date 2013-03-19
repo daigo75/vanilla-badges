@@ -36,6 +36,12 @@ class AwardClassesManager extends BaseManager {
 		$Sender->Render($Caller->GetView('awards_awardclasseslist_view.php'));
 	}
 
+	/**
+	 * Loads the Syntax Highlighter that will help Users in creating the CSS for
+	 * the Award Class.
+	 *
+	 * @param Gdn_Controller Sender Sending controller instance.
+	 */
 	private function LoadSyntaxHighlighter(Gdn_Controller $Sender) {
 		// Load the Syntax Highlighter for the Class CSS textarea
 		$Sender->AddCssFile('codemirror.css', 'plugins/Awards/js/codemirror/lib');
@@ -104,7 +110,9 @@ class AwardClassesManager extends BaseManager {
 
 				Gdn::Database()->BeginTransaction();
 				try{
-					// TODO Implement automatic generation of CSS file containing the styles for each Award Class
+					// Trim Award Class name. Such name will become a CSS class, whose name
+					// cannot contain non-printable characters
+					$Sender->Form->SetFormValue('AwardClassName', trim($Sender->Form->GetValue('AwardClassName')));
 
 					// Save AwardClasses settings
 					$Saved = $Sender->Form->Save();
@@ -183,8 +191,14 @@ class AwardClassesManager extends BaseManager {
 			// The field named "OK" is actually the OK button. If it exists, it means
 			// that the User confirmed the deletion.
 			if(Gdn::Session()->ValidateTransientKey($Data['TransientKey']) && $Sender->Form->ButtonExists('OK')) {
-				// Delete Client Id
+				// Delete Award Class
 				$this->AwardClassesModel->Delete($Sender->Form->GetValue('AwardClassID'));
+				$this->Log()->info(sprintf(T('User %s (ID: %d) deleted Award "%s" (ID: %d).'),
+																		Gdn::Session()->User->Name,
+																		Gdn::Session()->User->UserID,
+																		GetValue('AwardClassName', $Data),
+																		GetValue('AwardClassID', $Data)
+																		));
 
 				$Sender->InformMessage(T('Award Class deleted.'));
 			}
@@ -193,57 +207,15 @@ class AwardClassesManager extends BaseManager {
 		}
 	}
 
-	/**
-	 * Enables or disables an Award.
-	 *
-	 * @param AwardsPlugin Caller The Plugin which called the method.
-	 * @param Gdn_Controller Sender Sending controller instance.
-	 */
-	public function AwardEnable(AwardsPlugin $Caller, Gdn_Controller $Sender) {
-		// Prevent Users without proper permissions from accessing this page.
-		$Sender->Permission('Plugins.Awards.Manage');
+	// TODO Document method
+	public function GenerateAwardClassesCSS(Gdn_Pluggable $Sender) {
+		// TODO Implement automatic generation of CSS file containing the styles for each Award Class
+		$AwardClassesDataSet = $this->AwardClassesModel->Get();
 
-		$AwardClassID = $Sender->Request->GetValue(AWARDS_PLUGIN_ARG_AWARDID, null);
-		$EnableFlag = $Sender->Request->GetValue(AWARDS_PLUGIN_ARG_ENABLEFLAG, null);
+		foreach($AwardClassesDataSet as $AwardClassData) {
+			//$AwardClassData);
 
-		if(is_numeric($AwardClassID) && is_numeric($EnableFlag)) {
-			if($this->AwardClassesModel->EnableAward((int)$AwardClassID, (int)$EnableFlag)) {
-				$Sender->InformMessage(T('Your changes have been saved.'));
-			};
-		}
-
-		// Render AwardClasses List page
-		Redirect(AWARDS_PLUGIN_AWARDCLASSES_LIST_URL);
-	}
-
-	/**
-	 * Process the Award Rules for the specified User ID.
-	 *
-	 * @param AwardsPlugin Caller The Plugin who called the method.
-	 * @param Gdn_Controller Sender Sending controller instance.
-	 * @param int UserID The ID of the User for which to process the Award Rules.
-	 */
-	public function ProcessAwardClasses(AwardsPlugin $Caller, Gdn_Controller $Sender, $UserID) {
-		// TODO Implement Rule Processing
-		if(!Gdn::Session()->IsValid()) {
-			return;
-		}
-
-		$AvailableAwardClassesDataSet = $this->AwardClassesModel->GetAvailableAwardClasses(Gdn::Session()->UserID);
-
-		// Debug - Rules to process
-		//var_dump($AvailableAwardClassesDataSet->Result());
-
-		foreach($AvailableAwardClassesDataSet->Result() as $AwardClassData) {
-			$this->Log()->debug(sprintf(T('Processing Award "%s"...'), $AwardClassData->AwardName));
-			//var_dump($AwardClassData->AwardName);
-
-			$RulesSettings = $this->GetRulesSettings($AwardClassData);
-
-			$AwardAssignments = $Caller->RulesManager()->ProcessRules($UserID, $RulesSettings);
-			$this->Log()->debug(sprintf(T('Assigning Award %d time(s).'), $AwardAssignments));
-
-			// TODO Assign Award to User, if needed
 		}
 	}
+
 }

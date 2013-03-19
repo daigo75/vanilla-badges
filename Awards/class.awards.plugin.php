@@ -257,6 +257,15 @@ class AwardsPlugin extends Gdn_Plugin {
 	}
 
 	/**
+	 * Handler of event AwardsPlugin::ConfigChanged().
+	 *
+	 * @param Gdn_Pluggable Sender The object which fired the event.
+	 */
+	public function AwardsPlugin_ConfigChanged_Handler(Gdn_Pluggable $Sender) {
+		$this->AwardClassesManager()->GenerateAwardClassesCSS($Sender);
+	}
+
+	/**
 	 * Renders the Awards List page.
 	 *
 	 * @param object Sender Sending controller instance.

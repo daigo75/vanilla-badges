@@ -6,6 +6,10 @@
 .AwardsPlugin {
 }
 
+.AwardsPlugin .Info {
+	padding-top: 0;
+}
+
 .AwardsPlugin .Buttons {
 	margin-top: 1em;
 }
@@ -119,7 +123,7 @@ img.Medium {
 }
 
 .AwardsPlugin .Name {
-	width: 10em;
+	width: 15em;
 }
 
 .AwardsPlugin .Description {

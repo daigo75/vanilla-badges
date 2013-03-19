@@ -30,6 +30,7 @@
 		<div>
 			<?php
 				echo $this->Form->Hidden('AwardID');
+				echo $this->Form->Hidden('AwardName');
 				echo $this->Form->Button(T('OK'), array('Name' => 'OK',));
 				echo $this->Form->Button(T('Cancel'));
 			?>

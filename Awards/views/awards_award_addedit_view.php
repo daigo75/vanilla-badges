@@ -43,7 +43,7 @@ $IsNewAward = empty($AwardID) ? true : false;
 			<li>
 				<?php
 					echo $this->Form->Label(T('Award Name'), 'AwardName');
-					echo Wrap(T('Enter a name for the Award. It must be unique, amongst the Awards.'),
+					echo Wrap(T('Enter a name for the Award. It must be unique amongst the Awards.'),
 										'div',
 										array('class' => 'Info',
 													'maxlength' => '100',

@@ -28,6 +28,7 @@
 		<div>
 			<?php
 				echo $this->Form->Hidden('AwardClassID');
+				echo $this->Form->Hidden('AwardClassName');
 				echo $this->Form->Button(T('OK'), array('Name' => 'OK',));
 				echo $this->Form->Button(T('Cancel'));
 			?>

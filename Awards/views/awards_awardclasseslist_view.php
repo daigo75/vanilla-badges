@@ -40,8 +40,8 @@
 			<thead>
 				<tr>
 					<th class="Image"><?php echo T('Background Image'); ?></th>
-					<th class="AwardClassName"><?php echo T('Award Class Name'); ?></th>
-					<th class="AwardClassDescription"><?php echo T('Description'); ?></th>
+					<th class="Name"><?php echo T('Award Class Name'); ?></th>
+					<th class="Description"><?php echo T('Description'); ?></th>
 					<th class="TotalAwardsUsingClass"><?php echo T('Awards using Class'); ?></th>
 					<th>&nbsp;</th>
 				</tr>

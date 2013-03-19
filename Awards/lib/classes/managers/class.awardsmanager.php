@@ -247,8 +247,14 @@ class AwardsManager extends BaseManager {
 			// The field named "OK" is actually the OK button. If it exists, it means
 			// that the User confirmed the deletion.
 			if(Gdn::Session()->ValidateTransientKey($Data['TransientKey']) && $Sender->Form->ButtonExists('OK')) {
-				// Delete Client Id
+				// Delete Award
 				$this->AwardsModel->Delete($Sender->Form->GetValue('AwardID'));
+				$this->Log()->info(sprintf(T('User %s (ID: %d) deleted Award "%s" (ID: %d).'),
+																		Gdn::Session()->User->Name,
+																		Gdn::Session()->User->UserID,
+																		GetValue('AwardName', $Data),
+																		GetValue('AwardID', $Data)
+																		));
 
 				$Sender->InformMessage(T('Award deleted.'));
 			}
