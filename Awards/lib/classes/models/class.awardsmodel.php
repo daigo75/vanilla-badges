@@ -54,6 +54,7 @@ class AwardsModel extends ModelEx {
 			->Select('VAAL.RulesSettings')
 			->Select('VAAL.AwardClassName')
 			->Select('VAAL.AwardClassImageFile')
+			->Select('VAAL.AwardClassRankPoints')
 			->From('v_awards_awardslist VAAL');
 		return $Query;
 	}
@@ -167,7 +168,7 @@ class AwardsModel extends ModelEx {
 		$Limit = (is_numeric($Limit) && $Limit > 0) ? $Limit : 1000;
 		$Offset = (is_numeric($Offset) && $Offset > 0) ? $Offset : 0;
 
-		// Return the Jobs Started within the Date Range.
+		// Prepare the base query
 		$this->PrepareAwardsQuery();
 
 		// Add additional WHERE clauses, if any has been passed
@@ -242,8 +243,6 @@ class AwardsModel extends ModelEx {
 	 * That is, all Users who gained the Award will lose it permanently.
 	 *
 	 * @param AwardID The ID of the Award to be deleted.
-	 * @return AWARDS_OK if Award was deleted successfully, or a numeric error
-	 * code if deletion failed.
 	 */
 	public function Delete($AwardID) {
 		// TODO Transform physical deletion into a logical one
