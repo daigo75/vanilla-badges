@@ -3,6 +3,9 @@
 {licence}
 */
 
+/* simple_html_dom library is required to manipulate Form fields, to allow
+ * grouping Rule fields together
+ */
 require(AWARDS_PLUGIN_EXTERNAL_PATH . '/simple_html_dom/simple_html_dom.php');
 
 interface IAwardRule {
@@ -50,6 +53,23 @@ class BaseAwardRule extends Gdn_Controller {
 	const NO_ASSIGNMENTS = 0;
 	// @var int Indicates that an Award should be assigned once, as the Rule checks did pass.
 	const ASSIGN_ONE = 1;
+
+	/**
+	 * Retrieves and stores User data using UserModel.
+	 *
+	 * @param int UrerID The UserID to use as a key to retrieve the data.
+	 * @return stdClass An object containing User Data.
+	 * @see UserModel::GetID()
+	 */
+	protected function GetUserData($UserID) {
+		if(!isset($this->_UserData)) {
+			$UserModel = new UserModel();
+
+			$this->_UserData = $UserModel->GetID($UserID);
+		}
+
+		return $this->_UserData;
+	}
 
 	/**
 	 * Runs the processing of the Rule, which will return how many times the Award
@@ -169,7 +189,6 @@ class BaseAwardRule extends Gdn_Controller {
 			// in its "value" attribute.
 			if(strcasecmp($Input->name, 'Checkboxes[]') == 0){
 				$InputAttribute = 'value';
-
 			}
 			else {
 				$InputAttribute = 'name';
