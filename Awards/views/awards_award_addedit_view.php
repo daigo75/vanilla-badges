@@ -41,46 +41,19 @@ $IsNewAward = empty($AwardID) ? true : false;
 		<legend><?php echo Wrap(T('Award Configuration'), 'h1'); ?></legend>
 		<ul>
 			<li>
-				<?php
-					echo $this->Form->Label(T('Award Name'), 'AwardName');
-					echo Wrap(T('Enter a name for the Award. It must be unique amongst the Awards.'),
-										'div',
-										array('class' => 'Info',
-													'maxlength' => '100',
-													));
-					echo $this->Form->TextBox('AwardName');
-				?>
-			</li>
-			<li class="clearfix">
-      <?php
-				echo $this->Form->Label(T('Award Picture'), 'Picture');
-			?>
-			<div class="ImageColumn">
-			<?php
-				echo Wrap(T('Current Image'), 'h5');
-				echo Wrap(Wrap(Img($this->Form->GetValue('AwardImageFile'),
-													 array('class' => 'AwardImage Large',)),
-											 'td'),
-									'div',
-									array('class' => 'AwardImageWrapper'));
-			?>
-			</div>
-			<div class="ImageSelector">
-				<?php
-					echo Wrap(T('Select new Image'), 'h5');
-					// TODO Get picture size from configuration
-					echo Wrap(sprintf(T('Select an image on your computer (2mb max) to be used as ' .
-															'an icon for the Award. Image will be resized to %dx%d (width ' .
-															'x height) pixels.'),
-														PictureManager::DEFAULT_IMAGE_WIDTH,
-														PictureManager::DEFAULT_IMAGE_HEIGHT),
-										'p');
-					echo Wrap(T('<strong>Important</strong>: if you upload a file with the same '.
-											'name of one you uploaded before, the old file will be overwritten.'),
-										'p');
-					echo $this->Form->Input('Picture', 'file');
-				?>
-			</div>
+				<div class="clearfix">
+					<div class="Column">
+						<?php
+							echo $this->Form->Label(T('Award Name'), 'AwardName');
+							echo Wrap(T('Enter a name for the Award. It must be unique amongst the Awards.'),
+												'div',
+												array('class' => 'Info',
+															'maxlength' => '100',
+															));
+							echo $this->Form->TextBox('AwardName');
+						?>
+					</div>
+				</div>
 			</li>
 			<li>
 				<?php
@@ -97,6 +70,49 @@ $IsNewAward = empty($AwardID) ? true : false;
 																					 'ValueField' => 'AwardClassID',
 																					 'TextField' => 'AwardClassName'));
 				?>
+			</li>
+			<li>
+				<?php
+					echo $this->Form->Label(T('Rank Points'), 'RankPoints');
+					echo Wrap(T('Enter the amount of Rank Points to give to Users who receive ' .
+											'the Award. These points will be used by <a href="#" title="Rankings ' .
+											'Plugin has not been released, yet">Rankings Plugin</a> to assign ' .
+											'Users titles, permissions, etc.'),
+										'div',
+										array('class' => 'Info',));
+					echo $this->Form->TextBox('RankPoints');
+				?>
+			</li>
+			<li class="clearfix">
+				<?php
+					echo $this->Form->Label(T('Award Picture'), 'Picture');
+				?>
+				<div class="ImageColumn">
+				<?php
+					echo Wrap(T('Current Image'), 'h5');
+					echo Wrap(Wrap(Img($this->Form->GetValue('AwardImageFile'),
+														 array('class' => 'AwardImage Large',)),
+												 'td'),
+										'div',
+										array('class' => 'AwardImageWrapper'));
+				?>
+				</div>
+				<div class="ImageSelector">
+					<?php
+						echo Wrap(T('Select new Image'), 'h5');
+						// TODO Get picture size from configuration
+						echo Wrap(sprintf(T('Select an image on your computer (2mb max) to be used as ' .
+																'an icon for the Award. Image will be resized to %dx%d (width ' .
+																'x height) pixels.'),
+															PictureManager::DEFAULT_IMAGE_WIDTH,
+															PictureManager::DEFAULT_IMAGE_HEIGHT),
+											'p');
+						echo Wrap(T('<strong>Important</strong>: if you upload a file with the same '.
+												'name of one you uploaded before, the old file will be overwritten.'),
+											'p');
+						echo $this->Form->Input('Picture', 'file');
+					?>
+				</div>
 			</li>
 			<li>
 				<?php

@@ -5,7 +5,7 @@
 	// Indicates how many columns there are in the table that shows the list of
 	// configured Awards. It's mainly used to set the "colspan" attributes of
 	// single-valued table rows, such as Title, or the "No Results Found" message.
-	$AwardsTableColumns = 6;
+	$AwardsTableColumns = 7;
 
 	// The following HTML will be displayed when the DataSet is empty.
 	$OutputForEmptyDataSet = Wrap(T('No Awards configured.'),
@@ -40,7 +40,9 @@
 					<th class="Image"><?php echo T('Icon'); ?></th>
 					<th class="Name"><?php echo T('Award Name'); ?></th>
 					<th class="Name"><?php echo T('Class'); ?></th>
+					<th class="RankPoints"><?php echo T('Rank Points'); ?></th>
 					<th class="Description"><?php echo T('Description'); ?></th>
+					<th class="TimesAwarded"><?php echo T('Times Awarded'); ?></th>
 					<th class="Enabled"><?php echo T('Enabled?'); ?></th>
 					<th>&nbsp;</th>
 				</tr>
@@ -49,9 +51,6 @@
 			</tfoot>
 			<tbody>
 				<?php
-					// TODO Display list of configured Awards
-					// TODO Display Add button
-					// TODO Display Edit button
 					// TODO Display Clone button
 					// TODO Display, next to each Award, how many times it has been awarded
 
@@ -76,9 +75,12 @@
 						}
 						// Output Award Name and Description
 						echo Wrap(Gdn_Format::Text($Award->AwardName), 'td', array('class' => 'Name',));
-
 						echo Wrap(Gdn_Format::Text($Award->AwardClassName), 'td', array('class' => 'Name',));
+
+						echo Wrap(Gdn_Format::Text($Award->RankPoints), 'td', array('class' => 'RankPoints Numeric',));
+
 						echo Wrap(Gdn_Format::Text($Award->AwardDescription), 'td', array('class' => 'Description',));
+						echo Wrap(Gdn_Format::Text($Award->TotalTimesAwarded), 'td', array('class' => 'TimesAwarded Numeric',));
 
 						// Output "Enabled" indicator
 						$EnabledText = ($Award->AwardIsEnabled == 1) ? T('Yes') : T('No');

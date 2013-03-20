@@ -12,8 +12,9 @@ require(AWARDS_PLUGIN_LIB_PATH . '/awards.validation.php');
 
 // Define the plugin:
 $PluginInfo['Awards'] = array(
-	'Description' => 'Awards plugin for Vanilla Forums',
-	'Version' => '13.03.18 alpha',
+	'Name' => 'Awards Plugin',
+	'Description' => 'Awards Plugin for Vanilla Forums',
+	'Version' => '13.03.20 alpha',
 	'RequiredApplications' => array('Vanilla' => '2.0'),
 	'RequiredTheme' => FALSE,
 	'RequiredPlugins' => array('Logger' => '12.10.28',
@@ -155,7 +156,7 @@ class AwardsPlugin extends Gdn_Plugin {
 		 * If you build your views properly, this will be used as the <title> for your page, and for the header
 		 * in the dashboard. Something like this works well: <h1><?php echo T($this->Data['Title']); ?></h1>
 		 */
-		$Sender->Title('Awards Plugin');
+		$Sender->Title($this->GetPluginKey('Name'));
 		$Sender->AddSideMenu('plugin/awards');
 
 		// If your sub-pages use forms, this is a good place to get it ready
@@ -166,6 +167,10 @@ class AwardsPlugin extends Gdn_Plugin {
 		 * for a dashboard settings screen.
 		 */
 		$this->Dispatch($Sender, $Sender->RequestArgs);
+	}
+
+	public function Base_AfterBody_Handler($Sender) {
+		//var_dump($Sender->EventArguments);die();
 	}
 
 	/**
@@ -187,7 +192,7 @@ class AwardsPlugin extends Gdn_Plugin {
 		// Prevent non authorised Users from accessing this page
 		$Sender->Permission('Plugins.Awards.Manage');
 
-		$Sender->SetData('PluginDescription',$this->GetPluginKey('Description'));
+		$Sender->SetData('PluginDescription', $this->GetPluginKey('Description'));
 
 		$Validation = new Gdn_Validation();
 		$ConfigurationModel = new Gdn_ConfigurationModel($Validation);
@@ -226,7 +231,7 @@ class AwardsPlugin extends Gdn_Plugin {
 	 */
 	public function Base_GetAppSettingsMenuItems_Handler($Sender) {
 		$Menu = $Sender->EventArguments['SideMenu'];
-		$Menu->AddLink('Add-ons', 'Awards', 'plugin/awards', 'Garden.AdminUser.Only');
+		$Menu->AddLink('Add-ons', $this->GetPluginKey('Name'), 'plugin/awards', 'Garden.AdminUser.Only');
 	}
 
 	/**

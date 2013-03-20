@@ -212,10 +212,28 @@ class AwardClassesManager extends BaseManager {
 		// TODO Implement automatic generation of CSS file containing the styles for each Award Class
 		$AwardClassesDataSet = $this->AwardClassesModel->Get();
 
+		// Prepare the notice to put at the beginning of the generated CSS file
+		$CSSEntries = array(T("/**\n" .
+													"* This file contains all the CSS Classes related derived from Award Classes and\n" .
+													"* it's generated automatically by Awards Plugin. Don't change it manually,\n" .
+													"* all changes will be overwritten by the Plugin when it runs.\n" .
+													"*/\n"));
+
+		// Add CSS for each Class
 		foreach($AwardClassesDataSet as $AwardClassData) {
-			//$AwardClassData);
+			// Use the Award Class Name as a CSS Class and concatenate the CSS code
+			$CSSDeclaration = '.' . $AwardClassData->AwardClassName . " {\n";
 
+			// Add the background image using the uploaded image
+			if(!empty($AwardClassData->AwardClassImageFile)) {
+				$CSSDeclaration .= "background: url(\"" . Url($AwardClassData->AwardClassImageFile) . "\") top left no-repeat;\n";
+			}
+			// Add the rest of the CSS
+			$CSSDeclaration .= $AwardClassData->AwardClassCSS . "\n}\n";
+
+			$CSSEntries[] = $CSSDeclaration;
 		}
-	}
 
+		$this->WriteToFile(AWARDS_PLUGIN_AWARDCLASSES_CSS_FILE, implode("\n", $CSSEntries));
+	}
 }

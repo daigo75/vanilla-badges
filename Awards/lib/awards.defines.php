@@ -20,7 +20,8 @@ define('AWARDS_PLUGIN_EXTERNAL_PATH', AWARDS_PLUGIN_LIB_PATH . '/external');
 define('AWARDS_PLUGIN_VIEWS_PATH', AWARDS_PLUGIN_PATH . '/views');
 define('AWARDS_PLUGIN_RULES_PATH', AWARDS_PLUGIN_CLASS_PATH . '/rules');
 define('AWARDS_PLUGIN_AWARD_PICS_PATH', 'plugins/Awards/design/images/awards');
-define('AWARDS_PLUGIN_AWARDCLASSES_PICS_PATH', 'plugins/awards/design/images/awardclasses');
+define('AWARDS_PLUGIN_AWARDCLASSES_PICS_PATH', 'plugins/Awards/design/images/awardclasses');
+define('AWARDS_PLUGIN_AWARDCLASSES_CSS_FILE', AWARDS_PLUGIN_PATH . '/design/css/awardclasses.css');
 
 // URLs
 define('AWARDS_PLUGIN_BASE_URL', 'plugin/awards');

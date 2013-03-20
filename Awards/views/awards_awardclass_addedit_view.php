@@ -33,37 +33,48 @@
 										'p');
 				?>
 			</li>
-			<li class="clearfix">
-      <?php
-				// TODO Display Award Class Picture to the left of the Upload File control
-				echo $this->Form->Label(T('Award Class Picture'), 'Picture');
-			?>
-			<div class="ImageColumn">
-			<?php
-				echo Wrap(T('Current Image'), 'h5');
-				echo Wrap(Wrap(Img($this->Form->GetValue('AwardClassImageFile'),
-													 array('class' => 'AwardClassImage Large',)),
-											 'td'),
-									'div',
-									array('class' => 'AwardClassImageWrapper'));
-			?>
-			</div>
-			<div class="ImageSelector">
+			<li>
 				<?php
-					echo Wrap(T('Select new Image'), 'h5');
-					// TODO Get picture size from configuration
-					echo Wrap(sprintf(T('Select an image on your computer (2mb max) to be used as ' .
-															'an icon for the Award. Image will be resized to %dx%d (width ' .
-															'x height) pixels.'),
-														PictureManager::DEFAULT_IMAGE_WIDTH,
-														PictureManager::DEFAULT_IMAGE_HEIGHT),
-										'p');
-					echo Wrap(T('<strong>Important</strong>: if you upload a file with the same '.
-											'name of one you uploaded before, the old file will be overwritten.'),
-										'p');
-					echo $this->Form->Input('Picture', 'file');
+					echo $this->Form->Label(T('Rank Points'), 'RankPoints');
+					echo Wrap(T('Enter the amount of Rank Points to be granted to the Users who ' .
+											'receive an Award using this class. These points are <strong>added</strong> ' .
+											'to the ones granted by the Award itself.'),
+										'div',
+										array('class' => 'Info',));
+					echo $this->Form->TextBox('RankPoints');
 				?>
-			</div>
+			</li>
+			<li class="clearfix">
+				<?php
+					// TODO Display Award Class Picture to the left of the Upload File control
+					echo $this->Form->Label(T('Award Class Picture'), 'Picture');
+				?>
+				<div class="ImageColumn">
+				<?php
+					echo Wrap(T('Current Image'), 'h5');
+					echo Wrap(Wrap(Img($this->Form->GetValue('AwardClassImageFile'),
+														 array('class' => 'AwardClassImage Large',)),
+												 'td'),
+										'div',
+										array('class' => 'AwardClassImageWrapper'));
+				?>
+				</div>
+				<div class="ImageSelector">
+					<?php
+						echo Wrap(T('Select new Image'), 'h5');
+						// TODO Get picture size from configuration
+						echo Wrap(sprintf(T('Select an image on your computer (2mb max) to be used as ' .
+																'an icon for the Award. Image will be resized to %dx%d (width ' .
+																'x height) pixels.'),
+															PictureManager::DEFAULT_IMAGE_WIDTH,
+															PictureManager::DEFAULT_IMAGE_HEIGHT),
+											'p');
+						echo Wrap(T('<strong>Important</strong>: if you upload a file with the same '.
+												'name of one you uploaded before, the old file will be overwritten.'),
+											'p');
+						echo $this->Form->Input('Picture', 'file');
+					?>
+				</div>
 			</li>
 			<li>
 				<?php
@@ -85,12 +96,18 @@
 			</li>
 			<li>
 				<?php
-					echo $this->Form->Label(T('Award Class CSS'), 'AwardClassCSS');
+					echo $this->Form->Label(T('Additional CSS'), 'AwardClassCSS');
 					echo Wrap(T('Here you can enter CSS rules that will be applied to the Award Class. ' .
 											'Every Award belonging to this class will automatically inherit the ' .
 											'rules an it will be rendered accordingly. For example, if you specify ' .
 											'a <code>border</code> style, all Awards in this class will have such ' .
-											'border'),
+											'border.'),
+										'div',
+										array('class' => 'Info',
+													'maxlength' => '400',
+													));
+					echo Wrap(T('<strong>Important</strong>: just enter CSS commands without enclosing them in curly braces. ' .
+											'The plugin will take care of doing it automatically.'),
 										'div',
 										array('class' => 'Info',
 													'maxlength' => '400',

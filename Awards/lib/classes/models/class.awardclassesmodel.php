@@ -52,6 +52,7 @@ class AwardClassesModel extends ModelEx {
 			->Select('VAAC.AwardClassDescription')
 			->Select('VAAC.AwardClassImageFile')
 			->Select('VAAC.AwardClassCSS')
+			->Select('VAAC.RankPoints')
 			->Select('VAAC.DateInserted')
 			->Select('VAAC.DateUpdated')
 			->Select('VAAC.TotalAwardsUsingClass')

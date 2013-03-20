@@ -166,18 +166,28 @@ class AwardRulesManager extends BaseManager {
 	 * @return void.
 	 */
 	private function LoadRulesDefinitions() {
+		$this->Log()->trace(T('Loading Rule Definitions...'));
 		$RulesDir = sprintf('%s/rules', AWARDS_PLUGIN_CLASS_PATH);
 		$Handle = opendir($RulesDir);
 		if(empty($Handle)) {
 			return false;
 		}
 
-		// Look for subfolders in Rules folder. Each Rule should be stored in its
-		// SubFolder.
-    while($File = readdir($Handle)) {
-			if($this->IsValidDirectory($RulesDir, $File)) {
-				$this->LoadRuleFiles($RulesDir . '/' . $File);
+		try {
+			// Look for subfolders in Rules folder. Each Rule should be stored in its
+			// SubFolder.
+			while($File = readdir($Handle)) {
+				if($this->IsValidDirectory($RulesDir, $File)) {
+					$this->LoadRuleFiles($RulesDir . '/' . $File);
+				}
 			}
+
+			$this->Log()->trace(T('Done.'));
+		}
+		catch(Exception $e) {
+			$ErrorMsg = sprintf(T('Exception occurred while loding Rule Definitions. Error: %s'),
+													$e->getMessage());
+			$this->Log()->error($ErrorMsg);
 		}
 		closedir($Handle);
 	}
