@@ -26,16 +26,6 @@ class PostCountRule extends BaseAwardRule {
 	 */
 	public static $CountTypes;
 
-	private function GetUserData($UserID) {
-		if(!isset($this->_UserData)) {
-			$UserModel = new UserModel();
-
-			$this->_UserData = $UserModel->GetID($UserID);
-		}
-
-		return $this->_UserData;
-	}
-
 	/**
 	 * Checks if the User posted enough Discussions to be assigned an Award based
 	 * on such criteria.
@@ -97,7 +87,7 @@ class PostCountRule extends BaseAwardRule {
 			$Results[] = $this->CheckUserCommentsCount($UserID, $Settings);
 		}
 
-		var_dump("PostCountRule Result: " . min($Results));
+		//var_dump("PostCountRule Result: " . min($Results));
 		return min($Results);
 	}
 
