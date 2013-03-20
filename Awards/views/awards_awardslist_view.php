@@ -69,7 +69,8 @@
 						}
 						else {
 							echo Wrap(Img($Award->AwardImageFile,
-														array('class' => 'AwardImage Medium ' . $Award->AwardClassName,)),
+														array('class' => 'AwardImage Medium ' . $Award->AwardClassName,
+																	'alt' => $Award->AwardName)),
 												'td',
 												array('class' => 'Image',));
 						}
