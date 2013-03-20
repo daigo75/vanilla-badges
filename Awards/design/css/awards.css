@@ -1,0 +1,261 @@
+/**
+{licence}
+*/
+
+/* General CSS for configuration pages sections */
+.AwardsPlugin {
+}
+
+.AwardsPlugin .Info {
+	padding-top: 0;
+}
+
+.AwardsPlugin .Buttons {
+	margin-top: 1em;
+}
+
+.AwardsPlugin .Numeric {
+	text-align: right;
+}
+
+.AwardsPlugin legend {
+	width: 100% !important;
+}
+
+.AwardsPlugin fieldset p {
+	font-size: 100%;
+	padding-left: 20px;
+}
+
+.AwardsPlugin .Disabled {
+	background: silver;
+	color: whitesmoke;
+	margin-left: 1em;
+	border: 1px solid #aaa;
+	border-radius: 4px;
+	padding: 6px;
+}
+
+/* Warning message */
+.AwardsPlugin .Warning {
+	font-size: 120%;
+	color: maroon;
+	font-weight: bold;
+	border: 1px solid maroon;
+}
+
+.AwardsPlugin.ConfirmationDialog .Name {
+	font-weight: bold;
+	border-bottom: 1px dotted gray;
+}
+
+
+div.AwardsDescription {
+	font-size: 85%;
+}
+
+#AwardClassesList th,
+#AwardsList th,
+#AwardClassesList td,
+#AwardsList td {
+	vertical-align: middle;
+}
+
+.AwardImage {
+}
+
+img.Large {
+	width: 100px;
+	height: 100px;
+}
+
+img.Medium {
+	width: 50px;
+	height: 50px;
+}
+
+.AwardImageWrapper img {
+	padding: 8px;
+	border: 1px solid silver;
+}
+
+/* Award/Award Class edit page */
+.ImageColumn {
+	float: left;
+	text-align: center;
+}
+
+.ImageColumn h5,
+.ImageSelector h5 {
+	font-weight: bold;
+	padding: 0.5em 0;
+}
+
+.ImageSelector {
+	min-height: 14em;
+	float: left;
+	margin-left: 1em;
+	padding-left: 1em;
+	border-left: 1px solid silver;
+}
+
+.ImageSelector p {
+	padding-left: 0 !important;
+}
+
+.AwardsPlugin .Buttons .Button {
+	margin-left: 1em;
+}
+
+/* Awards and Award Classes List page */
+.AwardsPlugin .Enabled,
+.AwardsPlugin .Enabled {
+	width: 4em;
+	text-align: center;
+}
+
+.AwardsPlugin .TotalAwardsUsingClass {
+	width: 10em;
+	text-align: center;
+}
+
+.AwardsPlugin .Image {
+	width: 50px;
+	text-align: center;
+}
+
+.AwardsPlugin .Name {
+	width: 15em;
+}
+
+.AwardsPlugin #AwardsList .Description {
+	width: 25em;
+}
+
+.AwardsPlugin #AwardClassesList .Description {
+	width: 20em;
+}
+
+.AwardsPlugin #AwardsList .RankPoints {
+	width: 19em;
+}
+
+.AwardsPlugin #AwardClassesList .RankPoints {
+	width: 4em;
+}
+
+.AwardsPlugin .RankPoints .Total {
+	text-align: center;
+	font-weight: bold;
+	font-size: 120%;
+	border-bottom: 1px dotted gray;
+	padding-bottom: 4px;
+	margin-bottom: 4px;
+}
+
+.AwardsPlugin #AwardsList .RankPoints ul {
+	padding: 0;
+}
+
+.AwardsPlugin #AwardsList .RankPoints li {
+	margin: 0;
+	font-size: 100%;
+}
+
+.AwardsPlugin #AwardsList .RankPoints span {
+	display: inline;
+}
+
+.AwardsPlugin #AwardsList .RankPoints .Amount {
+	font-weight: bold;
+}
+
+.AwardsPlugin .RankPoints .Detail {
+	text-align: left;
+}
+
+.AwardsPlugin .TimesAwarded {
+	text-align: center;
+}
+
+.AwardsPlugin tbody .TimesAwarded {
+	font-size: 120%;
+	font-weight: bold;
+}
+
+/* Overrides for CodeMirror Syntax Highlighter */
+.CodeMirror {
+	border: 1px solid silver;
+}
+
+.CodeMirror span {
+	font-size: 15px;
+	display: inline !important;
+}
+
+/* Rule Settings Pages */
+.AwardsPlugin #AwardRules {
+	padding-left: 20px;
+	border: 1px solid gray;
+}
+
+.AwardsPlugin #AwardRules h4 {
+	font-size: 120%;
+	font-weight: bold;
+	padding: 0;
+}
+
+.AwardsPlugin #AwardRules h5 {
+	font-size: 110%;
+	font-weight: bold;
+}
+
+.AwardsPlugin #AwardRules h6 {
+	font-size: 110%;
+	font-weight: bold;
+}
+
+.AwardsPlugin #AwardRules .RuleGroup,
+.AwardsPlugin #AwardRules .RuleType {
+	border: 1px solid silver;
+}
+
+.AwardsPlugin #AwardRules ul {
+	padding: 0;
+}
+
+.AwardsPlugin #AwardRules li {
+	margin-right: 0.5em;
+}
+
+.AwardsPlugin #AwardRules .Tabs a {
+	font-size: 110%;
+}
+
+.AwardsPlugin .Rule label {
+	display: inline-block;
+}
+
+.AwardsPlugin .Rule ul li span {
+	display: inline;
+	margin-left: 1em;
+}
+
+.AwardsPlugin .Rule ul li input,
+.AwardsPlugin .Rule ul li select {
+	margin-left: 1em;
+}
+
+/* User Awards Widget */
+#UserAwards {
+
+}
+
+#UserAwards #AwardsList {
+
+}
+
+#UserAwards #AwardsList .Award {
+	float: left;
+	background: none;
+}
