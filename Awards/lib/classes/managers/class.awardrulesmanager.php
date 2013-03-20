@@ -192,21 +192,6 @@ class AwardRulesManager extends BaseManager {
 		closedir($Handle);
 	}
 
-	/**
-	 * Renders the Rules List page.
-	 *
-	 * @param Gdn_Plugin Caller The Plugin which called the method.
-	 * @param object Sender Sending controller instance.
-	 */
-	public function RulesList(Gdn_Plugin $Caller, $Sender) {
-		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_RULES_LIST_URL);
-		// Prevent non authorised Users from accessing this page
-		$Sender->Permission('Plugins.Awards.Manage');
-
-		// TODO Implement Awards Rules List page
-		$Sender->Render($this->GetView('awards_ruleslist_view.php'));
-	}
-
 	// TODO Document method
 	public function ValidateRulesSettings(Gdn_Form $Form) {
 		$RulesSettings = &$Form->GetFormValue('Rules');
@@ -256,7 +241,7 @@ class AwardRulesManager extends BaseManager {
 	 * to the User. Zero means no assignment.
 	 */
 	public function ProcessRules($UserID, array $RulesSettings) {
-		$AwardAssignCount = 0;
+		$AwardAssignCounts = array();
 
 		foreach($RulesSettings as $RuleClass => $Settings) {
 			// Retrieve the instance of the Rule to process
@@ -269,8 +254,10 @@ class AwardRulesManager extends BaseManager {
 				continue;
 			}
 
+			//var_dump($Settings);
+			$IsRuleEnabled = $RuleInstance->IsRuleEnabled($Settings);
 			// Check if the Rule is enabled
-			switch($IsRuleEnabled = $RuleInstance->IsRuleEnabled($Settings)) {
+			switch($IsRuleEnabled) {
 				// Disabled - Rule has not been configured and should not be processed
 				case BaseAwardRule::RULE_DISABLED:
 					$this->Log()->trace(sprintf(T('Rule "%s" disabled, skipping.'),
@@ -295,32 +282,79 @@ class AwardRulesManager extends BaseManager {
 																			$IsRuleEnabled));
 			}
 
-			if($RuleInstance->IsRuleEnabled($Settings)) {
-				$this->Log()->debug(sprintf(T('Processing Rule "%s"...'), $RuleClass));
+			$this->Log()->debug(sprintf(T('Processing Rule "%s"...'), $RuleClass));
 
-				/* Plugin architecture allows to configure recurring Awards (e.g. a
-				 * "registration anniversary"). To handle them, each Rule returns the
-				 * amount of time that the Award should be assigned to the User, based
-				 * on the Rule's specific criteria. If User has been on the forum for
-				 * 3 years, then a registration anniversary rule might return "3" (if it
-				 * was never processed before), meaning that the Award should be
-				 * assigned three times.
-				 *
-				 * If a Rule returns zero, then the Award cannot be assigned, there is
-				 * no need to process other rules.
-				 */
-				$AwardAssignCountFromRule = $RuleInstance->Process($UserID, $Settings);
+			/* Plugin architecture allows to configure recurring Awards (e.g. a
+			 * "registration anniversary"). To handle them, each Rule returns the
+			 * amount of time that the Award should be assigned to the User, based
+			 * on the Rule's specific criteria. If User has been on the forum for
+			 * 3 years, then a registration anniversary rule might return "3" (if it
+			 * was never processed before), meaning that the Award should be
+			 * assigned three times.
+			 *
+			 * If a Rule returns zero, then the Award cannot be assigned, there is
+			 * no need to process other rules.
+			 */
+			$AwardAssignCountFromRule = $RuleInstance->Process($UserID, $Settings);
 
-				$this->Log()->debug(sprintf(T('Rule returned %d.'), $AwardAssignCountFromRule));
-				//var_dump($AwardAssignCountFromRule);
-				if($AwardAssignCountFromRule <= 0) {
-					break;
-				}
+			$this->Log()->debug(sprintf(T('Rule returned %s.'), $AwardAssignCountFromRule));
 
-				$AwardAssignCount = min($AwardAssignCount, $AwardAssignCountFromRule);
+			//var_dump($AwardAssignCountFromRule);
+
+			/* A Rule returning NULL means "Rule doesn't have to be processed". In
+			 * such case, processing can continue.
+			 */
+			if($AwardAssignCountFromRule === null) {
+				continue;
 			}
+
+			/* If a Rule returns zero, it means that Rule's conditions are not
+			 * satisfied. Since an Award can be assigned only if ALL the Rules'
+			 * conditions are satisfied, there is no point on processing the
+			 * remaining ones.
+			 */
+			if($AwardAssignCountFromRule <= 0) {
+				$Result = BaseAwardRule::NO_ASSIGNMENTS;
+				break;
+			}
+
+			/* Any other return value indicates how many times an Award should be
+			 * assigned. This is useful for recurring Awards, which might have to
+			 * be assigned multiple times (ag. anniversaries).
+			 *
+			 * The final result will be the minimum amount returned by the rules.
+			 * This is because different Rules might return different amounts. For
+			 * example, a rule might grant the Award 4 times, while another would
+			 * only grant it 2 times. In such case, "2" would be acceptable for both
+			 * rules.
+			 */
+			$AwardAssignCounts[] = $AwardAssignCountFromRule;
 		}
-		return $AwardAssignCount;
+
+		/* If $AwardAssignCounts is empty, it means that no rules have been
+		 * processed. In such case, just return "NO_ASSIGNMENTS" to state that the
+		 * Award doesn't have to be assigned.
+		 */
+		if(empty($AwardAssignCounts)) {
+			return BaseAwardRule::NO_ASSIGNMENTS;
+		}
+		return min($AwardAssignCounts);
+	}
+
+	/**
+	 * Renders the Rules List page.
+	 *
+	 * @param Gdn_Plugin Caller The Plugin which called the method.
+	 * @param object Sender Sending controller instance.
+	 */
+	public function RulesList(Gdn_Plugin $Caller, $Sender) {
+		//$Sender->SetData('CurrentPath', AWARDS_PLUGIN_RULES_LIST_URL);
+		//// Prevent non authorised Users from accessing this page
+		//$Sender->Permission('Plugins.Awards.Manage');
+		//
+		//// TODO Implement Awards Rules List page
+		//$Sender->Render($this->GetView('awards_ruleslist_view.php'));
+		throw new Exception(T('Not implemented.'));
 	}
 
 	/**
