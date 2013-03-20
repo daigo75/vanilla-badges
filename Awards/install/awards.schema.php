@@ -71,13 +71,14 @@ class AwardsSchema extends PluginSchema {
 	protected function create_userawards_table() {
 		Gdn::Structure()
 			->Table('UserAwards')
-			->PrimaryKey('UserAwardsID')
+			->PrimaryKey('UserAwardID')
 			// Fields UserID and AwardID should be indexed. This will be done during
 			// the creation of Foreign Keys on such fields
 			->Column('UserID', 'int', FALSE)
 			->Column('AwardID', 'int', FALSE)
 			->Column('AwardedRankPoints', 'uint', 0)
 			->Column('TimesAwarded', 'uint', 0)
+			->Column('Status', 'uint', 0)
 			->Column('DateInserted', 'datetime', FALSE)
 			->Column('InsertUserID', 'int', TRUE)
 			->Column('DateUpdated', 'datetime', TRUE)
@@ -161,8 +162,10 @@ class AwardsSchema extends PluginSchema {
 		$Sql = "
 			SELECT
 				UA.UserID
+				,UA.UserAwardID
 				,UA.DateInserted AS DateAwarded
 				,UA.AwardedRankPoints
+				,UA.Status
 				,A.AwardID
 				,A.AwardName
 				,A.AwardDescription
@@ -223,8 +226,6 @@ class AwardsSchema extends PluginSchema {
 		";
 		$this->Construct->View('v_awards_availableawardslist', $Sql);
 	}
-
-	// TODO Create view to list all the Users who got a specific Award
 
 	/**
 	 * Create all the Database Objects in the appropriate order.

@@ -102,7 +102,7 @@ class AwardClassesModel extends ModelEx {
 		$Limit = (is_numeric($Limit) && $Limit > 0) ? $Limit : 1000;
 		$Offset = (is_numeric($Offset) && $Offset > 0) ? $Offset : 0;
 
-		// Return the Jobs Started within the Date Range.
+		// Prepare the base query
 		$this->PrepareAwardClassesQuery();
 
 		// Add additional WHERE clauses, if any has been passed

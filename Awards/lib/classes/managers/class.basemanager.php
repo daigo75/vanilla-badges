@@ -38,6 +38,7 @@ class BaseManager extends Gdn_Plugin {
 	 * @return object An instance of the specified class.
 	 * @throws An Exception if the specified class does not exist.
 	 */
+	// TODO Find a way to move this function in a central place, as it's used by many classes
 	protected function GetInstance($ClassName) {
 		$FieldName = '_' . $ClassName;
 
@@ -83,7 +84,6 @@ class BaseManager extends Gdn_Plugin {
 																		'is not valid. Content to write: "%s".'),
 																	$FileName,
 																	$Content));
-			var_dump(is_dir(dirname($FileName)));die();
 			return false;
 		}
 

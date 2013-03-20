@@ -11,6 +11,11 @@
  * This model is used to retrieve the data related to the Awards.
  */
 class AwardsModel extends ModelEx {
+	// @var int Indicates that the Award has been assigned to the User
+	const STATUS_ASSIGNED = 1000;
+	// @var int Indicates that the Award has been revoked from the User
+	const STATUS_REVOKED = 1001;
+
 	/**
 	 * Defines the related database table name.
 	 *
