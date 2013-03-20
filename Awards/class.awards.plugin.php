@@ -31,7 +31,14 @@ $PluginInfo['Awards'] = array(
 );
 
 class AwardsPlugin extends Gdn_Plugin {
-	private $_RulesManager;
+	/* @var array Lists the applications in which the Award assignments will be
+	 * processed. This will allow the processing to happen only in the frontend,
+	 * without slowing down the Dashboard.
+	 */
+	private $_RunInApplications = array(
+		'vanilla',
+		'conversations',
+	);
 
 	/**
 	 * Returns an instance of a Class and stores it as a property of this class.
@@ -119,11 +126,7 @@ class AwardsPlugin extends Gdn_Plugin {
 	}
 
 	/**
-	 * Base_Render_Before Event Hook
-	 *
-	 * This is a common hook that fires for all controllers (Base), on the Render method (Render), just
-	 * before execution of that method (Before). It is a good place to put UI stuff like CSS and Javascript
-	 * inclusions. Note that all the Controller logic has already been run at this point.
+	 * Base_Render_Before Event Handler.
 	 *
 	 * @param Gdn_Controller Sender Sending controller instance.
 	 */
@@ -134,17 +137,25 @@ class AwardsPlugin extends Gdn_Plugin {
 		}
 
 		// Files for frontend
-		if(strcasecmp($Sender->Application, 'vanilla') == 0) {
+		if(InArrayI($Sender->Application, $this->_RunInApplications)) {
 			$Sender->AddJsFile('awards.js', 'plugins/Awards/js');
 		}
-
 		// Common files
 		$Sender->AddCssFile('awardclasses.css', 'plugins/Awards/design/css');
-
-		// Process (and assign) Awards
-		$this->ProcessAwards($Sender);
 	}
 
+	/**
+	 * Base_AfterBody_Handler Event Handler.
+	 *
+	 * @param Gdn_Controller Sender Sending controller instance.
+	 */
+	public function Base_AfterBody_Handler(Gdn_Controller $Sender) {
+		// Files for frontend
+		if(InArrayI($Sender->Application, $this->_RunInApplications)) {
+			// Process (and assign) Awards
+			$this->ProcessAwards($Sender);
+		}
+	}
 
 	/**
 	 * Create a method called "Awards" on the PluginController
@@ -167,10 +178,6 @@ class AwardsPlugin extends Gdn_Plugin {
 		 * for a dashboard settings screen.
 		 */
 		$this->Dispatch($Sender, $Sender->RequestArgs);
-	}
-
-	public function Base_AfterBody_Handler($Sender) {
-		//var_dump($Sender->EventArguments);die();
 	}
 
 	/**
@@ -316,7 +323,7 @@ class AwardsPlugin extends Gdn_Plugin {
 	}
 
 	/**
-	 * Renders the User Awards List page.
+	 * Renders the User Awards List page (in the Dashboard).
 	 *
 	 * @param object Sender Sending controller instance.
 	 */
@@ -328,6 +335,41 @@ class AwardsPlugin extends Gdn_Plugin {
 		// TODO Implement User Awards List page
 
 		$Sender->Render($this->GetView('awards_userawardslist_view.php'));
+	}
+
+	public function ProfileController_Render_Before($Sender, $Args) {
+		var_dump($Sender->User->UserID);
+
+		/* Load the module that will render the User Awards List widget and add it
+		 * to the modules list
+		 */
+		$UserAwardsModule = $this->LoadUserAwardsModule($Sender, $Sender->User->UserID);
+		$Sender->AddModule($HotThreadsPluginModule);
+
+	}
+
+	/**
+	 * Loads and configures the Hot Threads module, which will generate the HTML
+	 * for the Hot Threads widget in the Sidebar.
+	 *
+ 	 * @param Controller Sender Sending controller instance.
+ 	 * @return HotThreadsListModule An instance of the module.
+ 	 */
+	private function LoadUserAwardsModule($Sender, $UserID) {
+		//// Include Hot Threads List module file
+		//include_once(HOTTHREADS_PLUGIN_MODULES_PATH . '/class.hotthreadslist.module.php');
+
+		$UserAwardsModule = new UserAwardsModule($Sender);
+		$UserAwardsModule->LoadData($UserID);
+
+		//$HotThreadsPluginModule = new HotThreadsListModule($Sender);
+		//$HotThreadsPluginModule->LoadData(
+		//	C('Plugin.HotThreads.MaxEntriesToDisplay'),
+		//	C('Plugin.HotThreads.ViewsThreshold'),
+		//	C('Plugin.HotThreads.CommentsThreshold'),
+		//	C('Plugin.HotThreads.AgeThreshold')
+		//);
+		//return $HotThreadsPluginModule;
 	}
 
 	/**
