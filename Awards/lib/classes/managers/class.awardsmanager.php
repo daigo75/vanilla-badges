@@ -4,7 +4,25 @@
 */
 
 class AwardsManager extends BaseManager {
-	private $_AwardsModel;
+	/**
+	 * Returns an instance of AwardsModel.
+	 *
+	 * @return AwardsModel An instance of AwardsModel.
+	 * @see BaseManager::GetInstance()
+	 */
+	private function AwardsModel() {
+		return $this->GetInstance('AwardsModel');
+	}
+
+	/**
+	 * Returns an instance of UserAwardsModel.
+	 *
+	 * @return AwardsModel An instance of UserAwardsModel.
+	 * @see BaseManager::GetInstance()
+	 */
+	private function UserAwardsModel() {
+		return $this->GetInstance('UserAwardsModel');
+	}
 
 	/**
 	 * Class constructor.
@@ -13,9 +31,8 @@ class AwardsManager extends BaseManager {
 	 */
 	public function __construct() {
 		parent::__construct();
-
-		$this->AwardsModel = new AwardsModel();
 	}
+
 	/**
 	 * Renders the Awards List page.
 	 *
@@ -28,8 +45,7 @@ class AwardsManager extends BaseManager {
 		$Sender->Permission('Plugins.Awards.Manage');
 
 		// TODO Handle Limit and Offset
-		//$AwardsDataSet = $this->AwardsModel->Get();
-		$AwardsDataSet = $this->AwardsModel->GetWithTimesAwarded();
+		$AwardsDataSet = $this->AwardsModel()->GetWithTimesAwarded();
 		// TODO Add Pager
 
 		$Sender->SetData('AwardsDataSet', $AwardsDataSet);
@@ -67,7 +83,15 @@ class AwardsManager extends BaseManager {
 		return $Result;
 	}
 
-	// TODO Document method
+	/**
+	 * Prepares a hierarchy of Rule Groups and Sections, which will be used to
+	 * render each Rule's settings section in the appropriate part of the page.
+	 * Each Group will contain Sections, and each Section will contain the
+	 * configuration UI of one or more Rules.
+	 *
+	 * @return array An associative array containing the hierarchy of Rules Groups
+	 * and Sections.
+	 */
 	private function PrepareAwardRulesSections() {
 		$Result = array();
 		foreach(AwardRulesManager::$RuleGroups as $GroupID => $GroupLabel) {
@@ -111,7 +135,7 @@ class AwardsManager extends BaseManager {
 		$AwardID = $Sender->Request->GetValue(AWARDS_PLUGIN_ARG_AWARDID, null);
 
 		// Set Award Data in the form
-		$Sender->Form->SetModel($this->AwardsModel);
+		$Sender->Form->SetModel($this->AwardsModel());
 
 		// Load Award Classes
 		$AwardClassesModel = new AwardClassesModel();
@@ -120,7 +144,7 @@ class AwardsManager extends BaseManager {
 
 		if(isset($AwardID)) {
 			// Load Award Data
-			$AwardData = $this->AwardsModel->GetAwardData($AwardID)->FirstRow();
+			$AwardData = $this->AwardsModel()->GetAwardData($AwardID)->FirstRow();
 			$Sender->Form->SetData($AwardData);
 
 			$Sender->SetData('RulesSettings', $this->GetRulesSettings($AwardData));
@@ -226,7 +250,7 @@ class AwardsManager extends BaseManager {
 		// Prevent Users without proper permissions from accessing this page.
 		$Sender->Permission('Plugins.Awards.Manage');
 
-		$Sender->Form->SetModel($this->AwardsModel);
+		$Sender->Form->SetModel($this->AwardsModel());
 
 		// If seeing the form for the first time...
 		if ($Sender->Form->AuthenticatedPostBack() === FALSE) {
@@ -234,7 +258,7 @@ class AwardsManager extends BaseManager {
 			$AwardID = $Sender->Request->GetValue(AWARDS_PLUGIN_ARG_AWARDID, null);
 
 			// Load the data of the Award to be deleted, if an Award ID is passed
-			$AwardData = $this->AwardsModel->GetAwardData($AwardID)->FirstRow(DATASET_TYPE_ARRAY);
+			$AwardData = $this->AwardsModel()->GetAwardData($AwardID)->FirstRow(DATASET_TYPE_ARRAY);
 			//var_dump($AwardID, $AwardData);
 			$Sender->Form->SetData($AwardData);
 
@@ -249,7 +273,7 @@ class AwardsManager extends BaseManager {
 			// that the User confirmed the deletion.
 			if(Gdn::Session()->ValidateTransientKey($Data['TransientKey']) && $Sender->Form->ButtonExists('OK')) {
 				// Delete Award
-				$this->AwardsModel->Delete($Sender->Form->GetValue('AwardID'));
+				$this->AwardsModel()->Delete($Sender->Form->GetValue('AwardID'));
 				$this->Log()->info(sprintf(T('User %s (ID: %d) deleted Award "%s" (ID: %d).'),
 																		Gdn::Session()->User->Name,
 																		Gdn::Session()->User->UserID,
@@ -278,7 +302,7 @@ class AwardsManager extends BaseManager {
 		$EnableFlag = $Sender->Request->GetValue(AWARDS_PLUGIN_ARG_ENABLEFLAG, null);
 
 		if(is_numeric($AwardID) && is_numeric($EnableFlag)) {
-			if($this->AwardsModel->EnableAward((int)$AwardID, (int)$EnableFlag)) {
+			if($this->AwardsModel()->EnableAward((int)$AwardID, (int)$EnableFlag)) {
 				$Sender->InformMessage(T('Your changes have been saved.'));
 			};
 		}
@@ -300,7 +324,7 @@ class AwardsManager extends BaseManager {
 		}
 
 		// Retrieve the list of Awards still available to the User
-		$AvailableAwardsDataSet = $this->AwardsModel->GetAvailableAwards(Gdn::Session()->UserID);
+		$AvailableAwardsDataSet = $this->AwardsModel()->GetAvailableAwards(Gdn::Session()->UserID);
 
 		// Debug - Rules to process
 		//var_dump($AvailableAwardsDataSet->Result());
@@ -309,12 +333,34 @@ class AwardsManager extends BaseManager {
 			$this->Log()->debug(sprintf(T('Processing Award "%s"...'), $AwardData->AwardName));
 			//var_dump($AwardData->AwardName);
 
+			/* Retrieve the settings to be passed to the Rules to determine if the
+			 * Award should be assigned
+			 */
 			$RulesSettings = $this->GetRulesSettings($AwardData);
 
-			$AwardAssignments = $Caller->RulesManager()->ProcessRules($UserID, $RulesSettings);
-			$this->Log()->debug(sprintf(T('Assigning Award %d time(s).'), $AwardAssignments));
+			$AwardAssignmentCount = $Caller->RulesManager()->ProcessRules($UserID, $RulesSettings);
+			$this->Log()->debug(sprintf(T('Assigning Award %d time(s).'), $AwardAssignmentCount));
+
+			//var_dump($AwardData, $AwardAssignmentCount);
 
 			// TODO Assign Award to User, if needed
+			if($AwardAssignmentCount > 0) {
+				$this->AssignAward($UserID, $AwardData, $AwardAssignmentCount);
+			}
 		}
+	}
+
+	protected function AssignAward($UserID, stdClass $AwardData, $AwardAssignmentCount) {
+		$UserAwardFields = array(
+			'UserID' => $UserID,
+			'AwardID' => $AwardData->AwardID,
+			'AwardedRankPoints' => $AwardData->RankPoints + $AwardData->AwardClassRankPoints,
+			'TimesAwarded' => $AwardAssignmentCount,
+			'Status' => AwardsModel::STATUS_ASSIGNED,
+		);
+
+		//var_dump("Assigning Award", $AwardAssignmentCount, $AwardData);
+
+		$this->UserAwardsModel()->Save($UserAwardFields);
 	}
 }
