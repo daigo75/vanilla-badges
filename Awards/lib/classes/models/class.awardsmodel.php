@@ -114,6 +114,43 @@ class AwardsModel extends ModelEx {
 	}
 
 	/**
+	 * Convenience method to returns a DataSet containing a list of all the
+	 * configured Awards, together with the amount of times they have been awarded.
+	 *
+	 * @param int Limit Limit the amount of rows to be returned.
+	 * @param int Offset Specifies from which rows the data should be returned. Used
+	 * for pagination.
+	 * @return Gdn_DataSet A DataSet containing Awards data.
+	 *
+	 * @see AwardsModel::GetWhere()
+	 */
+	public function GetWithTimesAwarded($Limit = 1000, $Offset = 0) {
+		$this->PrepareAwardsQuery();
+
+		$Result = $this->SQL
+			->Select('UA.TimesAwarded', 'SUM', 'TotalTimesAwarded')
+			->LeftJoin('UserAwards UA', '(UA.AwardID = VAAL.AwardID)')
+			->GroupBy(array(
+				'VAAL.AwardID',
+				'VAAL.AwardClassID',
+				'VAAL.AwardName',
+				'VAAL.AwardDescription',
+				'VAAL.Recurring',
+				'VAAL.AwardIsEnabled',
+				'VAAL.AwardImageFile',
+				'VAAL.RankPoints',
+				'VAAL.DateInserted',
+				'VAAL.DateUpdated',
+				'VAAL.RulesSettings',
+				'VAAL.AwardClassName',
+				'VAAL.AwardClassImageFile',))
+			->OrderBy('VAAL.AwardName')
+			->Get();
+
+		return $Result;
+	}
+
+	/**
 	 * Returns a DataSet containing a list of the configured Awards.
 	 *
 	 * @param array WhereClauses An associative array of WHERE clauses. They should
