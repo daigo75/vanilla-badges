@@ -54,6 +54,8 @@ div.AwardsDescription {
    font-size: 85%;
 }
 
+#AwardClassesList th,
+#AwardsList th,
 #AwardClassesList td,
 #AwardsList td {
 	vertical-align: middle;
@@ -128,6 +130,49 @@ img.Medium {
 
 .AwardsPlugin .Description {
 	width: 25em;
+}
+
+.AwardsPlugin .RankPoints {
+	width: 19em;
+}
+
+.AwardsPlugin .RankPoints .Total {
+	text-align: center;
+	font-weight: bold;
+	font-size: 120%;
+	border-bottom: 1px dotted gray;
+	padding-bottom: 4px;
+	margin-bottom: 4px;
+}
+
+.AwardsPlugin #AwardsList .RankPoints ul {
+	padding: 0;
+}
+
+.AwardsPlugin #AwardsList .RankPoints li {
+	margin: 0;
+	font-size: 100%;
+}
+
+.AwardsPlugin #AwardsList .RankPoints span {
+	display: inline;
+}
+
+.AwardsPlugin #AwardsList .RankPoints .Amount {
+	font-weight: bold;
+}
+
+.AwardsPlugin .RankPoints .Detail {
+	text-align: left;
+}
+
+.AwardsPlugin .TimesAwarded {
+	text-align: center;
+}
+
+.AwardsPlugin tbody .TimesAwarded {
+	font-size: 120%;
+	font-weight: bold;
 }
 
 /* Overrides for CodeMirror Syntax Highlighter */
