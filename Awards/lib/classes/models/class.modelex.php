@@ -24,6 +24,37 @@ class ModelEx extends Gdn_Model {
 		return $this->_Log;
 	}
 
+	/**
+	 * Takes an array of ORDER BY clauses and adds them to the class instance's
+	 * SQL object.
+	 *
+	 * @param array OrderByClauses An array of Order By clauses. Each clause can
+	 * contain just the field name, or the field and the sort direction (e.g.
+	 * "SomeField ASC").
+	 */
+	protected function SetOrderBy(array $OrderByClauses) {
+		foreach($OrderByClauses as $OrderBy) {
+			$OrderByParts = array_filter(explode(' ', $OrderBy));
+
+			/* An order by must contain at most two elements: a field name and the
+			 * sort direction. If anything else is found, the clause is considered not
+			 * valid and, therefore, ignored.
+			 */
+			if(count($OrderByParts) > 2) {
+				$ErrorMsg = sprintf(T('Invalid ORDER BY clause received: "%s". Ignoring clause.'),
+														$OrderBy);
+				$this->Log()->error($ErrorMsg);
+				continue;
+			}
+
+			// Add the ORDER BY clause to the SQL
+			$Field = array_shift($OrderByParts);
+			$Direction = array_shift($OrderByParts);
+
+			$this->SQL->OrderBy($Field, $Direction);
+		}
+	}
+
 	public function __construct($TableName) {
 		parent::__construct($TableName);
 	}
