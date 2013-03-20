@@ -28,7 +28,8 @@ class AwardsManager extends BaseManager {
 		$Sender->Permission('Plugins.Awards.Manage');
 
 		// TODO Handle Limit and Offset
-		$AwardsDataSet = $this->AwardsModel->Get();
+		//$AwardsDataSet = $this->AwardsModel->Get();
+		$AwardsDataSet = $this->AwardsModel->GetWithTimesAwarded();
 		// TODO Add Pager
 
 		$Sender->SetData('AwardsDataSet', $AwardsDataSet);
