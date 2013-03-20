@@ -143,8 +143,12 @@ class PostCountRule extends BaseAwardRule {
 	 * - BaseAwardRule::RULE_ENABLED_CANNOT_PROCESS
 	 */
 	public function IsRuleEnabled(stdClass $Settings) {
-		return (GetValue('Enabled', $Settings->Discussions) == 1) ||
-					 (GetValue('Enabled', $Settings->Comments) == 1);
+		if((GetValue('Enabled', $Settings->Discussions) == 1) ||
+			 (GetValue('Enabled', $Settings->Comments) == 1)) {
+			return self::RULE_ENABLED;
+		}
+
+		return self::RULE_DISABLED;
 	}
 
 	/**
