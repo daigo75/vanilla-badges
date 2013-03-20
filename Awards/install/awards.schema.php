@@ -13,16 +13,16 @@ class AwardsSchema extends PluginSchema {
 		Gdn::Structure()
 			->Table('AwardClasses')
 			->PrimaryKey('AwardClassID')
-			->Column('AwardClassName', 'varchar(100)', FALSE, 'unique')
+			->Column('AwardClassName', 'varchar(100)', false, 'unique')
 			->Column('AwardClassDescription', 'text')
-			->Column('AwardClassImageFile', 'text')
-			->Column('AwardClassCSS', 'text')
+			->Column('AwardClassImageFile', 'text', true)
+			->Column('AwardClassCSS', 'text', true)
 			->Column('RankPoints', 'uint', 0)
-			->Column('DateInserted', 'datetime', FALSE)
-			->Column('InsertUserID', 'int', TRUE)
-			->Column('DateUpdated', 'datetime', TRUE)
-			->Column('UpdateUserID', 'int', TRUE)
-			->Set(FALSE, FALSE);
+			->Column('DateInserted', 'datetime', false)
+			->Column('InsertUserID', 'int', true)
+			->Column('DateUpdated', 'datetime', true)
+			->Column('UpdateUserID', 'int', true)
+			->Set(false, false);
 	}
 
 	/**
@@ -32,8 +32,8 @@ class AwardsSchema extends PluginSchema {
 		Gdn::Structure()
 			->Table('Awards')
 			->PrimaryKey('AwardID')
-			->Column('AwardClassID', 'int', FALSE)
-			->Column('AwardName', 'varchar(100)', FALSE, 'unique')
+			->Column('AwardClassID', 'int', false)
+			->Column('AwardName', 'varchar(100)', false, 'unique')
 			->Column('AwardDescription', 'text')
 			// Field "Recurring" indicates if an Award could be assigned multiple
 			// times. The value of this field will be determined by inspecting the
@@ -54,11 +54,11 @@ class AwardsSchema extends PluginSchema {
 			->Column('AwardIsEnabled', 'uint', 1, 'index')
 			->Column('AwardImageFile', 'text')
 			->Column('RankPoints', 'uint', 0)
-			->Column('DateInserted', 'datetime', FALSE)
-			->Column('InsertUserID', 'int', TRUE)
-			->Column('DateUpdated', 'datetime', TRUE)
-			->Column('UpdateUserID', 'int', TRUE)
-			->Set(FALSE, FALSE);
+			->Column('DateInserted', 'datetime', false)
+			->Column('InsertUserID', 'int', true)
+			->Column('DateUpdated', 'datetime', true)
+			->Column('UpdateUserID', 'int', true)
+			->Set(false, false);
 
 		$this->AddForeignKey('Awards', 'FK_Awards_AwardClasses', array('AwardClassID'),
 												'AwardClasses', array('AwardClassID'));
@@ -74,16 +74,16 @@ class AwardsSchema extends PluginSchema {
 			->PrimaryKey('UserAwardID')
 			// Fields UserID and AwardID should be indexed. This will be done during
 			// the creation of Foreign Keys on such fields
-			->Column('UserID', 'int', FALSE)
-			->Column('AwardID', 'int', FALSE)
+			->Column('UserID', 'int', false)
+			->Column('AwardID', 'int', false)
 			->Column('AwardedRankPoints', 'uint', 0)
 			->Column('TimesAwarded', 'uint', 0)
 			->Column('Status', 'uint', 0)
-			->Column('DateInserted', 'datetime', FALSE)
-			->Column('InsertUserID', 'int', TRUE)
-			->Column('DateUpdated', 'datetime', TRUE)
-			->Column('UpdateUserID', 'int', TRUE)
-			->Set(FALSE, FALSE);
+			->Column('DateInserted', 'datetime', false)
+			->Column('InsertUserID', 'int', true)
+			->Column('DateUpdated', 'datetime', true)
+			->Column('UpdateUserID', 'int', true)
+			->Set(false, false);
 
 		$this->AddForeignKey('UserAwards', 'FK_UserAwards_User', array('UserID'),
 												'User', array('UserID'));

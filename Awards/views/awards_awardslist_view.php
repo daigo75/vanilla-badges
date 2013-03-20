@@ -65,15 +65,17 @@
 					foreach($AwardsDataSet as $Award) {
 						echo "<tr>\n";
 						if(empty($Award->AwardImageFile)) {
-							echo Wrap(Gdn_Format::Text(T('None')), 'td');
+							$ImageCellContent = Gdn_Format::Text(T('None'));
 						}
 						else {
-							echo Wrap(Img($Award->AwardImageFile,
-														array('class' => 'AwardImage Medium ' . $Award->AwardClassName,
-																	'alt' => $Award->AwardName)),
-												'td',
-												array('class' => 'Image',));
+							$ImageCellContent = Img($Award->AwardImageFile,
+																			array('class' => 'AwardImage Medium ' . $Award->AwardClassName,
+																						'alt' => $Award->AwardName));
 						}
+						echo Wrap($ImageCellContent,
+											'td',
+											array('class' => 'Image',));
+
 						// Output Award Name and Description
 						echo Wrap(Gdn_Format::Text($Award->AwardName), 'td', array('class' => 'Name',));
 						echo Wrap(Gdn_Format::Text($Award->AwardClassName), 'td', array('class' => 'Name',));
