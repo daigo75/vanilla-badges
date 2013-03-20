@@ -77,10 +77,25 @@
 						echo Wrap(Gdn_Format::Text($Award->AwardName), 'td', array('class' => 'Name',));
 						echo Wrap(Gdn_Format::Text($Award->AwardClassName), 'td', array('class' => 'Name',));
 
-						echo Wrap(Gdn_Format::Text($Award->RankPoints), 'td', array('class' => 'RankPoints Numeric',));
+						// Calculate and format total points that will be given by the Award
+						$TotalAwardRankPoints = Wrap($Award->RankPoints + $Award->AwardClassRankPoints,
+																				 'div',
+																				 array('class' => 'Total'));
+						// Format the points given by the Award and by its Class
+						$AwardRankPoints = Wrap(sprintf(T('<span class="Amount">%d</span> from Award'),
+																						$Award->RankPoints),
+																		'li');
+						$AwardClassRankPoints = Wrap(sprintf(T('<span class="Amount">%d</span> from Award Class'),
+																								 $Award->AwardClassRankPoints),
+																				 'li');
+
+						$AwardRankPointsDetail = Wrap($AwardRankPoints . $AwardClassRankPoints,
+																					'ul',
+																					array('class' => 'Detail'));
+						echo Wrap($TotalAwardRankPoints . $AwardRankPointsDetail, 'td', array('class' => 'RankPoints',));
 
 						echo Wrap(Gdn_Format::Text($Award->AwardDescription), 'td', array('class' => 'Description',));
-						echo Wrap(Gdn_Format::Text($Award->TotalTimesAwarded), 'td', array('class' => 'TimesAwarded Numeric',));
+						echo Wrap(Gdn_Format::Text($Award->TotalTimesAwarded), 'td', array('class' => 'TimesAwarded',));
 
 						// Output "Enabled" indicator
 						$EnabledText = ($Award->AwardIsEnabled == 1) ? T('Yes') : T('No');
