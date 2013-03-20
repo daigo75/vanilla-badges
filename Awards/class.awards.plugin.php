@@ -35,7 +35,8 @@ class AwardsPlugin extends Gdn_Plugin {
 	 * processed. This will allow the processing to happen only in the frontend,
 	 * without slowing down the Dashboard.
 	 */
-	private $_RunInApplications = array(
+	private $_AllowedApplications = array(
+		'dashboard',
 		'vanilla',
 		'conversations',
 	);
@@ -131,13 +132,9 @@ class AwardsPlugin extends Gdn_Plugin {
 	 * @param Gdn_Controller Sender Sending controller instance.
 	 */
 	public function Base_Render_Before(Gdn_Controller $Sender) {
-		// Files for Admin section
-		if(strcasecmp($Sender->Application, 'dashboard') == 0) {
-			$Sender->AddCssFile('awards_admin.css', 'plugins/Awards/design/css');
-		}
-
 		// Files for frontend
-		if(InArrayI($Sender->Application, $this->_RunInApplications)) {
+		if(InArrayI($Sender->Application, $this->_AllowedApplications)) {
+			$Sender->AddCssFile('awards.css', 'plugins/Awards/design/css');
 			$Sender->AddJsFile('awards.js', 'plugins/Awards/js');
 		}
 		// Common files
@@ -151,7 +148,7 @@ class AwardsPlugin extends Gdn_Plugin {
 	 */
 	public function Base_AfterBody_Handler(Gdn_Controller $Sender) {
 		// Files for frontend
-		if(InArrayI($Sender->Application, $this->_RunInApplications)) {
+		if(InArrayI($Sender->Application, $this->_AllowedApplications)) {
 			// Process (and assign) Awards
 			$this->ProcessAwards($Sender);
 		}
@@ -314,12 +311,21 @@ class AwardsPlugin extends Gdn_Plugin {
 	}
 
 	/**
+	 * Renders the Award Info page, containing the details of an Award.
+	 *
+	 * @param object Sender Sending controller instance.
+	 */
+	public function Controller_AwardInfo($Sender) {
+		throw new Exception(T('Not implemented.'));
+	}
+
+	/**
 	 * Renders the Awards Rules List page.
 	 *
 	 * @param object Sender Sending controller instance.
 	 */
 	public function Controller_RulesList($Sender) {
-		$this->RulesManager()->RulesList($this, $Sender);
+		$this->RulesManager()->RulesList($Sender);
 	}
 
 	/**
@@ -338,14 +344,12 @@ class AwardsPlugin extends Gdn_Plugin {
 	}
 
 	public function ProfileController_Render_Before($Sender, $Args) {
-		var_dump($Sender->User->UserID);
-
+		//var_dump($Sender->User->UserID);
 		/* Load the module that will render the User Awards List widget and add it
 		 * to the modules list
 		 */
 		$UserAwardsModule = $this->LoadUserAwardsModule($Sender, $Sender->User->UserID);
-		$Sender->AddModule($HotThreadsPluginModule);
-
+		$Sender->AddModule($UserAwardsModule);
 	}
 
 	/**
@@ -361,6 +365,7 @@ class AwardsPlugin extends Gdn_Plugin {
 
 		$UserAwardsModule = new UserAwardsModule($Sender);
 		$UserAwardsModule->LoadData($UserID);
+		return $UserAwardsModule;
 
 		//$HotThreadsPluginModule = new HotThreadsListModule($Sender);
 		//$HotThreadsPluginModule->LoadData(
