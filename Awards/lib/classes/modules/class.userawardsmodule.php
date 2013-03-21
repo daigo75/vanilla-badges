@@ -23,15 +23,6 @@ class UserAwardsModule extends ModuleEx {
 	}
 
 	/**
-	 * Class constructor.
-	 *
-	 * @return UserAwardsModule.
-	 */
-	public function __construct($Sender = '') {
-		parent::__construct($Sender);
-	}
-
-	/**
 	 * Loads the list of the Awards obtained by the User.
 	 */
 	public function LoadData($UserID) {
@@ -42,16 +33,6 @@ class UserAwardsModule extends ModuleEx {
 
 		$this->_UserAwardsDataSet =	$this->UserAwardsModel()->GetForUser($UserID, array('DateAwarded    desc',
 																																										'AwardName asc'));
-	}
-
-	/**
-	 * Specifies the target Asset for the module.
-	 *
-	 * @return string The target Asset where the module will be rendered (usually
-	 * "Panel").
-	 */
-	public function AssetTarget() {
-		return 'Panel';
 	}
 
 	/**
@@ -97,6 +78,11 @@ class UserAwardsModule extends ModuleEx {
 		}
 	}
 
+	/**
+	 * Indicates if the User is viewing his own profile.
+	 *
+	 * @return bool True if User is Viewing his own profile, False otherwise.
+	 */
 	private function ViewingOwnProfile() {
 		return $this->_UserID === Gdn::Session()->UserID;
 	}
