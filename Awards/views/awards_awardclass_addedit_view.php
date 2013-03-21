@@ -13,6 +13,7 @@
 		// associated with the Award Class. This field will only be populated when
 		// an existing Award Class is being modified.
 		echo $this->Form->Hidden('AwardClassImageFile');
+		// TODO Add Side box with guidelines in creating the Award Class
 	?>
 	<fieldset id="AwardClass">
 		<legend><?php echo Wrap(T('Award Class Configuration'), 'h1'); ?></legend>
