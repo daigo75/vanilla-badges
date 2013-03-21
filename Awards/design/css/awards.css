@@ -36,6 +36,22 @@
 	padding: 6px;
 }
 
+/* Award Info page */
+#dashboard_plugin_awards.AwardInfo #Panel {
+  float: left;
+  width: 250px;
+}
+
+#dashboard_plugin_awards.AwardInfo #Content {
+  float: right;
+  margin: 0 0 40px 20px;
+  width: 690px;
+}
+#dashboard_plugin_awards.AwardInfo .UserPhoto img {
+	vertical-align: middle;
+	margin-right: 1em;
+}
+
 /* Warning message */
 .AwardsPlugin .Warning {
 	font-size: 120%;
@@ -63,6 +79,7 @@ div.AwardsDescription {
 
 .AwardImage {
 	text-align: center;
+	background-size: contain !important;
 }
 
 img.Large {
@@ -75,6 +92,7 @@ img.Medium {
 	height: 50px;
 }
 
+/* Wrapper for images in Award/Award class edit page */
 .AwardImageWrapper img {
 	padding: 8px;
 	border: 1px solid silver;
@@ -253,7 +271,11 @@ img.Medium {
 }
 
 #UserAwards #AwardsList {
+	padding-top: 0.5em;
+}
 
+#UserAwards #AwardsList li {
+	border: none;
 }
 
 #UserAwards #AwardsList .Award {

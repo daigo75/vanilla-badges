@@ -289,6 +289,22 @@ class AwardsManager extends BaseManager {
 	}
 
 	/**
+	 * Renders the page displaying the details of an Award and the list of the
+	 * Users who already earned it.
+	 *
+	 * @param AwardsPlugin Caller The Plugin which called the method.
+	 * @param Gdn_Controller Sender Sending controller instance.
+	 */
+	public function AwardInfo(AwardsPlugin $Caller, $Sender) {
+		$this->RemoveDashboardElements();
+		// Add a class to help uniquely identifying this page
+		$Sender->CssClass = 'AwardInfo';
+
+		// Retrieve the View that will be used to configure the Award
+		$Sender->Render($Caller->GetView('awards_award_info_view.php'));
+	}
+
+	/**
 	 * Enables or disables an Award.
 	 *
 	 * @param AwardsPlugin Caller The Plugin which called the method.

@@ -316,7 +316,10 @@ class AwardsPlugin extends Gdn_Plugin {
 	 * @param object Sender Sending controller instance.
 	 */
 	public function Controller_AwardInfo($Sender) {
-		throw new Exception(T('Not implemented.'));
+		// Add the module with the list of Awards earned by current User
+		$Sender->AddModule($this->LoadUserAwardsModule($Sender));
+
+		$this->AwardsManager()->AwardInfo($this, $Sender);
 	}
 
 	/**
@@ -344,12 +347,10 @@ class AwardsPlugin extends Gdn_Plugin {
 	}
 
 	public function ProfileController_Render_Before($Sender, $Args) {
-		//var_dump($Sender->User->UserID);
 		/* Load the module that will render the User Awards List widget and add it
 		 * to the modules list
 		 */
-		$UserAwardsModule = $this->LoadUserAwardsModule($Sender, $Sender->User->UserID);
-		$Sender->AddModule($UserAwardsModule);
+		$Sender->AddModule($this->LoadUserAwardsModule($Sender));
 	}
 
 	/**
@@ -359,22 +360,13 @@ class AwardsPlugin extends Gdn_Plugin {
  	 * @param Controller Sender Sending controller instance.
  	 * @return HotThreadsListModule An instance of the module.
  	 */
-	private function LoadUserAwardsModule($Sender, $UserID) {
-		//// Include Hot Threads List module file
-		//include_once(HOTTHREADS_PLUGIN_MODULES_PATH . '/class.hotthreadslist.module.php');
+	private function LoadUserAwardsModule($Sender) {
+		// If a User ID is specified explicitly, take that one. If not, take currently logged in User
+		$UserID = isset($Sender->User->UserID) ? $Sender->User->UserID : Gdn::Session()->UserID;
 
 		$UserAwardsModule = new UserAwardsModule($Sender);
 		$UserAwardsModule->LoadData($UserID);
 		return $UserAwardsModule;
-
-		//$HotThreadsPluginModule = new HotThreadsListModule($Sender);
-		//$HotThreadsPluginModule->LoadData(
-		//	C('Plugin.HotThreads.MaxEntriesToDisplay'),
-		//	C('Plugin.HotThreads.ViewsThreshold'),
-		//	C('Plugin.HotThreads.CommentsThreshold'),
-		//	C('Plugin.HotThreads.AgeThreshold')
-		//);
-		//return $HotThreadsPluginModule;
 	}
 
 	/**

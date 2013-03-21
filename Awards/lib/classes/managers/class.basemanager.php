@@ -107,4 +107,24 @@ class BaseManager extends Gdn_Plugin {
 		fclose($fp);
 		return $Result;
 	}
+
+	/**
+	 * Removes the elements that are usually rendered for the Dashboard (i.e. the
+	 * Admin backend) and replaces the Master View with the default frontend one.
+	 *
+	 * Purpose of this method
+	 * This method is a trick to render a clean page on the frontend from inside
+	 * the PluginController. Plugins run within Dashboard/PluginController, which
+	 * automatically loads stuff related to the Admin backend when a plugin
+	 * renders a view. This method removes everything related to the backend.
+	 *
+	 * @param Gdn_Controller Sender Sending controller instance.
+	 */
+	protected function RemoveDashboardElements($Sender) {
+		unset($Sender->Assets['Panel']['SideMenuModule']);
+		$Sender->MasterView = '';
+		$Sender->EventArguments = array();
+		$Sender->RemoveCssFile('admin.css');
+		$Sender->AddCssFile('style.css');
+	}
 }
