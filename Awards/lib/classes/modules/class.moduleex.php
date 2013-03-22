@@ -21,7 +21,7 @@ class ModuleEx extends Gdn_Module {
 	 */
 	protected function Log() {
 		if(empty($this->_Log)) {
-			$this->_Log = LoggerPlugin::GetLogger();
+			$this->_Log = LoggerPlugin::GetLogger(get_called_class());
 		}
 
 		return $this->_Log;

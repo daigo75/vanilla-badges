@@ -68,19 +68,6 @@ class AwardClassesManager extends BaseManager {
 	}
 
 	/**
-	 * Loads the Syntax Highlighter that will help Users in creating the CSS for
-	 * the Award Class.
-	 *
-	 * @param Gdn_Controller Sender Sending controller instance.
-	 */
-	private function LoadSyntaxHighlighter(Gdn_Controller $Sender) {
-		// Load the Syntax Highlighter for the Class CSS textarea
-		$Sender->AddCssFile('codemirror.css', 'plugins/Awards/js/codemirror/lib');
-		$Sender->AddJsFile('codemirror.js', 'plugins/Awards/js/codemirror/lib');
-		$Sender->AddJsFile('css.js', 'plugins/Awards/js/codemirror/mode/css');
-	}
-
-	/**
 	 * Renders the page to Add/Edit an Award Class.
 	 *
 	 * @param AwardsPlugin Caller The Plugin which called the method.
@@ -93,9 +80,6 @@ class AwardClassesManager extends BaseManager {
 
 		// Load jQuery UI
 		$this->LoadJQueryUI($Sender);
-
-		// Load JavaScript Syntax Hihglighter. It will be used to help User editing Class' CSS
-		$this->LoadSyntaxHighlighter($Sender);
 
 		// Load auxiliary files
 		$Sender->AddJsFile('awardclass_edit.js', 'plugins/Awards/js');
@@ -301,8 +285,15 @@ class AwardClassesManager extends BaseManager {
 
 		// Add CSS for each Class
 		foreach($AwardClassesDataSet as $AwardClassData) {
-			// Use the Award Class Name as a CSS Class and concatenate the CSS code
-			$CSSDeclaration = '.' . $AwardClassData->AwardClassName . " {\n";
+			// Use the Award Class Name as a CSS Class
+
+			// Generate class for Award Images when they are displayed in the Activity
+			// page. Such page doesn't allow to assign a specific CSS Class to the images,
+			// therefore we have to use a trick to assign the propers styles to them, by
+			// assigning a special class to their container.
+			$CSSDeclaration = '.Activities .AwardActivity.' . $AwardClassData->AwardClassName . ' a.Photo img' . ",\n";
+			// Generate class for Award Images. It's assigned to every award image in most places
+			$CSSDeclaration .= 'img.' . $AwardClassData->AwardClassName . " {\n";
 
 			// Add the background image using the uploaded image
 			if(!empty($AwardClassData->AwardClassImageFile)) {

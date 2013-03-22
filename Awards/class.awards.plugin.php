@@ -41,6 +41,21 @@ class AwardsPlugin extends Gdn_Plugin {
 		'conversations',
 	);
 
+	// @var string The Route Code to be used when registering the Activity Types for the plugin.
+	const AWARD_ROUTECODE = 'award';
+	// @var string Name of the Activity Type to use when a User earns an Award
+	const ACTIVITY_AWARDEARNED = 'AwardEarned';
+	// @var string Name of the Activity Type to use when an Award is revoked
+	const ACTIVITY_AWARDREVOKED = 'AwardRevoked';
+
+	/* @var array Keeps a list of the available Award Actvities. Used mainly to
+	 * recognise, amongst the Activity entries, the ones related to the Awards.
+	 */
+	private $AwardActivities = array(
+		self::ACTIVITY_AWARDEARNED,
+		self::ACTIVITY_AWARDREVOKED,
+	);
+
 	/**
 	 * Returns an instance of a Class and stores it as a property of this class.
 	 * The function follows the principle of lazy initialization, instantiating
@@ -390,11 +405,64 @@ class AwardsPlugin extends Gdn_Plugin {
 		return $UserAwardsModule;
 	}
 
-	private function AddAwardActivityTypes() {
-		//Gdn::SQL()->Replace('ActivityType',
-		//										array('AllowComments' => '0', 'RouteCode' => 'question', 'Notify' => '1', 'Public' => '0', 'ProfileHeadline' => '', 'FullHeadline' => ''),
-		//	array('Name' => 'QuestionAnswer'), TRUE);
+	/**
+	 * Adds the Activity Types used by the plugin. They ares used to notify Users
+	 * of earned and revoked Awards.
+	 */
+	private function AddAwardsActivityTypes() {
+		// "Award earned" Activity Type
+		Gdn::SQL()->Replace('ActivityType',
+												array('AllowComments' => '0',
+															// RouteCode is just a keyword which will be transformed into a link
+															// to the Award on the Activities page
+															'RouteCode' => self::AWARD_ROUTECODE,
+															// Send notifications when Awards are earned
+															'Notify' => '1',
+															// Make Awards public
+															'Public' => '0',
+															// Message showing "You earned the XYZ Award
+															'ProfileHeadline' => '%3$s earned the %8$s Award.',
+															// Message showing "User earned the XYZ Award
+															'FullHeadline' => '%1$s earned the %8$s Award.'),
+												array('Name' => self::ACTIVITY_AWARDEARNED), TRUE);
+	}
 
+	/**
+	 * Deletes the Activity Types used by the plugin.
+	 */
+	private function RemoveAwardsActivityTypes() {
+		Gdn::SQL()->Delete('ActivityType', array('Name' => 'AwardEarned'));
+	}
+
+
+	public function ActivityModel_AfterActivityQuery_Handler($Sender) {
+		$BaseURL = Url('/', true);
+		$Sender->SQL
+			// For the Awards Notifications, field Route contains the ID of the Award
+			->LeftJoin('Awards AWDS', '(t.RouteCode = \'' . self::AWARD_ROUTECODE . '\') AND (AWDS.AwardID = a.Route)')
+			->LeftJoin('AwardClasses AWCS', '(AWCS.AwardClassID = AWDS.AwardClassID)')
+			->Select('AWCS.AwardClassName')
+			->Select('AWDS.AwardImageFile', 'CONCAT(\'' . $BaseURL . '\', %s)', 'ActivityPhoto')
+			->Select('AWDS.AwardName', '', 'RouteCode')
+			->Select('a.Route', 'CONCAT(\'' . AWARDS_PLUGIN_AWARD_INFO_URL . '/\', %s)', 'Route');
+	}
+
+	public function Base_BeforeActivity_Handler($Sender) {
+		$Activity = &$Sender->EventArguments['Activity'];
+		$CssClass = &$Sender->EventArguments['CssClass'];
+
+		//var_dump($Activity);die();
+		if(InArrayI($Activity->ActivityType, $this->AwardActivities)) {
+			$CssClass .= ' AwardActivity ' . $Activity->AwardClassName;
+		}
+	}
+
+	public function ProfileController_BeforeRenderAsset_Handler($Sender, $Args) {
+		//var_dump($Sender->ActivityData);die();
+		//$UserProfile = GetValue('Profile', $Sender->Data);
+		//
+		//$UserProfile->Photo = Url('plugins/Awards/design/images/awards/first_anniversary.png', true);
+		//$Sender->SetData('Profile', $UserProfile);
 	}
 
 	/**
@@ -406,6 +474,9 @@ class AwardsPlugin extends Gdn_Plugin {
 	 */
 	public function Setup() {
 		// TODO Set up the plugin's default values
+
+		// Set up the Activity Types related to the Awards
+		$this->AddAwardsActivityTypes();
 
 		// Create Database Objects needed by the Plugin
 		require('install/awards.schema.php');
@@ -419,8 +490,6 @@ class AwardsPlugin extends Gdn_Plugin {
 	 * perform cleanup tasks such as deletion of unsued files and folders.
 	 */
 	public function OnDisable() {
-		RemoveFromConfig('Plugin.Awards.TrimSize');
-		RemoveFromConfig('Plugin.Awards.RenderCondition');
 	}
 
 	/**
@@ -428,6 +497,8 @@ class AwardsPlugin extends Gdn_Plugin {
 	 */
 	public function CleanUp() {
 		// TODO Remove Plugin's configuration parameters
+
+		$this->RemoveAwardsActivityTypes();
 
 		require('install/awards.schema.php');
 		AwardsSchema::Uninstall();

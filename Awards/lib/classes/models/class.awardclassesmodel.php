@@ -119,57 +119,6 @@ class AwardClassesModel extends ModelEx {
 	}
 
 	/**
-	 * Save an Award Class to the database.
-	 *
-   * @param array $FormPostValues An associative array of $Field => $Value
-   * pairs that represent data posted from the form in the $_POST or $_GET
-   * collection.
-   * @return The value of the Primary Key of the row that has been saved, or
-   * False if the operation could not be completed successfully.
-	 */
-	public function Save(&$FormPostValues) {
-		// Define the primary key in this model's table.
-		$this->DefineSchema();
-
-		// Validate posted data
-		if(!$this->Validate($FormPostValues)) {
-			return false;
-		}
-
-		$this->Database->BeginTransaction();
-
-		try {
-			// Get the Award ID posted via the form
-			$AwardClassID = GetValue($this->PrimaryKey, $FormPostValues, false);
-
-			// See if an Award with the same ID already exists, to decide if the action
-			// should be an INSERT or an UPDATE
-			$Insert = ($this->GetWhere(array('AwardClassID' => $AwardClassID))->FirstRow() === false);
-
-			// Prepare all the validated fields to be passed to an INSERT/UPDATE query
-			$Fields = &$this->Validation->ValidationFields();
-			if($Insert) {
-				$this->AddInsertFields($Fields);
-				$Result = $this->Insert($Fields);
-			}
-			else {
-				$this->AddUpdateFields($Fields);
-				$this->Update($Fields, array($this->PrimaryKey => $AwardClassID));
-				$Result = $AwardClassID;
-			}
-
-			$this->Database->CommitTransaction();
-			return $Result;
-		}
-		catch(Exception $e) {
-			$this->Database->RollbackTransaction();
-			$this->Log()->Error(sprintf(T('Exception occurred while saving AwardClasses. Error: %s'),
-																$e->getMessage()));
-			return false;
-		}
-	}
-
-	/**
 	 * Determines if a Primary Key exists in AwardClasses table.
 	 *
 	 * @param int PrimaryKeyValue The Primary Key.

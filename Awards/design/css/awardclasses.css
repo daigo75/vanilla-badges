@@ -4,7 +4,8 @@
 * all changes will be overwritten by the Plugin when it runs.
 */
 
-.Bronze {
+.Activities .AwardActivity.Bronze a.Photo img,
+img.Bronze {
 background: url("/vanilla/plugins/awards/design/images/awardclasses/bronze.png") top left no-repeat;
 /*
 	border: 4px solid #cd7f32;
@@ -12,11 +13,13 @@ background: url("/vanilla/plugins/awards/design/images/awardclasses/bronze.png")
 */
 }
 
-.General {
+.Activities .AwardActivity.General a.Photo img,
+img.General {
 
 }
 
-.Gold {
+.Activities .AwardActivity.Gold a.Photo img,
+img.Gold {
 background: url("/vanilla/plugins/awards/design/images/awardclasses/gold.png") top left no-repeat;
 /*
 	border: 4px solid #ffc90a;
@@ -24,7 +27,8 @@ background: url("/vanilla/plugins/awards/design/images/awardclasses/gold.png") t
 */
 }
 
-.Silver {
+.Activities .AwardActivity.Silver a.Photo img,
+img.Silver {
 background: url("/vanilla/plugins/awards/design/images/awardclasses/silver.png") top left no-repeat;
 /*
 	border: 4px solid #ababab;

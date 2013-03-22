@@ -152,7 +152,9 @@ div.AwardsDescription {
 	vertical-align: middle;
 }
 
+.Activities .AwardActivity a.Photo img,
 .AwardImage {
+	background: none;
 	text-align: center;
 	background-size: contain !important;
 }

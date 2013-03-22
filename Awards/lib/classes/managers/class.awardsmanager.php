@@ -515,10 +515,13 @@ class AwardsManager extends BaseManager {
 			$this->Log()->debug(T('Adding Award assignment Activity...'));
 			// Log the fact that Award has been assigned to the User
 			$ActivityLogResult = AddActivity($UserID,
-																			 'AwardEarned',
+																			 AwardsPlugin::ACTIVITY_AWARDEARNED,
 																			 $AwardData->AwardDescription,
 																			 $UserID,
-																			 AWARDS_PLUGIN_AWARD_INFO_URL . '/' . $AwardData->AwardID);
+																			 // Instead of a Route, save only the Award ID. It will be used to
+																			 // join with UserAwards table to retrieve additional information
+																			 // when displaying the Activity
+																			 $AwardData->AwardID);
 
 			if($ActivityLogResult === false) {
 				$this->Log()->error(T('Activity was not saved correctly.'));
