@@ -169,6 +169,9 @@ class AwardsPlugin extends Gdn_Plugin {
 
 		// If your sub-pages use forms, this is a good place to get it ready
 		$Sender->Form = new Gdn_Form();
+		// Display inline errors
+		$Sender->Form->ShowErrors();
+
 
 		/*
 		 * Note: When the URL is accessed without parameters, Controller_Index() is called. This is a good place

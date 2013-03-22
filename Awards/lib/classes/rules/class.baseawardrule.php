@@ -39,6 +39,15 @@ class BaseAwardRule extends Gdn_Controller {
 		return $this->_Log;
 	}
 
+	/* @var array Contains the types of calculation available for the Rule
+	 * - At: Rule returns true when the specified threshold is reached.
+	 * - Every: Rule returns true whenever the specified amount of content type is reached.
+	 *
+	 * Note: variable cannot be initialized on declaration because it makes use of
+	 * T() for translations.
+	 */
+	public static $CountTypes;
+
 	// @var int Indicates that the Rule is enabled and should be processed.
 	const RULE_ENABLED = 0;
 	// @var int Indicates that the Rule is disabled and should not be processed.
@@ -282,5 +291,8 @@ class BaseAwardRule extends Gdn_Controller {
 	public function __construct() {
 		parent::__construct();
 		$this->Validation = new Gdn_Validation();
+
+		self::$CountTypes = array(1 => T('At'),
+															2 => T('Every'),);
 	}
 }

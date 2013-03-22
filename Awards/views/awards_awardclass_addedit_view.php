@@ -20,7 +20,7 @@ function GetCurrentAction(Gdn_Form $Form, $Data) {
 		return sprintf(T('Clone Award Class "%s"'), $SourceAwardClassInfo);
 	}
 
-	return $Form->GetValue('AwardClassID') ? sprintf(T('Edit Award Class "%s"'), $Form->GetValue('AwardClassName')) : T('Add new Award Class');
+	return $Form->GetValue('AwardClassID') ? sprintf(T('Edit Award Class'), $Form->GetValue('AwardClassName')) : T('Add new Award Class');
 }
 ?>
 <div class="AwardsPlugin AwardClassEdit">

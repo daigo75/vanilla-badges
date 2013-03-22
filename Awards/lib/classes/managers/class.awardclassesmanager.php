@@ -103,7 +103,10 @@ class AwardClassesManager extends BaseManager {
 		// Retrieve the Award Class ID passed as an argument (if any)
 		$AwardClassID = $Sender->Request->GetValue(AWARDS_PLUGIN_ARG_AWARDCLASSID, null);
 
+		// Set Award Class Data in the form
 		$Sender->Form->SetModel($this->AwardClassesModel());
+		// Display inline errors
+		$Sender->Form->ShowErrors();
 
 		if(!empty($AwardClassID)) {
 			$AwardClassData = $this->AwardClassesModel()->GetAwardClassData($AwardClassID)->FirstRow();
@@ -215,6 +218,15 @@ class AwardClassesManager extends BaseManager {
 		$Sender->SetData('Cloning', 1);
 
 		$Sender->Form->SetData($AwardClassData);
+
+		/* Replace the destination URI with the one used to Add/Edit and Award Class.
+		 * This will allow the Controller to handle the cloned Award as if it were
+		 * a normal, new one.
+		 */
+		$Sender->Request->WithURI(AWARDS_PLUGIN_AWARDCLASS_ADDEDIT_URL);
+		/* Remove the Award Class ID from the Request, so that the Add/Edit controller
+		 * won't overwrite the source Award Class.
+		 */
 		$Sender->Request->SetValueOn(Gdn_Request::INPUT_GET, AWARDS_PLUGIN_ARG_AWARDCLASSID, null);
 		$this->AwardClassAddEdit($Caller, $Sender);
 	}

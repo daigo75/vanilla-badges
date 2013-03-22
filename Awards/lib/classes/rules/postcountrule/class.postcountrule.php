@@ -17,15 +17,6 @@ AwardRulesManager::RegisterRule('PostCountRule',
  * Post Count Award Rule.
  */
 class PostCountRule extends BaseAwardRule {
-	/* @var array Contains the types of calculation available for the Rule
-	 * - At: Rule returns true when the specified threshold is reached.
-	 * - Every: Rule returns true whenever the specified amount of content type is reached.
-	 *
-	 * Note: variable cannot be initialized on declaration because it makes use of
-	 * T() for translations.
-	 */
-	public static $CountTypes;
-
 	/**
 	 * Checks if the User posted enough Discussions to be assigned an Award based
 	 * on such criteria.
@@ -105,7 +96,7 @@ class PostCountRule extends BaseAwardRule {
 		$DiscussionsThreshold = GetValue('Amount', $DiscussionsSettings);
 		if(GetValue('Enabled', $DiscussionsSettings) || !empty($DiscussionsThreshold)) {
 			if(!is_numeric($DiscussionsThreshold) || ($DiscussionsThreshold <= 0)) {
-				$this->Validation->AddValidationResult(self::RenameRuleField('Discussions_Amount'),
+				$this->Validation->AddValidationResult('Discussions_Amount',
 																							 T('Discussions threshold must be a positive integer.'));
 			}
 		}
@@ -115,7 +106,7 @@ class PostCountRule extends BaseAwardRule {
 		$CommentsThreshold = GetValue('Amount', $CommentsSettings);
 		if(GetValue('Enabled', $CommentsSettings) || !empty($CommentsThreshold)) {
 			if(!is_numeric($CommentsThreshold) || ($CommentsThreshold <= 0)) {
-				$this->Validation->AddValidationResult(self::RenameRuleField('Comments_Amount'),
+				$this->Validation->AddValidationResult('Comments_Amount',
 																							 T('Comments threshold must be a positive integer.'));
 			}
 		}
@@ -148,8 +139,6 @@ class PostCountRule extends BaseAwardRule {
 	 */
 	public function __construct() {
 		parent::__construct();
-		self::$CountTypes = array(1 => T('At'),
-															2 => T('Every'),);
 	}
 
 	// TODO Add Model (if needed) to perform Rule checks

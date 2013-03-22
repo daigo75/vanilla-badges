@@ -8,11 +8,14 @@
  * object.
  */
 $RuleSettings = GetValue('PostCountRule', $this->Data['RulesSettings']);
-$this->Form->SetFormValue('Discussions_Enabled', (int)GetValue('Enabled', $RuleSettings->Discussions));
-$this->Form->SetFormValue('Discussions_Amount', GetValue('Amount', $RuleSettings->Discussions));
-$this->Form->SetFormValue('Comments_Enabled', (int)GetValue('Enabled', $RuleSettings->Comments));
-$this->Form->SetFormValue('Comments_Amount', GetValue('Amount', $RuleSettings->Comments));
 
+$DiscussionsSettings = GetValue('Discussions', $RuleSettings);
+$this->Form->SetFormValue('Discussions_Enabled', (int)GetValue('Enabled', $DiscussionsSettings));
+$this->Form->SetFormValue('Discussions_Amount', GetValue('Amount', $DiscussionsSettings));
+
+$CommentsSettings = GetValue('Comments', $RuleSettings);
+$this->Form->SetFormValue('Comments_Enabled', (int)GetValue('Enabled', $CommentsSettings));
+$this->Form->SetFormValue('Comments_Amount', GetValue('Amount', $CommentsSettings));
 ?>
 <div class="Rule">
 	<ul>

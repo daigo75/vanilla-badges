@@ -139,6 +139,17 @@ class AwardsManager extends BaseManager {
 	}
 
 	/**
+	 * Loads and returns the available Award Classes.
+	 *
+	 * @return Gdn_DataSet A DataSet containing the available Award Classes.
+	 */
+	protected function GetAwardClasses() {
+		// Retrieve all available Award Classes
+		$AwardClassesModel = new AwardClassesModel();
+		return $AwardClassesModel->Get();
+	}
+
+	/**
 	 * Renders the page to Add/Edit an Award.
 	 *
 	 * @param AwardsPlugin Caller The Plugin which called the method.
@@ -160,11 +171,13 @@ class AwardsManager extends BaseManager {
 
 		// Set Award Data in the form
 		$Sender->Form->SetModel($this->AwardsModel());
+		// Display inline errors
+		$Sender->Form->ShowErrors();
 
 		// Load Award Classes
-		$AwardClassesModel = new AwardClassesModel();
-		$AwardClasses = $AwardClassesModel->Get();
-		$Sender->SetData('AwardClasses', $AwardClasses);
+		$Sender->SetData('AwardClasses', $this->GetAwardClasses());
+
+		//var_dump($Sender->Form);
 
 		if(!empty($AwardID)) {
 			// Load Award Data
@@ -240,15 +253,22 @@ class AwardsManager extends BaseManager {
 																									$e->getMessage()));
 						throw $e;
 					}
-				}
 
-				if($Saved) {
-					$Sender->InformMessage(T('Your changes have been saved.'));
-					$Caller->FireEvent('ConfigChanged');
+					if($Saved) {
+						$Sender->InformMessage(T('Your changes have been saved.'));
+						$Caller->FireEvent('ConfigChanged');
 
-					// Once changes have been saved, redurect to the main page
-					//Redirect(AWARDS_PLUGIN_AWARDS_LIST_URL);
-					$this->AwardsList($Caller, $Sender);
+						// Once changes have been saved, redurect to the main page
+						//Redirect(AWARDS_PLUGIN_AWARDS_LIST_URL);
+						return $this->AwardsList($Caller, $Sender);
+					}
+					else {
+						/* If data has been posted back and it contains errors, extract the
+						 * Rules information from it and pass as a separated field to the
+						 * Sender. This will allow the Rules to pick it up automatically.
+						 */
+						$Sender->SetData('RulesSettings', GetValue('Rules', $Data));
+					}
 				}
 			}
 		}
@@ -296,7 +316,18 @@ class AwardsManager extends BaseManager {
 		// Set a flag that will inform the User that he is cloning an Award
 		$Sender->SetData('Cloning', 1);
 
+		// Pre-populate the form with data from the source Award
 		$Sender->Form->SetData($AwardData);
+		$Sender->SetData('RulesSettings', $this->GetRulesSettings($AwardData));
+
+		/* Replace the destination URI with the one used to Add/Edit and Award. This
+		 * will allow the Controller to handle the cloned Award as if it were a
+		 * normal, new one.
+		 */
+		$Sender->Request->WithURI(AWARDS_PLUGIN_AWARD_ADDEDIT_URL);
+		/* Remove the Award ID from the Request, so that the Add/Edit controller
+		 * won't overwrite the source Award.
+		 */
 		$Sender->Request->SetValueOn(Gdn_Request::INPUT_GET, AWARDS_PLUGIN_ARG_AWARDID, null);
 		$this->AwardAddEdit($Caller, $Sender);
 	}

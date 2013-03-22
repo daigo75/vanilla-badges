@@ -103,12 +103,12 @@
 																	AWARDS_PLUGIN_AWARDCLASS_DELETE_URL,
 																	AWARDS_PLUGIN_ARG_AWARDCLASSID,
 																	Gdn_Format::Url($AwardClass->AwardClassID)),
-													'Button DeleteAwardClass disabled');
+													'Button DeleteAwardClass');
 						}
 						else {
 							echo Wrap(T('Cannot delete'),
 												'span',
-												array('class' => 'Disabled',
+												array('class' => 'Button Disabled',
 															'title' => sprintf(T('Award Class "%s" cannot be deleted ' .
 																									 'because there are still Awards using it.'),
 																								 GetValue('AwardClassName', $AwardClass))));

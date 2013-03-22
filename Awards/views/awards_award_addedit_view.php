@@ -27,10 +27,10 @@ function GetCurrentAction(Gdn_Form $Form, $Data) {
 																 'span',
 																 array('class' => 'Info',
 																			 'title' => $Form->GetValue('SourceAwardDescription'),));
-		return sprintf(T('Clone Award  "%s"'), $SourceAwardInfo);
+		return sprintf(T('Clone Award "%s"'), $SourceAwardInfo);
 	}
 
-	return $Form->GetValue('AwardID') ? sprintf(T('Edit Award "%s"'), $Form->GetValue('AwardName')) : T('Add new Award ');
+	return $Form->GetValue('AwardID') ? sprintf(T('Edit Award'), $Form->GetValue('AwardName')) : T('Add new Award ');
 }
 
 // Retrieve the Sections to organise the Rules
