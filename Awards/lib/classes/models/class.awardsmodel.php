@@ -71,12 +71,14 @@ class AwardsModel extends ModelEx {
 	 * @param int Limit Limit the amount of rows to be returned.
 	 * @param int Offset Specifies from which rows the data should be returned. Used
 	 * for pagination.
+	 * @param array OrderBy An associative array of ORDER BY clauses. They should
+	 * be passed as specified in Gdn_SQLDriver::OrderBy() method.
 	 * @return Gdn_DataSet A DataSet containing Awards data.
 	 *
 	 * @see AwardsModel::GetWhere()
 	 */
-	public function Get($Limit = 1000, $Offset = 0) {
-		return $this->GetWhere(array(), $Limit, $Offset);
+	public function Get($Limit = 1000, $Offset = 0, array $OrderBy = array()) {
+		return $this->GetWhere(array(), $OrderBy, $Limit, $Offset);
 	}
 
 	/**
@@ -123,6 +125,10 @@ class AwardsModel extends ModelEx {
 	 * Convenience method to returns a DataSet containing a list of all the
 	 * configured Awards, together with the amount of times they have been awarded.
 	 *
+	 * @param array Wheres An associative array of WHERE clauses. They should
+	 * be passed as specified in Gdn_SQLDriver::Where() method.
+	 * @param array OrderBy An associative array of ORDER BY clauses. They should
+	 * be passed as specified in Gdn_SQLDriver::OrderBy() method.
 	 * @param int Limit Limit the amount of rows to be returned.
 	 * @param int Offset Specifies from which rows the data should be returned. Used
 	 * for pagination.
@@ -130,10 +136,12 @@ class AwardsModel extends ModelEx {
 	 *
 	 * @see AwardsModel::GetWhere()
 	 */
-	public function GetWithTimesAwarded($Limit = 1000, $Offset = 0) {
-		$this->PrepareAwardsQuery();
-
-		$Result = $this->SQL
+	public function GetWithTimesAwarded(array $Wheres = array(), array $OrderBy = array(), $Limit = 1000, $Offset = 0) {
+		/* Add a related to the User Awards before calling GetWhere(). Even
+		 * though all these clauses are specified here, in a seemingly "random" way,
+		 * the SQL Builder will sort them out and build a proper query.
+		 */
+		$this->SQL
 			->Select('UA.TimesAwarded', 'SUM', 'TotalTimesAwarded')
 			->LeftJoin('UserAwards UA', '(UA.AwardID = VAAL.AwardID)')
 			->GroupBy(array(
@@ -149,11 +157,9 @@ class AwardsModel extends ModelEx {
 				'VAAL.DateUpdated',
 				'VAAL.RulesSettings',
 				'VAAL.AwardClassName',
-				'VAAL.AwardClassImageFile',))
-			->OrderBy('VAAL.AwardName')
-			->Get();
+				'VAAL.AwardClassImageFile',));
 
-		return $Result;
+		return $this->GetWhere($Wheres, $OrderBy, $Limit, $Offset);
 	}
 
 	/**
@@ -161,6 +167,8 @@ class AwardsModel extends ModelEx {
 	 *
 	 * @param array WhereClauses An associative array of WHERE clauses. They should
 	 * be passed as specified in Gdn_SQLDriver::Where() method.
+	 * @param array OrderByClauses An associative array of ORDER BY clauses. They
+	 * should	be passed as specified in Gdn_SQLDriver::OrderBy() method.
 	 * @param int Limit Limits the amount of rows to be returned.
 	 * @param int Offset Specifies from which rows the data should be returned. Used
 	 * for pagination.
@@ -168,7 +176,7 @@ class AwardsModel extends ModelEx {
 	 *
 	 * @see Gdn_SQLDriver::Where()
 	 */
-	public function GetWhere(array $WhereClauses, $Limit = 1000, $Offset = 0) {
+	public function GetWhere(array $WhereClauses, array $OrderByClauses = array(), $Limit = 1000, $Offset = 0) {
 		// Set default Limit and Offset, if invalid ones have been passed.
 		$Limit = (is_numeric($Limit) && $Limit > 0) ? $Limit : 1000;
 		$Offset = (is_numeric($Offset) && $Offset > 0) ? $Offset : 0;
@@ -179,6 +187,11 @@ class AwardsModel extends ModelEx {
 		// Add additional WHERE clauses, if any has been passed
 		if(!empty($WhereClauses)) {
 			$this->SQL->Where($WhereClauses);
+		}
+
+		// Add ORDER BY clauses, if any has been passed
+		if(!empty($OrderByClauses)) {
+			$this->SetOrderBy($OrderByClauses);
 		}
 
 		$Result = $this->SQL

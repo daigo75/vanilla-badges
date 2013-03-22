@@ -45,7 +45,7 @@ class AwardsManager extends BaseManager {
 		$Sender->Permission('Plugins.Awards.Manage');
 
 		// TODO Handle Limit and Offset
-		$AwardsDataSet = $this->AwardsModel()->GetWithTimesAwarded();
+		$AwardsDataSet = $this->AwardsModel()->GetWithTimesAwarded(array(), array('AwardName asc'));
 		// TODO Add Pager
 
 		$Sender->SetData('AwardsDataSet', $AwardsDataSet);
@@ -289,6 +289,19 @@ class AwardsManager extends BaseManager {
 	}
 
 	/**
+	 * Loads and configures the Recent Award Recipients module, which will display
+	 * a list of the last Users who earned an Award.
+	 *
+ 	 * @param Controller Sender Sending controller instance.
+ 	 * @return RecentAwardRecipientsModule An instance of the module.
+ 	 */
+	private function LoadRecentAwardRecipientsModule($Sender, $AwardID) {
+		$RecentAwardRecipientsModule = new RecentAwardRecipientsModule($Sender);
+		$RecentAwardRecipientsModule->LoadData($AwardID);
+		return $RecentAwardRecipientsModule;
+	}
+
+	/**
 	 * Renders the page displaying the details of an Award and the list of the
 	 * Users who already earned it.
 	 *
@@ -296,9 +309,29 @@ class AwardsManager extends BaseManager {
 	 * @param Gdn_Controller Sender Sending controller instance.
 	 */
 	public function AwardInfo(AwardsPlugin $Caller, $Sender) {
-		$this->RemoveDashboardElements();
+		$this->RemoveDashboardElements($Sender);
 		// Add a class to help uniquely identifying this page
 		$Sender->CssClass = 'AwardInfo';
+
+		// Load Award Data
+		$AwardID = GetValue(1, $Sender->RequestArgs);
+		if(!empty($AwardID)) {
+			//$AwardData = $this->AwardsModel()->GetAwardData($AwardID)->FirstRow();
+			$AwardData = $this->AwardsModel()
+												->GetWithTimesAwarded(array('VAAL.AwardID' => $AwardID),
+																							array('VAAL.AwardName asc'))
+												->FirstRow();
+			$Sender->SetData('AwardData', $AwardData);
+			$Sender->SetData('RecentAwardRecipientsModule', $this->LoadRecentAwardRecipientsModule($Sender, $AwardID));
+
+			//$Sender->AddModule();
+		}
+
+		// Load details of Award as earned by the User
+		if(!empty($AwardData) && Gdn::Session()->IsValid()) {
+			$UserAwardData = $this->UserAwardsModel()->GetUserAwardData(Gdn::Session()->UserID, $AwardID);
+			$Sender->SetData('UserAwardData', $UserAwardData);
+		}
 
 		// Retrieve the View that will be used to configure the Award
 		$Sender->Render($Caller->GetView('awards_award_info_view.php'));

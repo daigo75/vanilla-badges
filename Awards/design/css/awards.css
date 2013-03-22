@@ -2,6 +2,10 @@
 {licence}
 */
 
+.xdebug-var-dump {
+	text-align: left !important;
+}
+
 /* General CSS for configuration pages sections */
 .AwardsPlugin {
 }
@@ -47,9 +51,66 @@
   margin: 0 0 40px 20px;
   width: 690px;
 }
+#dashboard_plugin_awards.AwardInfo .AwardDetails .AwardImageWrapper,
+#dashboard_plugin_awards.AwardInfo .AwardDetails .TextWrapper {
+	float: left;
+}
+
+#dashboard_plugin_awards.AwardInfo .AwardDetails .TextWrapper {
+	margin-left: 1em;
+}
+
+#dashboard_plugin_awards.AwardInfo .AwardDetails .AwardName {
+	font-size: x-large;
+	margin-top: 0.5em;
+}
+
+#dashboard_plugin_awards.AwardInfo .AwardDetails .AwardDescription {
+	font-size: large;
+}
+
+#dashboard_plugin_awards.AwardInfo .TotalTimesAwarded {
+	font-size: 110%;
+	margin-top: 0.5em;
+}
+
+
 #dashboard_plugin_awards.AwardInfo .UserPhoto img {
 	vertical-align: middle;
-	margin-right: 1em;
+	margin-right: 0.5em;
+}
+
+#dashboard_plugin_awards.AwardInfo .YouEarned {
+	margin-top: 1.5em;
+}
+
+/* List of last recipients of an Award */
+#dashboard_plugin_awards.AwardInfo #RecentAwardRecipients {
+	margin-top: 1.5em;
+}
+
+#dashboard_plugin_awards.AwardInfo #RecentAwardRecipients h4 {
+	color: black;
+	font-size: large;
+	margin: 0.5em 0 ;
+	padding-bottom: 0.3em;
+	border-bottom: 1px dashed gray;
+}
+
+#dashboard_plugin_awards.AwardInfo #UserList {
+	border: none;
+}
+
+#dashboard_plugin_awards.AwardInfo #UserList li {
+	text-align: left;
+	margin-right: 0.5em;
+	background: none;
+	border: none;
+}
+
+#dashboard_plugin_awards.AwardInfo #UserList .AwardRecipient {
+	width: 31%;
+	float: left;
 }
 
 /* Warning message */
@@ -93,7 +154,7 @@ img.Medium {
 }
 
 /* Wrapper for images in Award/Award class edit page */
-.AwardImageWrapper img {
+#Form_Awards .AwardImageWrapper .AwardImage {
 	padding: 8px;
 	border: 1px solid silver;
 }

@@ -10,6 +10,10 @@ class ModuleEx extends Gdn_Module {
 	// @var Logger The Logger used by the class.
 	private $_Log;
 
+	// @var string The Asset Target where the module will be rendered
+	protected $_AssetTarget = 'Panel';
+
+
 	/**
 	 * Returns the instance of the Logger used by the class.
 	 *
@@ -49,6 +53,20 @@ class ModuleEx extends Gdn_Module {
 		}
 
 		return $this->$FieldName;
+	}
+
+	/**
+	 * Specifies or returns the target Asset for the module.
+	 *
+	 * @return string The target Asset where the module will be rendered (usually
+	 * "Panel").
+	 */
+	public function AssetTarget($AssetTarget = null) {
+		if(!empty($AssetTarget)) {
+			$this->_AssetTarget = $AssetTarget;
+		}
+
+		return $this->_AssetTarget;
 	}
 
 	public function __construct($Sender = '') {

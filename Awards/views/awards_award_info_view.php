@@ -2,16 +2,10 @@
 /**
 {licence}
 */
-	// Indicates how many columns there are in the table that shows the list of
-	// configured Awards. It's mainly used to set the "colspan" attributes of
-	// single-valued table rows, such as Title, or the "No Results Found" message.
-	$AwardsTableColumns = 7;
-
 	// The following HTML will be displayed when the DataSet is empty.
-	$OutputForEmptyDataSet = Wrap(T('No Awards configured.'),
-																'td',
-																array('colspan' => $AwardsTableColumns,
-																			'class' => 'NoResultsFound',)
+	$OutputForEmptyDataSet = Wrap(T('Award not found.'),
+																'div',
+																array('class' => 'NoResultsFound',)
 																);
 
 	function RenderUserInfo($User) {
@@ -22,24 +16,57 @@
 		echo Wrap($UserPhoto . $UserLink,
 							'div');
 	}
+
+	$AwardData = GetValue('AwardData', $this->Data);
+	$UserAwardData = GetValue('UserAwardData', $this->Data);
+	//var_dump($AwardData);
 ?>
 <div class="AwardsPlugin">
-	<div class="AwardImage">
-		<img src="/vanilla/plugins/Awards/design/images/awards/green_pepper.png" class="AwardImage Large Bronze" alt="Green Pepper" title="Green Pepper">
-	</div>
-	<div class="AwardDetails">
-		<h1>Award Name</h1>
-		<p>Award Description</p>
-	</div>
-	<div class="YouEarned">
+	<div class="AwardDetails clearfix">
 		<?php
-			echo $UserPhoto = UserPhoto(UserBuilder(Gdn::Session()->User), 'UserPhoto');
-			echo Wrap(sprintf(T('You earned this Award on %s'),
-												Gdn_Format::Date(now(), T('Date.DefaultFormat'))));
+			if(empty($AwardData)) {
+				echo $OutputForEmptyDataSet;
+			}
+			else {
+				$AwardImage = Img($AwardData->AwardImageFile,
+													array('alt' => $AwardData->AwardClassName,
+																'class' => 'AwardImage Large ' . $AwardData->AwardClassName));
+				echo Wrap($AwardImage,
+									'div',
+									array('class' => 'AwardImageWrapper'));
+				echo '<div class="TextWrapper">';
+				echo Wrap($AwardData->AwardName, 'h1', array('class' => 'AwardName'));
+				echo Wrap($AwardData->AwardDescription, 'p', array('class' => 'AwardDescription'));
+				echo '<div class="TotalTimesAwarded">';
+				// Check if term should be "person" of "people", depending on how many Users earned the Award
+				$UsersTerm = Plural($AwardData->TotalTimesAwarded, 'person', 'people');
+				echo Wrap(sprintf(T('%d %s have earned this Award.'),
+													$AwardData->TotalTimesAwarded,
+													$UsersTerm));
 
+				echo '</div>';
+
+				echo '</div>';
+			}
 		?>
 	</div>
-	<div class="RecentRecipients">
+	<?php
+		if(!empty($UserAwardData)) {
+			echo '<div class="YouEarned">';
 
-	</div>
+			echo $UserPhoto = UserPhoto(UserBuilder(Gdn::Session()->User), 'UserPhoto');
+			// TODO Support recurring Awards by displaying amount of times earned, first earned date and last earned date
+			echo Wrap(sprintf(T('You earned this Award on %s.'),
+												Gdn_Format::Date($UserAwardData->DateAwarded, T('Date.DefaultFormat'))));
+
+			echo '</div>';
+		}
+
+		$RecentAwardRecipientsModule = GetValue('RecentAwardRecipientsModule', $this->Data);
+		if(isset($RecentAwardRecipientsModule)) {
+			echo '<div class="RecentRecipients">';
+			echo $RecentAwardRecipientsModule->ToString();
+			echo '</div>';
+		}
+	?>
 </div>

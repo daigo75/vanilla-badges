@@ -78,9 +78,8 @@ class UserAwardsModel extends ModelEx {
 	 * Awards obtained by a specific User.
 	 *
 	 * @param int UserID The ID of the User.
-	 * @param int Limit Limit the amount of rows to be returned.
-	 * @param int Offset Specifies from which rows the data should be returned. Used
-	 * for pagination.
+	 * @param array OrderBy An associative array of ORDER BY clauses. They
+	 * should	be passed as specified in Gdn_SQLDriver::OrderBy() method.
 	 * @return Gdn_DataSet A DataSet containing Awards data.
 	 *
 	 * @see UserAwardsModel::GetWhere()
@@ -88,6 +87,55 @@ class UserAwardsModel extends ModelEx {
 	public function GetForUser($UserID, array $OrderBy = array()) {
 		return $this->GetWhere(array('VAUAL.UserID' => $UserID), $OrderBy);
 	}
+
+	/**
+	 * Convenience method to retrieve the details of a single Award eanred by a
+	 * User.
+	 *
+	 * @param int UserID The ID of the User.
+	 * @param int AwardID The ID of the Award.
+	 * @param array OrderBy An associative array of ORDER BY clauses. They
+	 * should	be passed as specified in Gdn_SQLDriver::OrderBy() method.
+	 * @return Gdn_DataSet A DataSet containing Awards data.
+	 *
+	 * @see UserAwardsModel::GetWhere()
+	 */
+	public function GetUserAwardData($UserID, $AwardID) {
+		return $this->GetWhere(array('VAUAL.UserID' => $UserID,
+																 'VAUAL.AwardID' => $AwardID))
+								->FirstRow();
+	}
+
+	/**
+	 * Retrieves the last Users who received an Award, together with some User
+	 * details.
+	 *
+	 * @param int AwardID The ID of the Award.
+	 * @param array OrderBy An associative array of ORDER BY clauses. They
+	 * should	be passed as specified in Gdn_SQLDriver::OrderBy() method.
+	 * @param int Limit The maximum amount of rows to return.
+	 * @return Gdn_DataSet A DataSet containing Awards data.
+	 *
+	 * @see UserAwardsModel::GetWhere()
+	 */
+	public function GetRecentAwardRecipients($AwardID, array $OrderBy = array(), $Limit = 1000) {
+		/* Add a bunch of fields related to the Users before calling GetWhere(). Even
+		 * though all these clauses are specified here, in a seemingly "random" way,
+		 * the SQL Builder will sort them out and build a proper query.
+		 */
+		$this->SQL
+			->Select('U.Name')
+			->Select('U.Photo')
+			->Select('U.Email')
+			->Select('U.Gender')
+			->Join('User U', '(U.UserID = VAUAL.UserID)', 'inner');
+
+		// Run the query and return the result;
+		return $this->GetWhere(array('AwardID' => $AwardID),
+													 $OrderBy,
+													 $Limit);
+	}
+
 	/**
 	 * Returns a DataSet containing a list of the Awards earned by a User.
 	 *
