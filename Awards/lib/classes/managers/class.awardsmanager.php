@@ -491,6 +491,14 @@ class AwardsManager extends BaseManager {
 		}
 	}
 
+	/**
+	 * Assigns an Award to a User and updates the Activity log to notify him.
+	 *
+	 * @param int UserID The User ID of the Award recipient.
+	 * @param stdClass AwardData An object containing Award data.
+	 * @param int AwardAssignmentCount The amount of times that the Award should be
+	 * assigned. It can be more than one for recurring Awards.
+	 */
 	protected function AssignAward($UserID, stdClass $AwardData, $AwardAssignmentCount) {
 		$UserAwardFields = array(
 			'UserID' => $UserID,
@@ -502,6 +510,22 @@ class AwardsManager extends BaseManager {
 
 		//var_dump("Assigning Award", $AwardAssignmentCount, $AwardData);
 
-		$this->UserAwardsModel()->Save($UserAwardFields);
+		$UserAwardID = $this->UserAwardsModel()->Save($UserAwardFields);
+		if($UserAwardID !== false) {
+			$this->Log()->debug(T('Adding Award assignment Activity...'));
+			// Log the fact that Award has been assigned to the User
+			$ActivityLogResult = AddActivity($UserID,
+																			 'AwardEarned',
+																			 $AwardData->AwardDescription,
+																			 $UserID,
+																			 AWARDS_PLUGIN_AWARD_INFO_URL . '/' . $AwardData->AwardID);
+
+			if($ActivityLogResult === false) {
+				$this->Log()->error(T('Activity was not saved correctly.'));
+			}
+			else {
+				$this->Log()->debug(T('Done.'));
+			}
+		}
 	}
 }
