@@ -25,6 +25,30 @@ class AwardsManager extends BaseManager {
 	}
 
 	/**
+	 * Prepares some Award Data to be used for cloning an Award. This method
+	 * removes or alters all data that identifies an Award, so that the User will
+	 * be forced to enter different details for the clone.
+	 *
+	 * @param stdClass AwardData An object containing Award data.
+	 * @return stdClass The processed Award Data object.
+	 */
+	private function PrepareAwardDataForCloning(stdClass $AwardData) {
+		// Save references to source Award
+		$AwardData->SourceAwardID = $AwardData->AwardID;
+		$AwardData->SourceAwardName = $AwardData->AwardName;
+		$AwardData->SourceAwardDescription = $AwardData->AwardDescription;
+
+		// Unset and alter Award key data, as clone will have to use its own
+		unset($AwardData->AwardID);
+		unset($AwardData->DateInserted);
+		unset($AwardData->DateUpdated);
+
+		$AwardData->AwardName = T('CLONE-') . $AwardData->AwardName;
+		$AwardData->AwardDescription = T('CLONE-') . $AwardData->AwardDescription ;
+		return $AwardData;
+	}
+
+	/**
 	 * Class constructor.
 	 *
 	 * @return AwardsManager
@@ -142,7 +166,7 @@ class AwardsManager extends BaseManager {
 		$AwardClasses = $AwardClassesModel->Get();
 		$Sender->SetData('AwardClasses', $AwardClasses);
 
-		if(isset($AwardID)) {
+		if(!empty($AwardID)) {
 			// Load Award Data
 			$AwardData = $this->AwardsModel()->GetAwardData($AwardID)->FirstRow();
 			$Sender->Form->SetData($AwardData);
@@ -238,6 +262,43 @@ class AwardsManager extends BaseManager {
 
 		// Retrieve the View that will be used to configure the Award
 		$Sender->Render($Caller->GetView('awards_award_addedit_view.php'));
+	}
+
+	/**
+	 * Renders the page to Clone an Award.
+	 *
+	 * @param AwardsPlugin Caller The Plugin which called the method.
+	 * @param Gdn_Controller Sender Sending controller instance.
+	 */
+	public function AwardClone(AwardsPlugin $Caller, $Sender) {
+		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_AWARD_CLONE_URL);
+		// Prevent non authorised Users from accessing this page
+		$Sender->Permission('Plugins.Awards.Manage');
+
+		// Retrieve the Award ID passed as an argument (if any)
+		$AwardID = $Sender->Request->Get(AWARDS_PLUGIN_ARG_AWARDID, null);
+		// Can't continue without an Award ID
+		if(empty($AwardID)) {
+			Redirect(AWARDS_PLUGIN_AWARDS_LIST_URL);
+		}
+
+		// Load Award Data
+		$AwardData = $this->AwardsModel()->GetAwardData($AwardID)->FirstRow();
+		if(empty($AwardData)) {
+			$this->Log()->error(sprintf(T('Requested cloning of invalid Award ID: %d. Request by User %s (ID: %d).'),
+																	$AwardID,
+																	Gdn::Session()->User->Name,
+																	Gdn::Session()->UserID));
+			Redirect(AWARDS_PLUGIN_AWARDS_LIST_URL);
+		}
+
+		$AwardData = $this->PrepareAwardDataForCloning($AwardData);
+		// Set a flag that will inform the User that he is cloning an Award
+		$Sender->SetData('Cloning', 1);
+
+		$Sender->Form->SetData($AwardData);
+		$Sender->Request->SetValueOn(Gdn_Request::INPUT_GET, AWARDS_PLUGIN_ARG_AWARDID, null);
+		$this->AwardAddEdit($Caller, $Sender);
 	}
 
 	/**

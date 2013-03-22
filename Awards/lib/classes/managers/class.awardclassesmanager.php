@@ -4,8 +4,15 @@
 */
 
 class AwardClassesManager extends BaseManager {
-	private $_AwardClassesModel;
-
+	/**
+	 * Returns an instance of AwardClassesModel.
+	 *
+	 * @return AwardClassesModel An instance of AwardClassesModel.
+	 * @see BaseManager::GetInstance()
+	 */
+	private function AwardClassesModel() {
+		return $this->GetInstance('AwardClassesModel');
+	}
 	/**
 	 * Class constructor.
 	 *
@@ -13,9 +20,33 @@ class AwardClassesManager extends BaseManager {
 	 */
 	public function __construct() {
 		parent::__construct();
-
-		$this->AwardClassesModel = new AwardClassesModel();
 	}
+
+	/**
+	 * Prepares some Award Class Data to be used for cloning an Award Class. This
+	 * method removes or alters all data that identifies an Award, so that the
+	 * User will be forced to enter different details for the clone.
+	 *
+	 * @param stdClass Award Class Data An object containing Award Class data.
+	 * @return stdClass The processed Award Class Data object.
+	 */
+	private function PrepareAwardClassDataForCloning(stdClass $AwardClassData) {
+		//var_dump($AwardClassData);die();
+		// Save references to source Award
+		$AwardClassData->SourceAwardClassID = $AwardClassData->AwardClassID;
+		$AwardClassData->SourceAwardClassName = $AwardClassData->AwardClassName;
+		$AwardClassData->SourceAwardClassDescription = $AwardClassData->AwardClassDescription;
+
+		// Unset and alter AwardClass key data, as clone will have to use its own
+		unset($AwardClassData->AwardClassID);
+		unset($AwardClassData->DateInserted);
+		unset($AwardClassData->DateUpdated);
+
+		$AwardClassData->AwardClassName = T('CLONE-') . $AwardClassData->AwardClassName;
+		$AwardClassData->AwardClassDescription = T('CLONE-') . $AwardClassData->AwardClassDescription ;
+		return $AwardClassData;
+	}
+
 	/**
 	 * Renders the AwardClasses List page.
 	 *
@@ -28,7 +59,7 @@ class AwardClassesManager extends BaseManager {
 		$Sender->Permission('Plugins.Awards.Manage');
 
 		// TODO Handle Limit and Offset
-		$AwardClassesDataSet = $this->AwardClassesModel->Get();
+		$AwardClassesDataSet = $this->AwardClassesModel()->Get();
 		// TODO Add Pager
 
 		$Sender->SetData('AwardClassesDataSet', $AwardClassesDataSet);
@@ -72,10 +103,10 @@ class AwardClassesManager extends BaseManager {
 		// Retrieve the Award Class ID passed as an argument (if any)
 		$AwardClassID = $Sender->Request->GetValue(AWARDS_PLUGIN_ARG_AWARDCLASSID, null);
 
-		$Sender->Form->SetModel($this->AwardClassesModel);
+		$Sender->Form->SetModel($this->AwardClassesModel());
 
-		if(isset($AwardClassID)) {
-			$AwardClassData = $this->AwardClassesModel->GetAwardClassData($AwardClassID)->FirstRow();
+		if(!empty($AwardClassID)) {
+			$AwardClassData = $this->AwardClassesModel()->GetAwardClassData($AwardClassID)->FirstRow();
 			//var_dump($AwardClassData);
 			$Sender->Form->SetData($AwardClassData);
 		}
@@ -152,6 +183,43 @@ class AwardClassesManager extends BaseManager {
 	}
 
 	/**
+	 * Renders the page to Clone an Award Class.
+	 *
+	 * @param AwardsPlugin Caller The Plugin which called the method.
+	 * @param Gdn_Controller Sender Sending controller instance.
+	 */
+	public function AwardClassClone(AwardsPlugin $Caller, $Sender) {
+		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_AWARDCLASS_CLONE_URL);
+		// Prevent non authorised Users from accessing this page
+		$Sender->Permission('Plugins.Awards.Manage');
+
+		// Retrieve the Award ID passed as an argument (if any)
+		$AwardClassID = $Sender->Request->Get(AWARDS_PLUGIN_ARG_AWARDCLASSID, null);
+		// Can't continue without an Award Class ID
+		if(empty($AwardClassID)) {
+			Redirect(AWARDS_PLUGIN_AWARDCLASSES_LIST_URL);
+		}
+
+		// Load Award Class Data
+		$AwardClassData = $this->AwardClassesModel()->GetAwardClassData($AwardClassID)->FirstRow();
+		if(empty($AwardClassData)) {
+			$this->Log()->error(sprintf(T('Requested cloning of invalid Award Class ID: %d. Request by User %s (ID: %d).'),
+																	$AwardClassID,
+																	Gdn::Session()->User->Name,
+																	Gdn::Session()->UserID));
+			Redirect(AWARDS_PLUGIN_AWARDCLASSES_LIST_URL);
+		}
+
+		$AwardClassData = $this->PrepareAwardClassDataForCloning($AwardClassData);
+		// Set a flag that will inform the User that he is cloning an Award
+		$Sender->SetData('Cloning', 1);
+
+		$Sender->Form->SetData($AwardClassData);
+		$Sender->Request->SetValueOn(Gdn_Request::INPUT_GET, AWARDS_PLUGIN_ARG_AWARDCLASSID, null);
+		$this->AwardClassAddEdit($Caller, $Sender);
+	}
+
+	/**
 	 * Renders the page to Delete an Award Class.
 	 *
 	 * @param AwardsPlugin Caller The Plugin which called the method.
@@ -161,7 +229,7 @@ class AwardClassesManager extends BaseManager {
 		// Prevent Users without proper permissions from accessing this page.
 		$Sender->Permission('Plugins.Awards.Manage');
 
-		$Sender->Form->SetModel($this->AwardClassesModel);
+		$Sender->Form->SetModel($this->AwardClassesModel());
 
 		// If seeing the form for the first time...
 		if ($Sender->Form->AuthenticatedPostBack() === FALSE) {
@@ -169,7 +237,7 @@ class AwardClassesManager extends BaseManager {
 			$AwardClassID = $Sender->Request->GetValue(AWARDS_PLUGIN_ARG_AWARDCLASSID, null);
 
 			// Load the data of the Award Class to be edited, if an Award Class ID
-			$AwardClassData = $this->AwardClassesModel->GetAwardClassData($AwardClassID)->FirstRow(DATASET_TYPE_ARRAY);
+			$AwardClassData = $this->AwardClassesModel()->GetAwardClassData($AwardClassID)->FirstRow(DATASET_TYPE_ARRAY);
 
 			// If Class is in use, prevent its deletion
 			if(GetValue('TotalAwardsUsingClass', $AwardClassData) > 0) {
@@ -192,7 +260,7 @@ class AwardClassesManager extends BaseManager {
 			// that the User confirmed the deletion.
 			if(Gdn::Session()->ValidateTransientKey($Data['TransientKey']) && $Sender->Form->ButtonExists('OK')) {
 				// Delete Award Class
-				$this->AwardClassesModel->Delete($Sender->Form->GetValue('AwardClassID'));
+				$this->AwardClassesModel()->Delete($Sender->Form->GetValue('AwardClassID'));
 				$this->Log()->info(sprintf(T('User %s (ID: %d) deleted Award "%s" (ID: %d).'),
 																		Gdn::Session()->User->Name,
 																		Gdn::Session()->User->UserID,
@@ -210,7 +278,7 @@ class AwardClassesManager extends BaseManager {
 	// TODO Document method
 	public function GenerateAwardClassesCSS(Gdn_Pluggable $Sender) {
 		// TODO Implement automatic generation of CSS file containing the styles for each Award Class
-		$AwardClassesDataSet = $this->AwardClassesModel->Get();
+		$AwardClassesDataSet = $this->AwardClassesModel()->Get();
 
 		// Prepare the notice to put at the beginning of the generated CSS file
 		$CSSEntries = array(T("/**\n" .

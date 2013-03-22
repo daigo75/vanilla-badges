@@ -13,6 +13,26 @@ function AddRuleToUI(array &$AwardRulesSections, array &$AwardRule) {
 	$AwardRulesSections[$RuleGroup]->CountRules += 1;
 }
 
+/**
+ * Determines current User action (i.e. Clone, Add or Edit) and returns a
+ * description for it.
+ *
+ * @param Gdn_Form Form The form used by the page.
+ * @param array Data An associative array of data passed to the page.
+ * @return string The message describing current action.
+ */
+function GetCurrentAction(Gdn_Form $Form, $Data) {
+	if(GetValue('Cloning', $Data)) {
+		$SourceAwardInfo = Wrap($Form->GetValue('SourceAwardName'),
+																 'span',
+																 array('class' => 'Info',
+																			 'title' => $Form->GetValue('SourceAwardDescription'),));
+		return sprintf(T('Clone Award  "%s"'), $SourceAwardInfo);
+	}
+
+	return $Form->GetValue('AwardID') ? sprintf(T('Edit Award "%s"'), $Form->GetValue('AwardName')) : T('Add new Award ');
+}
+
 // Retrieve the Sections to organise the Rules
 $AwardRulesSections = $this->Data['AwardRulesSections'];
 
@@ -37,8 +57,16 @@ $IsNewAward = empty($AwardID) ? true : false;
 		// existing Award is being modified.
 		echo $this->Form->Hidden('AwardImageFile');
 	?>
+	<fieldset class="Buttons Top">
+		<?php
+			echo $this->Form->Button(T('Save'), array('Name' => 'Save',));
+			echo $this->Form->Button(T('Cancel'));
+		?>
+	</fieldset>
 	<fieldset id="Award">
-		<legend><?php echo Wrap(T('Award Configuration'), 'h1'); ?></legend>
+		<legend><?php
+			echo Wrap(GetCurrentAction($this->Form, $this->Data), 'h1');
+		?></legend>
 		<ul>
 			<li>
 				<div class="clearfix">

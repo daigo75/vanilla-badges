@@ -10,12 +10,21 @@
 .AwardsPlugin {
 }
 
+.AwardsPlugin h1 {
+	text-align: center;
+}
+
 .AwardsPlugin .Info {
 	padding-top: 0;
 }
 
 .AwardsPlugin .Buttons {
-	margin-top: 1em;
+	margin: 0.5em;
+	padding: 0.5em;
+}
+
+.AwardsPlugin .Buttons .Button {
+	margin: 0 0.5em !important;
 }
 
 .AwardsPlugin .Numeric {
@@ -115,9 +124,8 @@
 
 /* Warning message */
 .AwardsPlugin .Warning {
-	font-size: 120%;
+	font-size: 100%;
 	color: maroon;
-	font-weight: bold;
 	border: 1px solid maroon;
 }
 
@@ -154,6 +162,16 @@ img.Medium {
 }
 
 /* Wrapper for images in Award/Award class edit page */
+.AwardsPlugin.AwardClassEdit,
+.AwardsPlugin.AwardEdit {
+	position: relative;
+}
+
+.AwardsPlugin .Buttons.Top {
+	padding: 0;
+	position: absolute;
+}
+
 #Form_Awards .AwardImageWrapper .AwardImage {
 	padding: 8px;
 	border: 1px solid silver;
@@ -183,8 +201,8 @@ img.Medium {
 	padding-left: 0 !important;
 }
 
-.AwardsPlugin .Buttons .Button {
-	margin-left: 1em;
+.AwardsPlugin .CloningNotice .ClassInfo {
+	font-weight: bold;
 }
 
 /* Awards and Award Classes List page */
@@ -206,6 +224,12 @@ img.Medium {
 
 .AwardsPlugin .Name {
 	width: 15em;
+}
+
+.AwardsPlugin .ClassUsage {
+	padding-left: 0;
+	font-size: small;
+	font-weight: bold;
 }
 
 .AwardsPlugin #AwardsList .Description {

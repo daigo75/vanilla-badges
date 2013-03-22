@@ -51,8 +51,6 @@
 			</tfoot>
 			<tbody>
 				<?php
-					// TODO Display list of configured Award Classes
-					// TODO Display Clone button
 					$AwardClassesDataSet = $this->Data['AwardClassesDataSet'];
 
 					// If DataSet is empty, just print a message.
@@ -90,6 +88,14 @@
 																AWARDS_PLUGIN_ARG_AWARDCLASSID,
 																Gdn_Format::Url($AwardClass->AwardClassID)),
 												'Button AddEditAwardClass');
+						// Output Add/Edit button
+						echo Anchor(T('Clone'),
+												sprintf('%s?%s=%s',
+																AWARDS_PLUGIN_AWARDCLASS_CLONE_URL,
+																AWARDS_PLUGIN_ARG_AWARDCLASSID,
+																Gdn_Format::Url($AwardClass->AwardClassID)),
+												'Button AddEditAwardClass');
+						// Display the delete button only if Class is not being used by any Award
 						if($AwardClass->TotalAwardsUsingClass <= 0) {
 							// Output Delete button
 							echo Anchor(T('Delete'),

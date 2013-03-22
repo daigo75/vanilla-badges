@@ -14,7 +14,7 @@ require(AWARDS_PLUGIN_LIB_PATH . '/awards.validation.php');
 $PluginInfo['Awards'] = array(
 	'Name' => 'Awards Plugin',
 	'Description' => 'Awards Plugin for Vanilla Forums',
-	'Version' => '13.03.21 alpha',
+	'Version' => '13.03.22 alpha',
 	'RequiredApplications' => array('Vanilla' => '2.0'),
 	'RequiredTheme' => FALSE,
 	'RequiredPlugins' => array('Logger' => '12.10.28',
@@ -257,6 +257,15 @@ class AwardsPlugin extends Gdn_Plugin {
 	}
 
 	/**
+	 * Renders the page to Clone an Award Class.
+	 *
+	 * @param object Sender Sending controller instance.
+	 */
+	public function Controller_AwardClassClone($Sender) {
+		$this->AwardClassesManager()->AwardClassClone($this, $Sender);
+	}
+
+	/**
 	 * Renders the page that allows Users to delete an Award Class.
 	 *
 	 * @param object Sender Sending controller instance.
@@ -290,6 +299,15 @@ class AwardsPlugin extends Gdn_Plugin {
 	 */
 	public function Controller_AwardAddEdit($Sender) {
 		$this->AwardsManager()->AwardAddEdit($this, $Sender);
+	}
+
+	/**
+	 * Renders the page to Clone an Award.
+	 *
+	 * @param object Sender Sending controller instance.
+	 */
+	public function Controller_AwardClone($Sender) {
+		$this->AwardsManager()->AwardClone($this, $Sender);
 	}
 
 	/**

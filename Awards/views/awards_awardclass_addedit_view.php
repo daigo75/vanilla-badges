@@ -2,6 +2,26 @@
 /*
 {licence}
 */
+
+/**
+ * Determines current User action (i.e. Clone, Add or Edit) and returns a
+ * description for it.
+ *
+ * @param Gdn_Form Form The form used by the page.
+ * @param array Data An associative array of data passed to the page.
+ * @return string The message describing current action.
+ */
+function GetCurrentAction(Gdn_Form $Form, $Data) {
+	if(GetValue('Cloning', $Data)) {
+		$SourceAwardClassInfo = Wrap($Form->GetValue('SourceAwardClassName'),
+																 'span',
+																 array('class' => 'ClassInfo',
+																			 'title' => $Form->GetValue('SourceAwardDescription'),));
+		return sprintf(T('Clone Award Class "%s"'), $SourceAwardClassInfo);
+	}
+
+	return $Form->GetValue('AwardClassID') ? sprintf(T('Edit Award Class "%s"'), $Form->GetValue('AwardClassName')) : T('Add new Award Class');
+}
 ?>
 <div class="AwardsPlugin AwardClassEdit">
 	<?php
@@ -15,8 +35,16 @@
 		echo $this->Form->Hidden('AwardClassImageFile');
 		// TODO Add Side box with guidelines in creating the Award Class
 	?>
+	<fieldset class="Buttons Top">
+		<?php
+			echo $this->Form->Button(T('Save'), array('Name' => 'Save',));
+			echo $this->Form->Button(T('Cancel'));
+		?>
+	</fieldset>
 	<fieldset id="AwardClass">
-		<legend><?php echo Wrap(T('Award Class Configuration'), 'h1'); ?></legend>
+		<legend><?php
+			echo Wrap(GetCurrentAction($this->Form, $this->Data), 'h1');
+		?></legend>
 		<ul>
 			<li>
 				<?php
@@ -31,7 +59,8 @@
 					echo $this->Form->TextBox('AwardClassName');
 					echo Wrap(sprintf(T('This class is currently being used by %d Awards.'),
 														$this->Form->GetValue('TotalAwardsUsingClass')),
-										'p');
+										'span',
+										array('class' => 'ClassUsage'));
 				?>
 			</li>
 			<li>
@@ -121,7 +150,7 @@
 			</li>
 		</ul>
 	</fieldset>
-	<fieldset id="Buttons">
+	<fieldset class="Buttons">
 		<?php
 			echo $this->Form->Button(T('Save'), array('Name' => 'Save',));
 			echo $this->Form->Button(T('Cancel'));

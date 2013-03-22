@@ -51,9 +51,6 @@
 			</tfoot>
 			<tbody>
 				<?php
-					// TODO Display Clone button
-					// TODO Display, next to each Award, how many times it has been awarded
-
 					$AwardsDataSet = $this->Data['AwardsDataSet'];
 
 					// If DataSet is empty, just print a message.
@@ -128,6 +125,13 @@
 																AWARDS_PLUGIN_ARG_AWARDID,
 																Gdn_Format::Url($Award->AwardID)),
 												'Button AddEditAward');
+						// Output Clone button
+						echo Anchor(T('Clone'),
+												sprintf('%s?%s=%s',
+																AWARDS_PLUGIN_AWARD_CLONE_URL,
+																AWARDS_PLUGIN_ARG_AWARDID,
+																Gdn_Format::Url($Award->AwardID)),
+												'Button CloneAward');
 						// Output Delete button
 						echo Anchor(T('Delete'),
 												sprintf('%s?%s=%s',
