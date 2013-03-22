@@ -14,7 +14,6 @@ interface IAwardRule {
 	public function Process($UserID, stdClass $Settings, array $EventInfo = null);
 	public function GetConfigUI();
 	public function ValidateSettings(Gdn_Form $Form, array $Settings);
-	public function SaveSettings(array $Settings);
 
 	public static function RenderRuleField($InputHTML);
 }
