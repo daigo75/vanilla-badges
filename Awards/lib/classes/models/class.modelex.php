@@ -18,7 +18,7 @@ class ModelEx extends Gdn_Model {
 	 */
 	protected function Log() {
 		if(empty($this->_Log)) {
-			$this->_Log = LoggerPlugin::GetLogger();
+			$this->_Log = LoggerPlugin::GetLogger(get_called_class());
 		}
 
 		return $this->_Log;
@@ -54,6 +54,71 @@ class ModelEx extends Gdn_Model {
 			$this->SQL->OrderBy($Field, $Direction);
 		}
 	}
+
+	protected function GetPrimaryKeyValue($FormPostValues) {
+		return GetValue($this->PrimaryKey, $FormPostValues, false);
+	}
+
+	protected function PrimaryKeyExists($PrimaryKeyValue) {
+		return ($PrimaryKeyValue !== false);
+	}
+
+	/**
+   *  Takes a set of form data ($Form->_PostValues), validates them, and
+   * inserts or updates them to the datatabase.
+   *
+   * @param array $FormPostValues An associative array of $Field => $Value pairs that represent data posted
+   * from the form in the $_POST or $_GET collection.
+   * @param array $Settings If a custom model needs special settings in order to perform a save, they
+   * would be passed in using this variable as an associative array.
+   * @return unknown
+   */
+  public function Save($FormPostValues, $Settings = false) {
+    // Define the primary key in this model's table.
+    $this->DefineSchema();
+
+    // See if a primary key value was posted and decide how to save
+    $PrimaryKeyValue = $this->GetPrimaryKeyValue($FormPostValues);
+
+		// If Primary Key does not exist, then it's not valid and an INSERT has to
+		// be performed
+    $Insert = empty($PrimaryKeyValue) || !$this->PrimaryKeyExists($PrimaryKeyValue);
+
+		// Add special fields, such as DateInserted, DateUpdated, etc. if they are
+		// not already populated
+    if($Insert) {
+      $this->AddInsertFields($FormPostValues);
+    }
+		else {
+      $this->AddUpdateFields($FormPostValues);
+    }
+
+    // Validate the form posted values
+    if(!$this->Validate($FormPostValues, $Insert) === true) {
+			return false;
+		}
+
+		$this->Database->BeginTransaction();
+		try {
+      $Fields = $this->Validation->ValidationFields();
+			// Don't try to insert or update the primary key
+      $Fields = RemoveKeyFromArray($Fields, $this->PrimaryKey);
+      if($Insert === false) {
+        $this->Update($Fields, array($this->PrimaryKey => $PrimaryKeyValue));
+      }
+			else {
+        $PrimaryKeyValue = $this->Insert($Fields);
+      }
+	    return $PrimaryKeyValue;
+		}
+		catch(Exception $e) {
+			$this->Database->RollbackTransaction();
+			$this->Log()->error(sprintf(T('Exception occurred while writing to database. Error: %s. Data (JSON): %s.'),
+																$e->getMessage(),
+																json_encode($Fields)));
+			return false;
+		}
+  }
 
 	public function __construct($TableName) {
 		parent::__construct($TableName);

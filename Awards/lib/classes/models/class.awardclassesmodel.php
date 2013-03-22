@@ -170,6 +170,16 @@ class AwardClassesModel extends ModelEx {
 	}
 
 	/**
+	 * Determines if a Primary Key exists in AwardClasses table.
+	 *
+	 * @param int PrimaryKeyValue The Primary Key.
+	 * @return bool True, if the Primary Key exists, False otherwise.
+	 */
+	protected function PrimaryKeyExists($PrimaryKeyValue) {
+		return $this->GetWhere(array('AwardClassID' => $PrimaryKeyValue))->FirstRow() !== false;
+	}
+
+	/**
 	 * Deletes an Award and its Rule settings from the AwardClasses and AwardRules
 	 * tables.
 	 *

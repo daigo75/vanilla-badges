@@ -178,56 +178,13 @@ class UserAwardsModel extends ModelEx {
 	}
 
 	/**
-	 * Save a User Award to the database.
+	 * Determines if a Primary Key exists in UserAwards table.
 	 *
-   * @param array $FormPostValues An associative array of $Field => $Value
-   * pairs that represent data posted from the form in the $_POST or $_GET
-   * collection.
-   * @return The value of the Primary Key of the row that has been saved, or
-   * False if the operation could not be completed successfully.
+	 * @param int PrimaryKeyValue The Primary Key.
+	 * @return bool True, if the Primary Key exists, False otherwise.
 	 */
-	public function Save(&$FormPostValues) {
-		// Define the primary key in this model's table.
-		$this->DefineSchema();
-
-		// Validate posted data
-		if(!$this->Validate($FormPostValues)) {
-			return false;
-		}
-
-		$this->Database->BeginTransaction();
-
-		try {
-			// Get the User Award ID posted via the form
-			$UserAwardID = GetValue($this->PrimaryKey, $FormPostValues, false);
-
-			// See if a User Award with the same ID already exists, to decide if the action
-			// should be an INSERT or an UPDATE
-			$Insert = ($this->GetWhere(array('UserAwardID' => $UserAwardID))->FirstRow() === false);
-
-			//var_dump('INSERT', $Insert); die();
-
-			// Prepare all the validated fields to be passed to an INSERT/UPDATE query
-			$Fields = &$this->Validation->ValidationFields();
-			if($Insert) {
-				$this->AddInsertFields($Fields);
-				$Result = $this->Insert($Fields);
-			}
-			else {
-				$this->AddUpdateFields($Fields);
-				$this->Update($Fields, array($this->PrimaryKey => $UserAwardID));
-				$Result = $UserAwardID;
-			}
-
-			$this->Database->CommitTransaction();
-			return $Result;
-		}
-		catch(Exception $e) {
-			$this->Database->RollbackTransaction();
-			$this->Log()->Error(sprintf(T('Exception occurred while saving User Award. Error: %s'),
-																$e->getMessage()));
-			return false;
-		}
+	protected function PrimaryKeyExists($PrimaryKeyValue) {
+		return $this->GetWhere(array('UserAwardID' => $PrimaryKeyValue))->FirstRow() !== false;
 	}
 
 	/**
