@@ -23,6 +23,10 @@ define('AWARDS_PLUGIN_AWARD_PICS_PATH', 'plugins/Awards/design/images/awards');
 define('AWARDS_PLUGIN_AWARDCLASSES_PICS_PATH', 'plugins/Awards/design/images/awardclasses');
 define('AWARDS_PLUGIN_AWARDCLASSES_CSS_FILE', AWARDS_PLUGIN_PATH . '/design/css/awardclasses.css');
 
+// Subdirectories where Core and Custom Rules will be located
+define('AWARDS_PLUGIN_CORE_RULES_DIR', 'core');
+define('AWARDS_PLUGIN_CUSTOM_RULES_DIR', 'custom');
+
 // URLs
 define('AWARDS_PLUGIN_BASE_URL', 'plugin/awards');
 

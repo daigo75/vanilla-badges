@@ -31,12 +31,13 @@ class AnniversaryRule extends BaseAwardRule {
 																$UserID,
 																$YearsThreshold));
 
+		// Calculate the time difference between now and User's first visit, in Years
 		$User = $this->GetUserData($UserID);
 		$Today = new DateTime(date('Y-m-d'));
 		$UserFirstVisit = new DateTime($User->DateFirstVisit);
 
 		$YearsSinceFirstVisit = (int)$Today->diff($UserFirstVisit)->format('%y');
-		var_dump($YearsSinceFirstVisit);
+		//var_dump($YearsSinceFirstVisit);
 
 		//var_dump($this->GetUserData($UserID));
 		if($YearsSinceFirstVisit >= $YearsThreshold) {

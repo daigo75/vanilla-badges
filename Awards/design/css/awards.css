@@ -28,6 +28,7 @@
 }
 
 .AwardsPlugin .Numeric {
+	width: 7em;
 	text-align: right;
 }
 

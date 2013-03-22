@@ -11,6 +11,11 @@ class AwardRulesManager extends BaseManager {
 	// @var array Contains a list of all available Rules.
 	private static $Rules = array();
 
+	/* @var array Contains a list of the Rule directories that have been processed
+	 * and whose rule has been loaded.
+	 */
+	private $RulesDirs = array();
+
 	const GROUP_GENERAL = 'general';
 	const GROUP_CUSTOM = 'custom';
 
@@ -165,9 +170,9 @@ class AwardRulesManager extends BaseManager {
 	 *
 	 * @return void.
 	 */
-	private function LoadRulesDefinitions() {
-		$this->Log()->trace(T('Loading Rule Definitions...'));
-		$RulesDir = sprintf('%s/rules', AWARDS_PLUGIN_CLASS_PATH);
+	private function LoadRulesDefinitions($RulesSubDir = AWARDS_PLUGIN_CORE_RULES_DIR) {
+		$this->Log()->trace(T('Loading Rules Definitions...'));
+		$RulesDir = AWARDS_PLUGIN_RULES_PATH . '/' . $RulesSubDir;
 		$Handle = opendir($RulesDir);
 		if(empty($Handle)) {
 			return false;
@@ -176,9 +181,20 @@ class AwardRulesManager extends BaseManager {
 		try {
 			// Look for subfolders in Rules folder. Each Rule should be stored in its
 			// SubFolder.
-			while($File = readdir($Handle)) {
-				if($this->IsValidDirectory($RulesDir, $File)) {
-					$this->LoadRuleFiles($RulesDir . '/' . $File);
+			while($RuleDirName = readdir($Handle)) {
+				if($this->IsValidDirectory($RulesDir, $RuleDirName)) {
+					// If a Rule with the same name has already been loaded, skip this one
+					if(isset($this->RulesDirs[$RuleDirName])) {
+						$this->Log()->info(sprintf(T('A Rule folder named "%s" has already been ' .
+																				 'processed and imported (path: "%s"). Skipping folder.')),
+															 $RuleDirName,
+															 $this->RulesDirs[$RuleDirName]);
+						continue;
+					}
+
+					// Store the Rule folder amongst the processed ones
+					$this->RulesDirs[$RuleDirName] = $RulesDir;
+					$this->LoadRuleFiles($RulesDir . '/' . $RuleDirName);
 				}
 			}
 
@@ -371,7 +387,14 @@ class AwardRulesManager extends BaseManager {
 														 self::TYPE_USER => T('User'),
 														 self::TYPE_MISC => T('Misc.'));
 
-		$this->LoadRulesDefinitions();
+		/* Load Rules definitions, starting with Custom ones (if any). Rule folder
+		 * names must be unique, regardless of their location (i.e. two "postcount"
+		 * rule folders cannot be loaded), therefore this logic will allow Users to
+		 * override Core rules by simply giving them the same name and placing them
+		 * in the "/custom" sufolder.
+		 */
+		$this->LoadRulesDefinitions(AWARDS_PLUGIN_CUSTOM_RULES_DIR);
+		$this->LoadRulesDefinitions(AWARDS_PLUGIN_CORE_RULES_DIR);
 		$this->LoadRules();
 	}
 }

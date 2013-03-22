@@ -390,6 +390,13 @@ class AwardsPlugin extends Gdn_Plugin {
 		return $UserAwardsModule;
 	}
 
+	private function AddAwardActivityTypes() {
+		//Gdn::SQL()->Replace('ActivityType',
+		//										array('AllowComments' => '0', 'RouteCode' => 'question', 'Notify' => '1', 'Public' => '0', 'ProfileHeadline' => '', 'FullHeadline' => ''),
+		//	array('Name' => 'QuestionAnswer'), TRUE);
+
+	}
+
 	/**
 	 * Plugin setup
 	 *
