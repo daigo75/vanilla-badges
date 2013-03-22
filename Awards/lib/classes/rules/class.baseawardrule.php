@@ -22,7 +22,7 @@ interface IAwardRule {
 /**
  * Base Award Assignment Rule Class.
  */
-class BaseAwardRule extends Gdn_Controller {
+class BaseAwardRule extends Gdn_Controller implements IAwardRule {
 	// @var Logger The Logger used by the class.
 	private $_Log;
 
