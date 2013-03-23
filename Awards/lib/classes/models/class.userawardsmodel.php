@@ -52,6 +52,7 @@ class UserAwardsModel extends ModelEx {
 			->Select('VAUAL.Recurring')
 			->Select('VAUAL.AwardImageFile')
 			->Select('VAUAL.RankPoints')
+			->Select('VAUAL.AwardClassID')
 			->Select('VAUAL.AwardClassName')
 			->Select('VAUAL.AwardClassRankPoints')
 			->From('v_awards_userawardslist VAUAL');
@@ -62,16 +63,16 @@ class UserAwardsModel extends ModelEx {
 	 * Convenience method to returns a DataSet containing a list of all the
 	 * Awards obtained by Users.
 	 *
+	 * @param array OrderBy An associative array of ORDER BY clauses. They should
+	 * be passed as specified in Gdn_SQLDriver::OrderBy() method.
 	 * @param int Limit Limit the amount of rows to be returned.
 	 * @param int Offset Specifies from which rows the data should be returned. Used
 	 * for pagination.
-	 * @param array OrderBy An associative array of ORDER BY clauses. They should
-	 * be passed as specified in Gdn_SQLDriver::OrderBy() method.
 	 * @return Gdn_DataSet A DataSet containing User Awards data.
 	 *
 	 * @see UserAwardsModel::GetWhere()
 	 */
-	public function Get($Limit = 1000, $Offset = 0, array $OrderBy = array()) {
+	public function Get(array $OrderBy = array(), $Limit = 1000, $Offset = 0) {
 		return $this->GetWhere(array(), $OrderBy, $Limit, $Offset);
 	}
 
@@ -91,7 +92,7 @@ class UserAwardsModel extends ModelEx {
 	}
 
 	/**
-	 * Convenience method to retrieve the details of a single Award eanred by a
+	 * Convenience method to retrieve the details of a single Award earned by a
 	 * User.
 	 *
 	 * @param int UserID The ID of the User.
