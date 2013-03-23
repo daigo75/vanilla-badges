@@ -165,6 +165,7 @@ class AwardsSchema extends PluginSchema {
 				,UA.UserAwardID
 				,UA.DateInserted AS DateAwarded
 				,UA.AwardedRankPoints
+				,UA.TimesAwarded
 				,UA.Status
 				,A.AwardID
 				,A.AwardName
@@ -191,43 +192,6 @@ class AwardsSchema extends PluginSchema {
 	}
 
 	/**
-	 * Creates a View that returns a list of the Awards available to each User.
-	 */
-	protected function create_availableawardslist_view() {
-		$Px = $this->Px;
-		$Sql = "
-			SELECT
-				UA.UserID
-				,VAAL.AwardID
-				,VAAL.AwardName
-				,VAAL.AwardDescription
-				,VAAL.Recurring
-				,VAAL.AwardIsEnabled
-				,VAAL.RankPoints
-				,VAAL.AwardClassRankPoints
-				,VAAL.RulesSettings
-				,COUNT(UA.UserID) AS TimesAwarded
-			FROM
-				${Px}v_awards_awardslist VAAL
-				LEFT JOIN
-				${Px}UserAwards UA ON
-					(UA.AwardID = VAAL.AwardID)
-			WHERE
-				-- Awards must be enabled to be available
-				(VAAL.AwardIsEnabled = 1) AND
-				-- An Award is available if it was never assigned before, or if it is
-				-- recurring (i.e. it can be assigned multiple times)
-				((UA.AwardID IS NULL) OR (VAAL.Recurring = 1))
-			GROUP BY
-				UA.UserID
-				,VAAL.AwardID
-				,VAAL.AwardName
-				,VAAL.RankPoints
-		";
-		$this->Construct->View('v_awards_availableawardslist', $Sql);
-	}
-
-	/**
 	 * Create all the Database Objects in the appropriate order.
 	 */
 	protected function CreateObjects() {
@@ -238,14 +202,12 @@ class AwardsSchema extends PluginSchema {
 		$this->create_awardslist_view();
 		$this->create_awardclasseslist_view();
 		$this->create_userawardslist_view();
-		$this->create_availableawardslist_view();
 	}
 
 	/**
 	 * Delete the Database Objects.
 	 */
 	protected function DropObjects() {
-		$this->DropView('v_awards_availableawardslist');
 		$this->DropView('v_awards_userawardslist');
 		$this->DropView('v_awards_awardclasseslist');
 		$this->DropView('v_awards_awardlist');
