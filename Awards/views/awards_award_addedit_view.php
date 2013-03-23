@@ -231,7 +231,7 @@ $IsNewAward = empty($AwardID) ? true : false;
 					echo '</div>'; // Rule Group Fieldset
 				}
 			?>
-			<div id="Buttons">
+			<div class="Buttons">
 				<?php
 					echo $this->Form->Button(T('Save'), array('Name' => 'Save',));
 					echo $this->Form->Button(T('Cancel'));

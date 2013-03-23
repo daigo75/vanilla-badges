@@ -33,8 +33,17 @@
 }
 
 #Content .AwardsPlugin .Buttons {
-	margin: 0.5em;
+	padding: 1em;
 }
+
+#Content .AwardsPlugin .Buttons.Top {
+	padding: 0;
+	position: absolute;
+	top: 0;
+	left: 1em;
+	padding-top: 0.5em;
+}
+
 
 .AwardsPlugin .Buttons .Button {
 	margin: 0 0.5em !important;
@@ -195,12 +204,6 @@ img.Medium {
 .AwardsPlugin.AwardClassEdit,
 .AwardsPlugin.AwardEdit {
 	position: relative;
-}
-
-.AwardsPlugin .Buttons.Top {
-	padding: 0;
-	position: absolute;
-	top: 0;
 }
 
 #Form_Awards .AwardImageWrapper .AwardImage {
