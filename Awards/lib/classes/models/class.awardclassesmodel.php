@@ -64,6 +64,8 @@ class AwardClassesModel extends ModelEx {
 	 * Convenience method to returns a DataSet containing a list of all the
 	 * configured AwardClasses.
 	 *
+	 * @param array OrderBy An associative array of ORDER BY clauses. They should
+	 * be passed as specified in Gdn_SQLDriver::OrderBy() method.
 	 * @param int Limit Limit the amount of rows to be returned.
 	 * @param int Offset Specifies from which rows the data should be returned. Used
 	 * for pagination.
@@ -71,8 +73,8 @@ class AwardClassesModel extends ModelEx {
 	 *
 	 * @see AwardClassesModel::GetWhere()
 	 */
-	public function Get($Limit = 1000, $Offset = 0) {
-		return $this->GetWhere(array(), $Limit, $Offset);
+	public function Get(array $OrderBy = array(), $Limit = 1000, $Offset = 0) {
+		return $this->GetWhere(array(), $OrderBy, $Limit, $Offset);
 	}
 
 	/**
@@ -90,6 +92,8 @@ class AwardClassesModel extends ModelEx {
 	 *
 	 * @param array WhereClauses An associative array of WHERE clauses. They should
 	 * be passed as specified in Gdn_SQLDriver::Where() method.
+	 * @param array OrderByClauses An associative array of ORDER BY clauses. They
+	 * should	be passed as specified in Gdn_SQLDriver::OrderBy() method.
 	 * @param int Limit Limits the amount of rows to be returned.
 	 * @param int Offset Specifies from which rows the data should be returned. Used
 	 * for pagination.
@@ -97,7 +101,7 @@ class AwardClassesModel extends ModelEx {
 	 *
 	 * @see Gdn_SQLDriver::Where()
 	 */
-	public function GetWhere(array $WhereClauses, $Limit = 1000, $Offset = 0) {
+	public function GetWhere(array $WhereClauses, array $OrderByClauses = array(), $Limit = 1000, $Offset = 0) {
 		// Set default Limit and Offset, if invalid ones have been passed.
 		$Limit = (is_numeric($Limit) && $Limit > 0) ? $Limit : 1000;
 		$Offset = (is_numeric($Offset) && $Offset > 0) ? $Offset : 0;
@@ -110,8 +114,15 @@ class AwardClassesModel extends ModelEx {
 			$this->SQL->Where($WhereClauses);
 		}
 
+		// Add ORDER BY clauses, if any has been passed
+		if(!empty($OrderByClauses)) {
+			$this->SetOrderBy($OrderByClauses);
+		}
+		else {
+			$this->SQL->OrderBy('VAAC.AwardClassName');
+		}
+
 		$Result = $this->SQL
-			->OrderBy('VAAC.AwardClassName')
 			->Limit($Limit, $Offset)
 			->Get();
 
