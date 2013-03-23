@@ -51,7 +51,9 @@ class UserAwardsModel extends ModelEx {
 			->Select('VAUAL.AwardDescription')
 			->Select('VAUAL.Recurring')
 			->Select('VAUAL.AwardImageFile')
+			->Select('VAUAL.RankPoints')
 			->Select('VAUAL.AwardClassName')
+			->Select('VAUAL.AwardClassRankPoints')
 			->From('v_awards_userawardslist VAUAL');
 		return $Query;
 	}
