@@ -20,7 +20,6 @@
 
 .AwardsPlugin .Buttons {
 	margin: 0.5em;
-	padding: 0.5em;
 }
 
 .AwardsPlugin .Buttons .Button {
@@ -150,6 +149,11 @@ div.AwardsDescription {
 #AwardClassesList td,
 #AwardsList td {
 	vertical-align: middle;
+}
+
+#AwardClassesList td,
+#AwardsList td {
+	padding: 1em 0;
 }
 
 .Activities .AwardActivity a.Photo img,

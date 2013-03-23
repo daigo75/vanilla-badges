@@ -382,6 +382,11 @@ class AwardsPlugin extends Gdn_Plugin {
 		$Sender->Render($this->GetView('awards_userawardslist_view.php'));
 	}
 
+	/**
+	 * ProfileController_Render_Before event handler.
+	 *
+	 * @param object Sender Sending controller instance.
+	 */
 	public function ProfileController_Render_Before($Sender, $Args) {
 		/* Load the module that will render the User Awards List widget and add it
 		 * to the modules list
@@ -434,35 +439,49 @@ class AwardsPlugin extends Gdn_Plugin {
 		Gdn::SQL()->Delete('ActivityType', array('Name' => 'AwardEarned'));
 	}
 
-
+	/**
+	 * ActivityModel_AfterActivityQuery Event Handler.
+	 *
+	 * @param Gdn_Controller Sender Sending controller instance.
+	 */
 	public function ActivityModel_AfterActivityQuery_Handler($Sender) {
 		$BaseURL = Url('/', true);
+
+		// Add the data related to the Awards
 		$Sender->SQL
 			// For the Awards Notifications, field Route contains the ID of the Award
 			->LeftJoin('Awards AWDS', '(t.RouteCode = \'' . self::AWARD_ROUTECODE . '\') AND (AWDS.AwardID = a.Route)')
 			->LeftJoin('AwardClasses AWCS', '(AWCS.AwardClassID = AWDS.AwardClassID)')
 			->Select('AWCS.AwardClassName')
-			->Select('AWDS.AwardImageFile', 'CONCAT(\'' . $BaseURL . '\', %s)', 'ActivityPhoto')
-			->Select('AWDS.AwardName', '', 'RouteCode')
-			->Select('a.Route', 'CONCAT(\'' . AWARDS_PLUGIN_AWARD_INFO_URL . '/\', %s)', 'Route');
+			->Select('AWDS.AwardImageFile', 'COALESCE(CONCAT(\'' . $BaseURL . '\', %s), au.Photo)', 'ActivityPhoto')
+			->Select('AWDS.AwardName', 'COALESCE(%s, t.RouteCode)', 'RouteCode')
+			->Select('AWDS.AwardID', 'COALESCE(CONCAT(\'' . AWARDS_PLUGIN_AWARD_INFO_URL . '/\', %s), a.Route)', 'Route');
 	}
 
+	/**
+	 * Intercept rendering of the Activity to alter the styles when it's time to
+	 * display an Awards.
+	 *
+	 * @param Gdn_Controller Sender Sending controller instance.
+	 */
 	public function Base_BeforeActivity_Handler($Sender) {
 		$Activity = &$Sender->EventArguments['Activity'];
 		$CssClass = &$Sender->EventArguments['CssClass'];
 
-		//var_dump($Activity);die();
 		if(InArrayI($Activity->ActivityType, $this->AwardActivities)) {
 			$CssClass .= ' AwardActivity ' . $Activity->AwardClassName;
 		}
 	}
 
-	public function ProfileController_BeforeRenderAsset_Handler($Sender, $Args) {
-		//var_dump($Sender->ActivityData);die();
-		//$UserProfile = GetValue('Profile', $Sender->Data);
-		//
-		//$UserProfile->Photo = Url('plugins/Awards/design/images/awards/first_anniversary.png', true);
-		//$Sender->SetData('Profile', $UserProfile);
+	/**
+	 * ProfileController_AfterPreferencesDefined Event Handler.
+	 * Adds Awards notification options to User's Preferences screen.
+	 *
+	 * @param Gdn_Controller Sender Sending controller instance.
+	 */
+	public function ProfileController_AfterPreferencesDefined_Handler($Sender) {
+		$Sender->Preferences['Notifications']['Email.' . self::ACTIVITY_AWARDEARNED] = T('Notify me of earned Awards.');
+		$Sender->Preferences['Notifications']['Popup.' . self::ACTIVITY_AWARDEARNED] = T('Notify me of earned Awards.');
 	}
 
 	/**
@@ -474,6 +493,8 @@ class AwardsPlugin extends Gdn_Plugin {
 	 */
 	public function Setup() {
 		// TODO Set up the plugin's default values
+		SaveToConfig('Preferences.Email.' . self::ACTIVITY_AWARDEARNED, 1);
+		SaveToConfig('Preferences.Popup.' . self::ACTIVITY_AWARDEARNED, 1);
 
 		// Set up the Activity Types related to the Awards
 		$this->AddAwardsActivityTypes();
@@ -497,6 +518,8 @@ class AwardsPlugin extends Gdn_Plugin {
 	 */
 	public function CleanUp() {
 		// TODO Remove Plugin's configuration parameters
+		RemoveFromConfig('Preferences.Email.' . self::ACTIVITY_AWARDEARNED);
+		RemoveFromConfig('Preferences.Popup.' . self::ACTIVITY_AWARDEARNED);
 
 		$this->RemoveAwardsActivityTypes();
 
