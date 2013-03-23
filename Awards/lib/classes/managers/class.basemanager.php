@@ -63,7 +63,7 @@ class BaseManager extends Gdn_Plugin {
 	 */
 	protected function LoadJQueryUI(Gdn_Controller $Sender) {
 		// Load jQuery UI from Google CDN, for faster delivery
-		$Sender->Head->AddString('<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" media="all" />');
+		//$Sender->Head->AddString('<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" media="all" />');
 		$Sender->AddJsFile('http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/jquery-ui.min.js', '');
 	}
 

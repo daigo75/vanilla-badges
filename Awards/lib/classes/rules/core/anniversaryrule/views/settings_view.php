@@ -19,7 +19,7 @@ $this->Form->SetFormValue('Anniversary_Years', GetValue('Years', $AnniversarySet
 		<li>
 			<div class="Anniversary">
 			<?php
-				echo Wrap('Anniversary', 'h6');
+				echo Wrap('Anniversary', 'h4');
 				AnniversaryRule::RenderRuleField($this->Form->CheckBox('Anniversary_Enabled', T('User has been registered for at least X years.')));
 				AnniversaryRule::RenderRuleField($this->Form->TextBox('Anniversary_Years',
 																														array('class' => 'InputBox Numeric')));

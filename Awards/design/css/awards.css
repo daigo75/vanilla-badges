@@ -10,15 +10,29 @@
 .AwardsPlugin {
 }
 
+/* Style override for links that happen to be inside a <li> element, inside a
+ * Tab. Such links become tab-looking due to Vanilla default styles.
+ */
+.AwardsPlugin a.Standard {
+	border: none !important;
+	background: none !important;
+	color: #2786C2;
+	top: 0 !important;
+	padding: 0 !important;
+	font-weight: !important;
+}
+
 .AwardsPlugin h1 {
 	text-align: center;
 }
 
-.AwardsPlugin .Info {
+#Content .AwardsPlugin .Info {
 	padding-top: 0;
+	margin: 0 0 10px;
+	font-size: small;
 }
 
-.AwardsPlugin .Buttons {
+#Content .AwardsPlugin .Buttons {
 	margin: 0.5em;
 }
 
@@ -52,6 +66,10 @@
 	padding-left: 0;
 	color: red;
 	font-weight: bold;
+}
+
+.AwardsPlugin fieldset li label {
+	margin-top: 1em;
 }
 
 /* Award Info page */
@@ -182,11 +200,12 @@ img.Medium {
 .AwardsPlugin .Buttons.Top {
 	padding: 0;
 	position: absolute;
+	top: 0;
 }
 
 #Form_Awards .AwardImageWrapper .AwardImage {
 	padding: 8px;
-	border: 1px solid silver;
+	border: 1px dashed silver;
 }
 
 /* Award/Award Class edit page */
@@ -315,41 +334,66 @@ img.Medium {
 	border: 1px solid gray;
 }
 
-.AwardsPlugin #AwardRules h4 {
+.AwardsPlugin  #Form_Awards h2 {
+/*	font-size: 120%;
+	font-weight: bold;
+	padding: 0;
+*/
+	margin: 0 20px;
+	border-bottom: 1px dashed gray;
+}
+
+.AwardsPlugin #Fields {
+	padding-top: 0;
+}
+
+#Content .AwardsPlugin .RuleGroup h4 {
 	font-size: 120%;
 	font-weight: bold;
 	padding: 0;
 }
 
-.AwardsPlugin #AwardRules h5 {
-	font-size: 110%;
-	font-weight: bold;
-}
-
-.AwardsPlugin #AwardRules h6 {
-	font-size: 110%;
-	font-weight: bold;
-}
-
-.AwardsPlugin #AwardRules .RuleGroup,
-.AwardsPlugin #AwardRules .RuleType {
-	border: 1px solid silver;
-}
-
-.AwardsPlugin #AwardRules ul {
+#Content .AwardsPlugin .RuleGroup .Rule ul {
 	padding: 0;
 }
 
-.AwardsPlugin #AwardRules li {
+#Content .AwardsPlugin .RuleGroup .Rule li {
 	margin-right: 0.5em;
 }
 
-.AwardsPlugin #AwardRules .Tabs a {
+/* Tabs links */
+.AwardsPlugin .Tabs {
+	padding: 0;
+}
+
+.AwardsPlugin .ui-tabs-nav {
+	padding: 0.5em 1em 0 !important;
+}
+
+.AwardsPlugin .ui-tabs-nav li {
+	margin-right: 0.5em;
+}
+
+.AwardsPlugin .Tab {
+	border-top: 1px solid #8BC1DE;
+	background: url("../images/ui/tab-bg.png") top left repeat-x;
+}
+
+.AwardsPlugin .ui-tabs-anchor {
 	font-size: 110%;
+}
+
+.AwardsPlugin .ui-tabs-nav .ui-tabs-active a {
+	background: #DBF3FC;
+	border-bottom: 1px solid #DBF3FC;
 }
 
 .AwardsPlugin .Rule label {
 	display: inline-block;
+}
+
+#Content .AwardsPlugin ul.Rules {
+	padding-top: 1em;
 }
 
 .AwardsPlugin .Rule ul li span {
