@@ -136,13 +136,14 @@ class AwardsModel extends ModelEx {
 	 *
 	 * @see AwardsModel::GetWhere()
 	 */
-	public function GetWithTimesAwarded(array $Wheres = array(), array $OrderBy = array(), $Limit = 1000, $Offset = 0) {
-		/* Add a related to the User Awards before calling GetWhere(). Even
+	public function GetWithTimesAwarded(array $Wheres = array(), array $OrderBy = array(),
+																			$Limit = 1000, $Offset = 0) {
+		/* Add data related to the User Awards before calling GetWhere(). Even
 		 * though all these clauses are specified here, in a seemingly "random" way,
 		 * the SQL Builder will sort them out and build a proper query.
 		 */
 		$this->SQL
-			->Select('UA.TimesAwarded', 'SUM', 'TotalTimesAwarded')
+			->Select('UA.TimesAwarded', 'COALESCE(SUM(%s), 0)', 'TotalTimesAwarded')
 			->LeftJoin('UserAwards UA', '(UA.AwardID = VAAL.AwardID)')
 			->GroupBy(array(
 				'VAAL.AwardID',
@@ -193,9 +194,11 @@ class AwardsModel extends ModelEx {
 		if(!empty($OrderByClauses)) {
 			$this->SetOrderBy($OrderByClauses);
 		}
+		else {
+			$this->SQL->OrderBy('VAAL.AwardName');
+		}
 
 		$Result = $this->SQL
-			->OrderBy('VAAL.AwardName')
 			->Limit($Limit, $Offset)
 			->Get();
 

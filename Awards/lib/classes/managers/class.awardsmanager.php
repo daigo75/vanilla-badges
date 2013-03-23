@@ -25,6 +25,16 @@ class AwardsManager extends BaseManager {
 	}
 
 	/**
+	 * Returns an instance of AwardClassesModel.
+	 *
+	 * @return AwardsModel An instance of AwardClassesModel.
+	 * @see BaseManager::GetInstance()
+	 */
+	private function AwardClassesModel() {
+		return $this->GetInstance('AwardClassesModel');
+	}
+
+	/**
 	 * Prepares some Award Data to be used for cloning an Award. This method
 	 * removes or alters all data that identifies an Award, so that the User will
 	 * be forced to enter different details for the clone.
@@ -415,8 +425,6 @@ class AwardsManager extends BaseManager {
 												->FirstRow();
 			$Sender->SetData('AwardData', $AwardData);
 			$Sender->SetData('RecentAwardRecipientsModule', $this->LoadRecentAwardRecipientsModule($Sender, $AwardID));
-
-			//$Sender->AddModule();
 		}
 
 		// Load details of Award as earned by the User
@@ -425,8 +433,61 @@ class AwardsManager extends BaseManager {
 			$Sender->SetData('UserAwardData', $UserAwardData);
 		}
 
-		// Retrieve the View that will be used to configure the Award
+		// Retrieve the View to display the Award details
 		$Sender->Render($Caller->GetView('awards_award_info_view.php'));
+	}
+
+	/**
+	 * Renders the page displaying the list of all available Awards and Award
+	 * Classes.
+	 *
+	 * @param AwardsPlugin Caller The Plugin which called the method.
+	 * @param Gdn_Controller Sender Sending controller instance.
+	 */
+	public function AwardsPage(AwardsPlugin $Caller, $Sender) {
+		$this->RemoveDashboardElements($Sender);
+		// Add a class to help uniquely identifying this page
+		$Sender->CssClass = 'AwardsFrontendList';
+
+		$Wheres = array();
+
+		// TODO Add support for Award Categories
+		//$AwardCategory = $Sender->Request->GetValue(AWARDS_PLUGIN_ARG_CATEGORY);
+		//if(!empty($AwardCategory)) {
+		//}
+
+		// Prepare the Award Class filter, if needed
+		$AwardClassID = $Sender->Request->GetValue(AWARDS_PLUGIN_ARG_AWARDCLASSID);
+		if(!empty($AwardClassID)) {
+			$Wheres['VAAL.AwardClassID'] = $AwardClassID;
+			$Sender->SetData('AwardClassID', $AwardClassID);
+		}
+
+		// Load Awards Data
+		$AwardsData = $this->AwardsModel()->GetWithTimesAwarded($Wheres, array('VAAL.AwardName asc'));
+		$Sender->SetData('AwardsData', $AwardsData);
+
+		// Load the Awards earned by the User
+		$UserAwardData = array();
+		if(Gdn::Session()->IsValid()) {
+			$UserAwardsDataSet = $this->UserAwardsModel()->GetForUser(Gdn::Session()->UserID)->Result();
+
+			// Re-key the resulting dataset, so that the AwardID is the key for the
+			// User Award data
+			if(!empty($UserAwardsDataSet)) {
+				foreach($UserAwardsDataSet as $UserAward) {
+					$UserAwardData[$UserAward->AwardID] = $UserAward;
+				}
+			}
+		}
+		$Sender->SetData('UserAwardData', $UserAwardData);
+
+		// Load Award Classes data
+		$AwardClassesData = $this->AwardClassesModel()->GetWhere(array(), array('AwardClassName asc'));
+		$Sender->SetData('AwardClassesData', $AwardClassesData);
+
+		// Retrieve the View to display the Awards
+		$Sender->Render($Caller->GetView('awards_awardspage_view.php'));
 	}
 
 	/**

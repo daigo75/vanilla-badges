@@ -311,6 +311,18 @@ class AwardsPlugin extends Gdn_Plugin {
 	}
 
 	/**
+	 * Renders the Awards Frontend List page.
+	 *
+	 * @param object Sender Sending controller instance.
+	 */
+	public function Controller_AwardsPage($Sender) {
+		// Add the module with the list of configurd Award Classes
+		$Sender->AddModule(new AwardClassesModule());
+
+		$this->AwardsManager()->AwardsPage($this, $Sender);
+	}
+
+	/**
 	 * Renders the page to Add/Edit an Award.
 	 *
 	 * @param object Sender Sending controller instance.
@@ -395,11 +407,11 @@ class AwardsPlugin extends Gdn_Plugin {
 	}
 
 	/**
-	 * Loads and configures the Hot Threads module, which will generate the HTML
-	 * for the Hot Threads widget in the Sidebar.
+	 * Loads and configures the User Award Module, which will generate the HTML
+	 * for the User Awards widget.
 	 *
  	 * @param Controller Sender Sending controller instance.
- 	 * @return HotThreadsListModule An instance of the module.
+ 	 * @return UserAwardsModule An instance of the module.
  	 */
 	private function LoadUserAwardsModule($Sender) {
 		// If a User ID is specified explicitly, take that one. If not, take currently logged in User

@@ -103,11 +103,9 @@ class RecentAwardRecipientsModule extends ModuleEx {
 		ob_start();
 		?>
 		<div id="RecentAwardRecipients">
-			<h4>
-				<?php
-					echo T('Most recent recipients');
-				?>
-			</h4>
+			<?php
+				echo Wrap(T('Most recent recipients'), 'h2');
+			?>
 			<div>
 				<ul id="UserList" class="PanelInfo clearfix">
 				<?php

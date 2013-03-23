@@ -55,7 +55,7 @@
 
 					// If DataSet is empty, just print a message.
 					if(empty($AwardClassesDataSet)) {
-						echo $OutputForEmptyDataSet;
+						echo Wrap($OutputForEmptyDataSet, 'tr');
 					}
 					// TODO Implement Pager.
 					// Output the details of each row in the DataSet
@@ -75,7 +75,7 @@
 
 						// Output Award Class Name and Description
 						echo Wrap(Gdn_Format::Text($AwardClass->AwardClassName), 'td', array('class' => 'AwardClassName',));
-						echo Wrap(Gdn_Format::Text($AwardClass->RankPoints), 'td', array('class' => 'RankPoints Numeric',));
+						echo Wrap(Gdn_Format::Text($AwardClass->RankPoints), 'td', array('class' => 'RankPoints',));
 
 						echo Wrap(Gdn_Format::Text($AwardClass->AwardClassDescription), 'td', array('class' => 'AwardClassDescription',));
 						echo Wrap(Gdn_Format::Text($AwardClass->TotalAwardsUsingClass), 'td', array('class' => 'TotalAwardsUsingClass',));

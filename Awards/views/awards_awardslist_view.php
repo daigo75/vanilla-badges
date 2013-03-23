@@ -55,7 +55,7 @@
 
 					// If DataSet is empty, just print a message.
 					if(empty($AwardsDataSet)) {
-						echo $OutputForEmptyDataSet;
+						echo Wrap($OutputForEmptyDataSet, 'tr');
 					}
 					// TODO Implement Pager.
 					// Output the details of each row in the DataSet

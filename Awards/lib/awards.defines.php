@@ -37,18 +37,22 @@ define('AWARDS_PLUGIN_AWARDCLASS_DELETE_URL', AWARDS_PLUGIN_BASE_URL . '/awardcl
 define('AWARDS_PLUGIN_AWARDCLASS_CLONE_URL', AWARDS_PLUGIN_BASE_URL . '/awardclassclone');
 
 // URLs for Awards Management
+// Awards page shows the list of Awards in the backend, for management and editing
 define('AWARDS_PLUGIN_AWARDS_LIST_URL', AWARDS_PLUGIN_BASE_URL . '/awardslist');
+// Awards page shows the list of Awards in the frontend
+define('AWARDS_PLUGIN_AWARDS_PAGE_URL', AWARDS_PLUGIN_BASE_URL . '/awardspage');
 define('AWARDS_PLUGIN_AWARD_ADDEDIT_URL', AWARDS_PLUGIN_BASE_URL . '/awardaddedit');
 define('AWARDS_PLUGIN_AWARD_DELETE_URL', AWARDS_PLUGIN_BASE_URL . '/awarddelete');
 define('AWARDS_PLUGIN_AWARD_CLONE_URL', AWARDS_PLUGIN_BASE_URL . '/awardclone');
 define('AWARDS_PLUGIN_AWARD_ENABLE_URL', AWARDS_PLUGIN_BASE_URL . '/awardenable');
 define('AWARDS_PLUGIN_AWARD_INFO_URL', AWARDS_PLUGIN_BASE_URL . '/awardinfo');
 
+
 // URLs for User's Awards Management
 define('AWARDS_PLUGIN_USERAWARDS_LIST_URL', AWARDS_PLUGIN_BASE_URL . '/userawardslist');
-define('AWARDS_PLUGIN_USERAWARD_ADD_URL', AWARDS_PLUGIN_BASE_URL . '/userawardadd');
+//define('AWARDS_PLUGIN_USERAWARD_ADD_URL', AWARDS_PLUGIN_BASE_URL . '/userawardadd');
 //define('AWARDS_PLUGIN_USERAWARD_EDIT_URL', AWARDS_PLUGIN_BASE_URL . '/userawardedit');
-define('AWARDS_PLUGIN_USERAWARD_DELETE_URL', AWARDS_PLUGIN_BASE_URL . '/userawarddelete');
+//define('AWARDS_PLUGIN_USERAWARD_DELETE_URL', AWARDS_PLUGIN_BASE_URL . '/userawarddelete');
 
 define('AWARDS_PLUGIN_GENERALSETTINGS_URL', AWARDS_PLUGIN_BASE_URL . '/settings');
 
@@ -64,5 +68,6 @@ define('AWARDS_PLUGIN_ERR_AWARD_NO_RULES', 1002);
 define('AWARDS_PLUGIN_ARG_AWARDID', 'award_id');
 define('AWARDS_PLUGIN_ARG_AWARDCLASSID', 'award_class_id');
 define('AWARDS_PLUGIN_ARG_RULEID', 'rule_id');
+define('AWARDS_PLUGIN_ARG_CATEGORY', 'category');
 
 define('AWARDS_PLUGIN_ARG_ENABLEFLAG', 'enable');

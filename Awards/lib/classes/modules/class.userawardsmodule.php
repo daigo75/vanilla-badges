@@ -100,14 +100,12 @@ class UserAwardsModule extends ModuleEx {
 		ob_start();
 		?>
 		<div id="UserAwards" class="Box">
-			<h4>
-				<?php
-					// Title uses the word "Discussions", rather than "Threads", because
-					// that is the word that normally identifies threads in the User Interface
-					$WidgetTitle = $this->ViewingOwnProfile() ? T('My Awards') : T('Awards');
-					echo $WidgetTitle;
-				?>
-			</h4>
+			<?php
+				// Title uses the word "Discussions", rather than "Threads", because
+				// that is the word that normally identifies threads in the User Interface
+				$WidgetTitle = $this->ViewingOwnProfile() ? T('My Awards') : T('Awards');
+				echo Wrap($WidgetTitle, 'h4');
+			?>
 			<div>
 				<ul id="AwardsList" class="PanelInfo clearfix">
 				<?php

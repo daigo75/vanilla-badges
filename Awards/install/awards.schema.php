@@ -176,6 +176,7 @@ class AwardsSchema extends PluginSchema {
 				,A.RankPoints
 				,A.DateInserted
 				,A.DateUpdated
+				,AC.AwardClassID
 				,AC.AwardClassName
 				,AC.AwardClassImageFile
 				,AC.RankPoints AS AwardClassRankPoints

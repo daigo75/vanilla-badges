@@ -19,7 +19,7 @@
 	color: #2786C2;
 	top: 0 !important;
 	padding: 0 !important;
-	font-weight: !important;
+	font-weight: normal !important;
 }
 
 .AwardsPlugin h1 {
@@ -80,6 +80,19 @@
 .AwardsPlugin fieldset li label {
 	margin-top: 1em;
 }
+
+/* General styles for modules */
+.Plugin.awards .PanelInfo ul {
+	padding-top: 0.5em;
+}
+
+.Plugin.awards .PanelInfo li {
+	text-align: left;
+	margin-right: 0.5em;
+	background: none;
+	border: none;
+}
+
 
 /* Award Info page */
 #dashboard_plugin_awards.AwardInfo #Panel {
@@ -142,13 +155,6 @@
 	border: none;
 }
 
-#dashboard_plugin_awards.AwardInfo #UserList li {
-	text-align: left;
-	margin-right: 0.5em;
-	background: none;
-	border: none;
-}
-
 #dashboard_plugin_awards.AwardInfo #UserList .AwardRecipient {
 	width: 31%;
 	float: left;
@@ -167,20 +173,17 @@
 }
 
 
-div.AwardsDescription {
-	font-size: 85%;
-}
-
 #AwardClassesList th,
 #AwardsList th,
 #AwardClassesList td,
 #AwardsList td {
 	vertical-align: middle;
+	padding: 1em 0.5em;
 }
 
-#AwardClassesList td,
-#AwardsList td {
-	padding: 1em 0;
+#AwardClassesList th,
+#AwardsList th {
+	text-align: center;
 }
 
 .Activities .AwardActivity a.Photo img,
@@ -198,6 +201,7 @@ img.Large {
 img.Medium {
 	width: 50px;
 	height: 50px;
+	vertical-align: middle;
 }
 
 /* Wrapper for images in Award/Award class edit page */
@@ -239,6 +243,58 @@ img.Medium {
 	font-weight: bold;
 }
 
+/* Awards Frontend Page */
+#AwardsPage {
+
+}
+
+#AwardsPage .Filters a {
+	display: inline-block;
+	padding: 0.1em 0.5em;
+	color: rgb(30, 121, 167);
+	border: 1px solid rgb(30, 121, 167);
+	border-radius: 4px;
+}
+
+#AwardsPage .Filters li.Active a {
+	background: rgb(30, 121, 167);
+	color: white;
+}
+
+#AwardsPage .Filters a:hover {
+	background: rgb(243, 252, 255);
+}
+
+#AwardsPage .Filters .FilterItem {
+	margin: 0 0.3em;
+}
+
+#AwardsPage .Filters {
+	text-align: right;
+	background: none;
+	border: none;
+}
+
+#AwardsPage .AwardsList {
+	width: 100%;
+	margin-top: 1em;
+}
+
+#AwardsPage .AwardsList td {
+	vertical-align: top;
+	padding: 0.5em;
+}
+
+#AwardsPage .AwardsList .Name {
+	width: 40%;
+}
+
+#AwardsPage .AwardsList img {
+	float: left;
+	margin-right: 1em;
+}
+
+
 /* Awards and Award Classes List page */
 .AwardsPlugin .Enabled,
 .AwardsPlugin .Enabled {
@@ -275,7 +331,7 @@ img.Medium {
 }
 
 .AwardsPlugin #AwardsList .RankPoints {
-	width: 19em;
+	width: 10em;
 }
 
 .AwardsPlugin #AwardClassesList .RankPoints {
@@ -321,16 +377,6 @@ img.Medium {
 	font-weight: bold;
 }
 
-/* Overrides for CodeMirror Syntax Highlighter */
-.CodeMirror {
-	border: 1px solid silver;
-}
-
-.CodeMirror span {
-	font-size: 15px;
-	display: inline !important;
-}
-
 /* Rule Settings Pages */
 .AwardsPlugin #AwardRules {
 	padding-left: 20px;
@@ -338,10 +384,6 @@ img.Medium {
 }
 
 .AwardsPlugin  #Form_Awards h2 {
-/*	font-size: 120%;
-	font-weight: bold;
-	padding: 0;
-*/
 	margin: 0 20px;
 	border-bottom: 1px dashed gray;
 }
@@ -429,4 +471,16 @@ img.Medium {
 #UserAwards #AwardsList .Award {
 	float: left;
 	background: none;
+}
+
+/* Styles for Award Classes Module */
+#AwardClassesList li {
+	margin-top: 0.5em;
+	text-align: left;
+}
+
+#AwardClassesList .AwardClassInfo .Name {
+	margin-left: 1em;
+	font-size: 120%;
+	font-weight: bold;
 }
