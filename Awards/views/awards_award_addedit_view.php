@@ -84,19 +84,15 @@ $IsNewAward = empty($AwardID) ? true : false;
 						?>
 					</li>
 					<li>
-						<div class="clearfix">
-							<div class="Column">
-								<?php
-									echo $this->Form->Label(T('Award Name'), 'AwardName');
-									echo Wrap(T('Enter a name for the Award. It must be unique amongst the Awards.'),
-														'div',
-														array('class' => 'Info',
-																	'maxlength' => '100',
-																	));
-									echo $this->Form->TextBox('AwardName');
-								?>
-							</div>
-						</div>
+						<?php
+							echo $this->Form->Label(T('Award Name'), 'AwardName');
+							echo Wrap(T('Enter a name for the Award. It must be unique amongst the Awards.'),
+												'div',
+												array('class' => 'Info',
+															'maxlength' => '100',
+															));
+							echo $this->Form->TextBox('AwardName');
+						?>
 					</li>
 					<li>
 						<?php
