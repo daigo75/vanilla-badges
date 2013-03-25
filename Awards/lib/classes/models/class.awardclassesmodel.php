@@ -143,8 +143,8 @@ class AwardClassesModel extends ModelEx {
 	 * Deletes an Award and its Rule settings from the AwardClasses and AwardRules
 	 * tables.
 	 *
-	 * @param AwardClassID The ID of the Award to be deleted.
-	 * @return AwardClasses_OK if Award was deleted successfully, or a numeric error
+	 * @param AwardClassID The ID of the Award Class to be deleted.
+	 * @return AwardClasses_OK if Award Class was deleted successfully, or a numeric error
 	 * code if deletion failed.
 	 */
 	public function Delete($AwardClassID) {
