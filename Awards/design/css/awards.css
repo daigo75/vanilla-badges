@@ -289,9 +289,22 @@ img.Medium {
 	width: 40%;
 }
 
-#AwardsPage .AwardsList img {
+#AwardsPage .AwardsList .AwardImage {
 	float: left;
 	margin-right: 1em;
+}
+
+#AwardsPage .AwardsList .UserAwardInfo {
+	width: 40px;
+	vertical-align: middle;
+}
+
+#AwardsPage .AwardsList .Tick {
+	font-weight: bold;
+	text-indent: -999999px;
+	background: url("../images/ui/tick-icon.png") center center no-repeat;
+	padding: 10px;
+	display: block
 }
 
 

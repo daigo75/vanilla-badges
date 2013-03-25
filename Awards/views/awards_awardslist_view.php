@@ -51,10 +51,10 @@
 			</tfoot>
 			<tbody>
 				<?php
-					$AwardsDataSet = $this->Data['AwardsDataSet'];
+					$AwardsDataSet = GetValue('AwardsDataSet', $this->Data);
 
 					// If DataSet is empty, just print a message.
-					if(empty($AwardsDataSet)) {
+					if(empty($AwardsDataSet) || ($AwardsDataSet->NumRows() <= 0)) {
 						echo Wrap($OutputForEmptyDataSet, 'tr');
 					}
 					// TODO Implement Pager.

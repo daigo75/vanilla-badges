@@ -3,6 +3,14 @@
 {licence}
 */
 
+/**
+ * Renders some links that will allow to filter the view by Award Class.
+ *
+ * @param Gdn_DataSet AwardClassesData A DataSet containing all the available
+ * Award Classes.
+ * @param int CurrentAwardClassID The ID of the currently selected Award Class.
+ * If empty, the view is considered unfiltered.
+ */
 function RenderAwardClassFilters($AwardClassesData, $CurrentAwardClassID) {
 	if(empty($AwardClassesData)) {
 		return '';
@@ -27,10 +35,25 @@ function RenderAwardClassFilters($AwardClassesData, $CurrentAwardClassID) {
 	echo '</ol>';
 }
 
+function RenderUserAward($AwardID, $UserAwardData) {
+	$UserAward = GetValue($AwardID, $UserAwardData);
+	if(empty($UserAward)) {
+		echo '';
+		return;
+	}
+
+	$UserAwardInfo = sprintf(T('You earned this Award on %s'),
+													 Gdn_Format::Date($UserAward->DateAwarded, T('Date.DefaultFormat')));
+	echo Wrap('Yes',
+						'span',
+						array('title' => $UserAwardInfo,
+									'class' => 'Tick'));
+}
+
 // Indicates how many columns there are in the table that shows the list of
 // Awards. It's mainly used to set the "colspan" attributes of
 // single-valued table rows, such as Title, or the "No Results Found" message.
-$AwardsTableColumns = 2;
+$AwardsTableColumns = 3;
 
 // The following HTML will be displayed when the DataSet is empty.
 $OutputForEmptyDataSet = Wrap(T('Award not found.'),
@@ -42,7 +65,7 @@ $OutputForEmptyDataSet = Wrap(T('Award not found.'),
 $AwardsData = GetValue('AwardsData', $this->Data);
 $UserAwardData = GetValue('UserAwardData', $this->Data);
 $AwardClassesData = GetValue('AwardClassesData', $this->Data);
-//var_dump($AwardsData);
+//var_dump($UserAwardData);
 ?>
 <div id="AwardsPage" class="AwardsPlugin">
 	<div class="Header">
@@ -63,6 +86,10 @@ $AwardClassesData = GetValue('AwardClassesData', $this->Data);
 					else {
 						foreach($AwardsData as $Award) {
 							echo '<tr>';
+							echo '<td class="UserAwardInfo">';
+							RenderUserAward($Award->AwardID, $UserAwardData);
+							echo '</td>';
+
 							//var_dump($Award);die();
 							$AwardImage = Img($Award->AwardImageFile,
 																array('alt' => $Award->AwardName,
