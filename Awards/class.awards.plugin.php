@@ -134,11 +134,7 @@ class AwardsPlugin extends Gdn_Plugin {
 	 * @param Gdn_Controller Sender Sending controller instance.
 	 */
 	 private function ProcessAwards(Gdn_Controller $Sender) {
-		// Can't process the Awards if no User is logged in
-		if(!Gdn::Session()->IsValid()) {
-			return;
-		}
-		$this->AwardsManager()->ProcessAwards($this, $Sender, Gdn::Session()->UserID);
+		$this->AwardsManager()->ProcessAwards($this, $Sender);
 	}
 
 	/**

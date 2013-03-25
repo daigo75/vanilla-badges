@@ -514,19 +514,22 @@ class AwardsManager extends BaseManager {
 	}
 
 	/**
-	 * Process the Award Rules for the specified User ID.
+	 * Process the Award Rules for current User.
 	 *
 	 * @param AwardsPlugin Caller The Plugin who called the method.
 	 * @param Gdn_Controller Sender Sending controller instance.
-	 * @param int UserID The ID of the User for which to process the Award Rules.
 	 */
-	public function ProcessAwards(AwardsPlugin $Caller, Gdn_Controller $Sender, $UserID) {
+	public function ProcessAwards(AwardsPlugin $Caller, Gdn_Controller $Sender) {
+		// Can't process the Awards if no User is logged in
 		if(!Gdn::Session()->IsValid()) {
 			return;
 		}
 
+		// Retrieve ID of logged in User
+		$UserID = Gdn::Session()->UserID;
+
 		// Retrieve the list of Awards still available to the User
-		$AvailableAwardsDataSet = $this->AwardsModel()->GetAvailableAwards(Gdn::Session()->UserID);
+		$AvailableAwardsDataSet = $this->AwardsModel()->GetAvailableAwards($UserID);
 
 		// Debug - Rules to process
 		//var_dump($AvailableAwardsDataSet->Result());
