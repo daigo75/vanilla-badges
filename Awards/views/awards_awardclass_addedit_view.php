@@ -54,7 +54,6 @@ function GetCurrentAction(Gdn_Form $Form, $Data) {
 											'can only contain letters, numbers, hyphens and underscores).'),
 										'div',
 										array('class' => 'Info',
-													'maxlength' => '100',
 													));
 					echo $this->Form->TextBox('AwardClassName');
 					echo Wrap(sprintf(T('This class is currently being used by %d Awards.'),
@@ -116,7 +115,6 @@ function GetCurrentAction(Gdn_Form $Form, $Data) {
 											'one.'),
 										'div',
 										array('class' => 'Info',
-													'maxlength' => '400',
 													));
 					echo $this->Form->TextBox('AwardClassDescription',
 																		array('multiline' => true,
@@ -134,13 +132,11 @@ function GetCurrentAction(Gdn_Form $Form, $Data) {
 											'border.'),
 										'div',
 										array('class' => 'Info',
-													'maxlength' => '400',
 													));
 					echo Wrap(T('<strong>Important</strong>: just enter CSS commands without enclosing them in curly braces. ' .
 											'The plugin will take care of doing it automatically.'),
 										'div',
 										array('class' => 'Info',
-													'maxlength' => '400',
 													));
 					echo $this->Form->TextBox('AwardClassCSS',
 																		array('multiline' => true,

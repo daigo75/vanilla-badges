@@ -89,7 +89,6 @@ $IsNewAward = empty($AwardID) ? true : false;
 							echo Wrap(T('Enter a name for the Award. It must be unique amongst the Awards.'),
 												'div',
 												array('class' => 'Info',
-															'maxlength' => '100',
 															));
 							echo $this->Form->TextBox('AwardName');
 						?>
@@ -161,7 +160,6 @@ $IsNewAward = empty($AwardID) ? true : false;
 													'the public Awards page.'),
 												'div',
 												array('class' => 'Info',
-															'maxlength' => '400',
 															));
 							echo $this->Form->TextBox('AwardDescription',
 																				array('multiline' => true,
