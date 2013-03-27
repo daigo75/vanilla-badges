@@ -270,7 +270,6 @@ class AwardRulesManager extends BaseManager {
 				continue;
 			}
 
-			//var_dump($Settings);
 			$IsRuleEnabled = $RuleInstance->IsRuleEnabled($Settings);
 			// Check if the Rule is enabled
 			switch($IsRuleEnabled) {
@@ -278,8 +277,8 @@ class AwardRulesManager extends BaseManager {
 				case BaseAwardRule::RULE_DISABLED:
 					$this->Log()->trace(sprintf(T('Rule "%s" disabled, skipping.'),
 																			$RuleClass));
-					continue;
-					break; // "break" Not really needed, left for consistency
+					// "continue 2" will break out of the switch and continue to next loop
+					continue 2;
 				case BaseAwardRule::RULE_ENABLED_CANNOT_PROCESS:
 					$this->Log()->error(sprintf(T('Rule "%s" enabled, but could not be processed due to ' .
 																				'missing requirements or misconfiguration. Award processing '.
@@ -287,7 +286,6 @@ class AwardRulesManager extends BaseManager {
 																				'details on what could be misconfigured.'),
 																			$RuleClass));
 					return BaseAwardRule::NO_ASSIGNMENTS;
-					break; // "break" Not really needed, left for consistency
 				case BaseAwardRule::RULE_ENABLED:
 					// Do nothing and carry on
 					break;
@@ -296,7 +294,9 @@ class AwardRulesManager extends BaseManager {
 																				'Award processing aborted.'),
 																			$RuleClass,
 																			$IsRuleEnabled));
+					return BaseAwardRule::NO_ASSIGNMENTS;
 			}
+			//var_dump($Settings, $IsRuleEnabled);
 
 			$this->Log()->debug(sprintf(T('Processing Rule "%s"...'), $RuleClass));
 
