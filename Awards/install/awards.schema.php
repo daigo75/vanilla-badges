@@ -114,9 +114,9 @@ class AwardsSchema extends PluginSchema {
 			,AC.AwardClassImageFile
 			,AC.RankPoints AS AwardClassRankPoints
 		FROM
-			${Px}Awards A
+			{$Px}Awards A
 			JOIN
-			${Px}AwardClasses AC ON
+			{$Px}AwardClasses AC ON
 				(AC.AwardClassID = A.AwardClassID)
 		";
 		$this->Construct->View('v_awards_awardslist', $Sql);
@@ -139,9 +139,9 @@ class AwardsSchema extends PluginSchema {
 			,AC.DateUpdated
 			,COUNT(A.AwardID) AS TotalAwardsUsingClass
 		FROM
-			${Px}AwardClasses AC
+			{$Px}AwardClasses AC
 			LEFT JOIN
-			${Px}Awards A ON
+			{$Px}Awards A ON
 				(A.AwardClassID = AC.AwardClassID)
 		GROUP BY
 			AC.AwardClassID
@@ -181,12 +181,12 @@ class AwardsSchema extends PluginSchema {
 				,AC.AwardClassImageFile
 				,AC.RankPoints AS AwardClassRankPoints
 			FROM
-				${Px}UserAwards UA
+				{$Px}UserAwards UA
 				JOIN
-				${Px}Awards A ON
+				{$Px}Awards A ON
 					(A.AwardID = UA.AwardID)
 				JOIN
-				${Px}AwardClasses AC ON
+				{$Px}AwardClasses AC ON
 					(AC.AwardClassID = A.AwardClassID)
 		";
 		$this->Construct->View('v_awards_userawardslist', $Sql);
