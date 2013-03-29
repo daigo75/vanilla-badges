@@ -58,15 +58,16 @@ $IsNewAward = empty($AwardID) ? true : false;
 		echo $this->Form->Hidden('AwardImageFile');
 	?>
 	<fieldset id="Award">
-		<legend><?php
+		<legend class="Title"><?php
 			echo Wrap(GetCurrentAction($this->Form, $this->Data), 'h1');
-		?></legend>
-		<div class="Buttons Top">
-			<?php
-				echo $this->Form->Button(T('Save'), array('Name' => 'Save',));
-				echo $this->Form->Button(T('Cancel'));
 			?>
-		</div>
+			<div class="Buttons Top">
+				<?php
+					echo $this->Form->Button(T('Save'), array('Name' => 'Save',));
+					echo $this->Form->Button(T('Cancel'));
+				?>
+			</div>
+		</legend>
 		<div class="Tabs">
 			<div id="AwardInfo" class="Tab">
 				<h2 class="Label"><?php echo T('Award Info'); ?></h2>

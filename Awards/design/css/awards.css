@@ -178,7 +178,7 @@
 #AwardClassesList td,
 #AwardsList td {
 	vertical-align: middle;
-	padding: 1em 0.5em;
+	padding: 0.5em;
 }
 
 #AwardClassesList th,
@@ -205,8 +205,8 @@ img.Medium {
 }
 
 /* Wrapper for images in Award/Award class edit page */
-.AwardsPlugin.AwardClassEdit,
-.AwardsPlugin.AwardEdit {
+.AwardsPlugin.AwardClassEdit legend.Title,
+.AwardsPlugin.AwardEdit legend.Title {
 	position: relative;
 }
 
@@ -496,4 +496,57 @@ img.Medium {
 	margin-left: 1em;
 	font-size: 120%;
 	font-weight: bold;
+}
+
+
+/* Special Styles for "Assign Award" page */
+#Content .AwardsPlugin.AssignAward .Title,
+#Content .AwardsPlugin.AssignAward p {
+	padding-left: 0;
+}
+
+#Content .AwardsPlugin.AssignAward .Fields {
+	padding: 0;
+}
+
+#Content .AwardsPlugin.AssignAward fieldset > div {
+	padding-left: 20px;
+}
+
+#Content .AwardsPlugin.AssignAward #SelectedUsers {
+	width: 50em;
+	height: 20em;
+	border: 1px solid silver;
+	margin-top: 0.5em;
+	border-radius: 4px;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+#Content .AwardsPlugin.AssignAward #SelectedUsers span {
+	display: inline;
+	margin: 0 1em 0 0.5em;
+}
+
+#Content .AwardsPlugin.AssignAward #SelectedUsers .SelectedUser {
+	border: 1px solid silver;
+	margin: 2px;
+	background-color: whitesmoke;
+	border-radius: 4px;
+}
+
+#Content .AwardsPlugin.AssignAward #SelectedUsers .EarnedAward {
+	color: white;
+	background: silver;
+}
+
+#Content .AwardsPlugin.AssignAward #SelectedUsers .Remove.Icon {
+	width: 18px;
+	height: 18px;
+	background: url("../images/ui/remove-user-icon.png") center center no-repeat;
+	display: block;
+	float: left;
+	text-indent: -99999px;
+	margin: 2px 0 0 0.5em;
+	vertical-align:
 }

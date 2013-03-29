@@ -252,4 +252,22 @@ class AwardsModel extends ModelEx {
 
 		return $Result;
 	}
+
+	/**
+   * Saves an Award.
+   *
+   * @see ModelEx::Save()
+   */
+  public function Save($FormPostValues, $Settings = false) {
+		$AwardID = GetValue('AwardID', $FormPostValues);
+		if(empty($AwardID)) {
+			// Check that the Award Name is Unique. This check cannot be performed by
+			// the automatic validation mechanism used with Forms, due its limitations
+			if($this->ValidateUnique(GetValue('AwardName', $FormPostValues), 'AwardName') != true) {
+				$this->Validation->AddValidationResult('AwardName', T('Award Name must be unique.'));
+				return false;
+			}
+		}
+		return parent::Save($FormPostValues, $Settings);
+	}
 }

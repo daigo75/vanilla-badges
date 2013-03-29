@@ -35,6 +35,16 @@ class AwardsManager extends BaseManager {
 	}
 
 	/**
+	 * Returns an instance of UserModel.
+	 *
+	 * @return AwardsModel An instance of UserModel.
+	 * @see BaseManager::GetInstance()
+	 */
+	private function UserModel() {
+		return $this->GetInstance('UserModel');
+	}
+
+	/**
 	 * Prepares some Award Data to be used for cloning an Award. This method
 	 * removes or alters all data that identifies an Award, so that the User will
 	 * be forced to enter different details for the clone.
@@ -202,17 +212,17 @@ class AwardsManager extends BaseManager {
 			// Just show the form with the default values
 		}
 		else {
-			$Data = $Sender->Form->FormValues();
-
 			// If User Canceled, go back to the List
-			if(GetValue('Cancel', $Data, false)) {
+			if($Sender->Form->ButtonExists('Cancel')) {
 				Redirect(AWARDS_PLUGIN_AWARDS_LIST_URL);
 			}
+
+			$Data = $Sender->Form->FormValues();
 
 			// Validate PostBack
 			// The field named "Save" is actually the Save button. If it exists, it means
 			// that the User chose to save the changes.
-			if(Gdn::Session()->ValidateTransientKey($Data['TransientKey']) && $Data['Save']) {
+			if(Gdn::Session()->ValidateTransientKey($Data['TransientKey']) && $Sender->Form->ButtonExists('Save')) {
 				try {
 					// Retrieve the URL of the Picture associated with the Award.
 					$ImageFile = PictureManager::GetPictureURL(AWARDS_PLUGIN_AWARD_PICS_PATH,
@@ -268,7 +278,7 @@ class AwardsManager extends BaseManager {
 						$Sender->InformMessage(T('Your changes have been saved.'));
 						$Caller->FireEvent('ConfigChanged');
 
-						// Once changes have been saved, redurect to the main page
+						// Once changes have been saved, redirect to the main page
 						//Redirect(AWARDS_PLUGIN_AWARDS_LIST_URL);
 						return $this->AwardsList($Caller, $Sender);
 					}
@@ -278,6 +288,14 @@ class AwardsManager extends BaseManager {
 						 * Sender. This will allow the Rules to pick it up automatically.
 						 */
 						$Sender->SetData('RulesSettings', GetValue('Rules', $Data));
+
+						// If Saving failed for no apparent reason (no error messages),
+						// suggest the User to have a look at the Log to see if there are
+						// more details about the reason of the failure
+						if($Sender->Form->ErrorCount() <= 0) {
+							$Sender->Form->AddError(T('Data could not be saved. Please check the Log to see ' .
+																				'more details about the issue.'));
+						}
 					}
 				}
 			}
@@ -356,11 +374,25 @@ class AwardsManager extends BaseManager {
 
 		// If seeing the form for the first time...
 		if ($Sender->Form->AuthenticatedPostBack() === FALSE) {
-			// Retrieve the Award ID passed as an argument (if any)
+			// Retrieve the Award ID passed as an argument
 			$AwardID = $Sender->Request->GetValue(AWARDS_PLUGIN_ARG_AWARDID, null);
+
+			// Cannot proceed without an Award ID
+			if(empty($AwardID)) {
+				// Render Awards List page
+				Redirect(AWARDS_PLUGIN_AWARDS_LIST_URL);
+			}
 
 			// Load the data of the Award to be deleted, if an Award ID is passed
 			$AwardData = $this->AwardsModel()->GetAwardData($AwardID)->FirstRow(DATASET_TYPE_ARRAY);
+
+			// Cannot proceed without a valid Award
+			if(empty($AwardData)) {
+				// Render Awards List page
+				Redirect(AWARDS_PLUGIN_AWARDS_LIST_URL);
+			}
+
+
 			//var_dump($AwardID, $AwardData);
 			$Sender->Form->SetData($AwardData);
 
@@ -388,6 +420,151 @@ class AwardsManager extends BaseManager {
 			// Render Awards List page
 			Redirect(AWARDS_PLUGIN_AWARDS_LIST_URL);
 		}
+	}
+
+	/**
+	 * Renders the page to Assign an Award to one or more Users.
+	 *
+	 * @param AwardsPlugin Caller The Plugin which called the method.
+	 * @param Gdn_Controller Sender Sending controller instance.
+	 */
+	public function AwardAssign(AwardsPlugin $Caller, $Sender) {
+		// Prevent Users without proper permissions from accessing this page.
+		$Sender->Permission('Plugins.Awards.Manage');
+
+		$Sender->Form->SetModel($this->AwardsModel());
+
+		// If seeing the form for the first time...
+		if ($Sender->Form->AuthenticatedPostBack() === FALSE) {
+			// Retrieve the Award ID passed as an argument
+			$AwardID = $Sender->Request->GetValue(AWARDS_PLUGIN_ARG_AWARDID, null);
+
+			// Cannot proceed without an Award ID
+			if(empty($AwardID)) {
+				// Render Awards List page
+				Redirect(AWARDS_PLUGIN_AWARDS_LIST_URL);
+			}
+
+			// Load the data of the Award to be deleted, if an Award ID is passed
+			$AwardData = $this->AwardsModel()->GetAwardData($AwardID)->FirstRow();
+
+			// Cannot proceed without a valid Award
+			if(empty($AwardData)) {
+				// Render Awards List page
+				Redirect(AWARDS_PLUGIN_AWARDS_LIST_URL);
+			}
+
+			// Load jQuery UI
+			$this->LoadJQueryUI($Sender);
+			$this->LoadJQueryUIStyles($Sender);
+
+			// Load auxiliary files
+			$Sender->AddJsFile('award_assign.js', 'plugins/Awards/js');
+
+			//var_dump($AwardID, $AwardData);
+			$Sender->Form->SetData($AwardData);
+			// The full AwardData object will be needed later to assign the Award
+			$Sender->Form->SetValue('AwardDataJSON', json_encode($AwardData));
+
+			// Add some definitions
+			$Sender->AddDefinition('AwardID', $AwardID);
+			$Sender->AddDefinition('View_Profile', T('View Profile'));
+			$Sender->AddDefinition('Remove_User', T('Remove User'));
+			$Sender->AddDefinition('User_Received_Award', T('Received the Award on '));
+		}
+		else {
+			// If User Canceled, go back to the List
+			if($Sender->Form->ButtonExists('Cancel')) {
+				Redirect(AWARDS_PLUGIN_AWARDS_LIST_URL);
+			}
+
+			//var_dump($Sender->Form->FormValues());
+			$Data = $Sender->Form->FormValues();
+
+			// The field named "OK" is actually the OK button. If it exists, it means
+			// that the User confirmed the deletion.
+			if(Gdn::Session()->ValidateTransientKey($Data['TransientKey']) && $Sender->Form->ButtonExists('OK')) {
+				$AwardData = json_decode(GetValue('AwardDataJSON', $Data));
+				$UserIDsToAssign = array_filter(explode(',', GetValue('UserIDList', $Data)));
+
+				// Make sure that at least one User is selected
+				if(empty($UserIDsToAssign)) {
+					$Sender->Form->AddError(T('You must select at least one User.'));
+				}
+
+				// If no errors are found, try to save the data
+				if($Sender->Form->ErrorCount() <= 0) {
+					$Requester = Gdn::Session()->User;
+					$this->Log()->info(sprintf(T('Starting manual assignment of Awards to Users. ' .
+																			 'Operation started by %s (ID: %d)...'),
+																		 $Requester->Name,
+																		 $Requester->UserID));
+					Gdn::Database()->BeginTransaction();
+					try {
+						foreach($UserIDsToAssign as $UserID) {
+							// Non-recurring Awards can be assigned only once
+							if(!$AwardData->Recurring && $this->UserHasAward($UserID, $AwardData->AwardID)) {
+								$this->Log()->info(sprintf(T('User %d already got the Award. Skipping.'),
+																					 $UserID));
+								continue;
+							}
+
+							// Assign the Award and log the Result
+							$Saved = $this->AssignAward($UserID, $AwardData, BaseAwardRule::ASSIGN_ONE);
+
+							if(!$Saved) {
+								$ErrorMsg = sprintf(T('Could not assign Award "%s" to User ID: %d. Operation aborted.'),
+																		$AwardData->AwardName,
+																		$UserID);
+								$this->Log()->error($ErrorMsg);
+								$Sender->Form->AddError($ErrorMsg);
+
+								// At the first error, stop assigning the Award and abort the transaction
+								break;
+							}
+						}
+
+						// Use a transaction to either save ALL data successfully, or
+						// none of it. This will prevent partial saves and reduce inconsistencies
+						if($Saved) {
+							Gdn::Database()->CommitTransaction();
+						}
+						else {
+							Gdn::Database()->RollbackTransaction();
+						}
+					}
+					catch(Exception $e) {
+						Gdn::Database()->RollbackTransaction();
+						$this->Log()->error($ErrorMsg = sprintf(T('Exception occurred while assigning Awards. ' .
+																										'Award Name: %s. Error: %s. Backtrace: %s'),
+																									$AwardData->AwardName,
+																									$e->getMessage(),
+																									$e->getTraceAsString()));
+						throw $e;
+					}
+
+					if($Saved) {
+						$Sender->InformMessage(T('Your changes have been saved.'));
+
+						// Once changes have been saved, redirect to the main page
+						Redirect(AWARDS_PLUGIN_AWARDS_LIST_URL);
+						//return $this->AwardsList($Caller, $Sender);
+					}
+					else {
+						// If Saving failed for no apparent reason (no error messages),
+						// suggest the User to have a look at the Log to see if there are
+						// more details about the reason of the failure
+						if($Sender->Form->ErrorCount() <= 0) {
+							$Sender->Form->AddError(T('Data could not be saved. Please check the Log to see ' .
+																				'more details about the issue.'));
+						}
+					}
+
+				}
+			}
+		}
+		// Render the page
+		$Sender->Render($Caller->GetView('awards_award_assign_view.php'));
 	}
 
 	/**
@@ -556,12 +733,24 @@ class AwardsManager extends BaseManager {
 	}
 
 	/**
+	 * Checks if a User already got an Award.
+	 *
+	 * @param int UserID The User ID of the Award recipient.
+	 * @param int AwardID The ID of the Award.
+	 * @return bool True if the User already got the Award, False otherwise.
+	 */
+	protected function UserHasAward($UserID, $AwardID) {
+		return ($this->UserAwardsModel()->GetUserAwardData($UserID, $AwardID) !== false);
+	}
+
+	/**
 	 * Assigns an Award to a User and updates the Activity log to notify him.
 	 *
 	 * @param int UserID The User ID of the Award recipient.
 	 * @param stdClass AwardData An object containing Award data.
 	 * @param int AwardAssignmentCount The amount of times that the Award should be
 	 * assigned. It can be more than one for recurring Awards.
+	 * @return mixed The ID User Award record, or false on failure.
 	 */
 	protected function AssignAward($UserID, stdClass $AwardData, $AwardAssignmentCount) {
 		$UserAwardFields = array(
@@ -594,5 +783,7 @@ class AwardsManager extends BaseManager {
 				$this->Log()->debug(T('Done.'));
 			}
 		}
+
+		return $UserAwardID;
 	}
 }

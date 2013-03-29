@@ -25,6 +25,26 @@ class ModelEx extends Gdn_Model {
 	}
 
 	/**
+	 * Checks if a value is unique for the specified field.
+	 *
+	 * @param mixed Value The Value to check.
+	 * @param mixed Field Field Information.
+	 * @return bool True, if the Value is unique, False otherwise.
+	 */
+	protected function ValidateUnique($Value, $Field) {
+		$TableName = $this->Name;
+		$Result = $this->SQL
+			->Select($Field)
+			->From($TableName)
+			->Where($Field, $Value)
+			->Limit(1)
+			->Get()
+			->FirstRow();
+
+		return $Result === false;
+	}
+
+	/**
 	 * Takes an array of ORDER BY clauses and adds them to the class instance's
 	 * SQL object.
 	 *
@@ -55,23 +75,35 @@ class ModelEx extends Gdn_Model {
 		}
 	}
 
+	/**
+	 * Extracts and returns the value of the Primery Key from the posted values.
+	 *
+	 * @param array FormPostValues The posted values.
+	 * @return mixed The value of the Primary Key.
+	 */
 	protected function GetPrimaryKeyValue($FormPostValues) {
 		return GetValue($this->PrimaryKey, $FormPostValues, false);
 	}
 
+	/**
+	 * Checks if a Primary Key already exists in the Model's table.
+	 *
+	 * @param mixed PrimaryKey The value of the Primary Key.
+	 * @return bool True if the value exists as a PK, False otherwise.
+	 */
 	protected function PrimaryKeyExists($PrimaryKeyValue) {
 		return ($PrimaryKeyValue !== false);
 	}
 
 	/**
-   *  Takes a set of form data ($Form->_PostValues), validates them, and
+   * Takes a set of form data ($Form->_PostValues), validates them, and
    * inserts or updates them to the datatabase.
    *
    * @param array $FormPostValues An associative array of $Field => $Value pairs that represent data posted
    * from the form in the $_POST or $_GET collection.
    * @param array $Settings If a custom model needs special settings in order to perform a save, they
    * would be passed in using this variable as an associative array.
-   * @return unknown
+   * @return mixed The Primary Key of the saved record.
    */
   public function Save($FormPostValues, $Settings = false) {
     // Define the primary key in this model's table.

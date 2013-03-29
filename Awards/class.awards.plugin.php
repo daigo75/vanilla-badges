@@ -14,7 +14,7 @@ require(AWARDS_PLUGIN_LIB_PATH . '/awards.validation.php');
 $PluginInfo['Awards'] = array(
 	'Name' => 'Awards Plugin',
 	'Description' => 'Awards Plugin for Vanilla Forums',
-	'Version' => '13.03.25 alpha',
+	'Version' => '13.03.29 alpha',
 	'RequiredApplications' => array('Vanilla' => '2.0'),
 	'RequiredTheme' => FALSE,
 	'RequiredPlugins' => array('Logger' => '12.10.28',
@@ -180,9 +180,6 @@ class AwardsPlugin extends Gdn_Plugin {
 
 		// If your sub-pages use forms, this is a good place to get it ready
 		$Sender->Form = new Gdn_Form();
-		// Display inline errors
-		$Sender->Form->ShowErrors();
-
 
 		/*
 		 * Note: When the URL is accessed without parameters, Controller_Index() is called. This is a good place
@@ -280,7 +277,7 @@ class AwardsPlugin extends Gdn_Plugin {
 	}
 
 	/**
-	 * Renders the page that allows Users to delete an Award Class.
+	 * Renders the page that allows to delete an Award Class.
 	 *
 	 * @param object Sender Sending controller instance.
 	 */
@@ -337,12 +334,119 @@ class AwardsPlugin extends Gdn_Plugin {
 	}
 
 	/**
-	 * Renders the page that allows Users to delete an Award.
+	 * Renders the page that allows to delete an Award.
 	 *
 	 * @param object Sender Sending controller instance.
 	 */
 	public function Controller_AwardDelete($Sender) {
 		$this->AwardsManager()->AwardDelete($this, $Sender);
+	}
+
+	/**
+	 * Renders the page that allows to assign an Award.
+	 *
+	 * @param object Sender Sending controller instance.
+	 */
+	public function Controller_AwardAssign($Sender) {
+		$this->AwardsManager()->AwardAssign($this, $Sender);
+	}
+
+	/**
+	 * Returns a list of Users based on a search query.
+	 *
+	 * @param object Sender Sending controller instance.
+	 * @param array Args An array containing the list of arguments passed with the
+	 * URL.
+	 */
+	public function UserController_Search_Create($Sender, $Args) {
+		$Sender->Permission('Plugins.Awards.Manage');
+		// Extract the search query from the URL
+		$SearchString = GetValue(0, $Args);
+		//var_dump($SearchString);
+
+		// TODO Replace 2 with constant
+		if(strlen($SearchString) < 2) {
+			$Sender->SetData('Error', sprintf(T('Search string must be at least %d characters long'), 2));
+		}
+		else {
+			$UserModel = new UserModel();
+			$Users = $UserModel->SQL
+				->Select('U.UserID')
+				->Select('U.Name', '', 'UserName')
+				->Select('U.Email', '', 'EmailAddress')
+				->From('User U')
+				->Where('U.Deleted', 0)
+				->Where('U.Name Like', '%' . $SearchString . '%')
+				->OrderBy('U.Name')
+				->Limit(15)
+				->Get()
+				->ResultObject();
+			//var_dump($Users);
+			$Sender->SetData('Users', $Users);
+		}
+
+		// Return the data as JSON
+		$Sender->DeliveryMethod(DELIVERY_METHOD_JSON);
+		$Sender->DeliveryType(DELIVERY_TYPE_DATA);
+
+		// Render the View
+		$Sender->Render();
+	}
+
+	/**
+	 * Returns a list of Users based on a search query, indicating if any of them
+	 * already received a specific Award.
+	 *
+	 * @param object Sender Sending controller instance.
+	 * @param array Args An array containing the list of arguments passed with the
+	 * URL.
+	 */
+	public function UserController_SearchWithAward_Create($Sender, $Args) {
+		$Sender->Permission('Plugins.Awards.Manage');
+		// Extract the search query from the URL
+		$SearchString = GetValue(0, $Args);
+		$AwardID = GetValue(1, $Args);
+
+		$Result = true;
+		if(empty($AwardID) || !is_numeric($AwardID)) {
+			$Sender->SetData('Error', sprintf(T('Award ID is required.')));
+			$Result = false;
+		}
+
+		// TODO Replace 2 with constant
+		if(strlen($SearchString) < 2) {
+			$Sender->SetData('Error', sprintf(T('Search string must be at least %d characters long.'), 2));
+			$Result = false;
+		}
+
+		if($Result === true) {
+			$UserModel = new UserModel();
+			$Users = $UserModel->SQL
+				->Select('U.UserID')
+				->Select('U.Name', '', 'UserName')
+				->Select('U.Email', '', 'EmailAddress')
+				->Select('VAUAL.AwardID', '', 'AwardID')
+				->Select('VAUAL.DateAwarded', '', 'DateAwarded')
+				->Select('VAUAL.Recurring', '', 'Recurring')
+				->From('User U')
+				->LeftJoin('v_awards_userawardslist VAUAL',
+									 '(VAUAL.UserID = U.UserID) AND (VAUAL.AwardID = ' . (int)$AwardID . ')')
+				->Where('U.Deleted', 0)
+				->Where('U.Name Like', '%' . $SearchString . '%')
+				->OrderBy('U.Name')
+				->Limit(15)
+				->Get()
+				->ResultObject();
+			//var_dump($Users);
+			$Sender->SetData('Users', $Users);
+		}
+
+		// Return the data as JSON
+		$Sender->DeliveryMethod(DELIVERY_METHOD_JSON);
+		$Sender->DeliveryType(DELIVERY_TYPE_DATA);
+
+		// Render the View
+		$Sender->Render();
 	}
 
 	/**

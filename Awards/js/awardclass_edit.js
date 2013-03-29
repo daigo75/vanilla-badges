@@ -1,2 +1,4 @@
-jQuery(document).ready(function(){
+/**
+{licence}
+*/jQuery(document).ready(function(){
 });

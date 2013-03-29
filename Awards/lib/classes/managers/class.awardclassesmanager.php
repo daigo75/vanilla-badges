@@ -158,9 +158,18 @@ class AwardClassesManager extends BaseManager {
 					$Sender->InformMessage(T('Your changes have been saved.'));
 					$Caller->FireEvent('ConfigChanged');
 
-					// Once changes have been saved, redurect to the main page
+					// Once changes have been saved, redirect to the main page
 					//Redirect(AWARDS_PLUGIN_AWARDCLASSES_LIST_URL);
 					$this->AwardClassesList($Caller, $Sender);
+				}
+				else {
+					// If Saving failed for no apparent reason (no error messages),
+					// suggest the User to have a look at the Log to see if there are
+					// more details about the reason of the failure
+					if($Sender->Form->ErrorCount() <= 0) {
+						$Sender->Form->AddError(T('Data could not be saved. Please check the Log to see ' .
+																			'more details about the issue.'));
+					}
 				}
 			}
 		}

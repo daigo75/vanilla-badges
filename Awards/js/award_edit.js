@@ -1,4 +1,6 @@
-jQuery(document).ready(function(){
+/**
+{licence}
+*/jQuery(document).ready(function(){
 	var TabsList = $('<ul>');
 
 	// Add a link, which will be transformed into a Tab, for each Rule

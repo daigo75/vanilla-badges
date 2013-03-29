@@ -1,3 +1,5 @@
-jQuery(document).ready(function(){
-   /* Do some javascripts on page load! */
+/**
+{licence}
+*/jQuery(document).ready(function(){
+  
 });

@@ -150,4 +150,22 @@ class AwardClassesModel extends ModelEx {
 	public function Delete($AwardClassID) {
 		$this->SQL->Delete('AwardClasses', array('AwardClassID' => $AwardClassID,));
 	}
+
+	/**
+   * Saves an Award Class.
+   *
+   * @see ModelEx::Save()
+   */
+  public function Save($FormPostValues, $Settings = false) {
+		$AwardClassID = GetValue('AwardClassID', $FormPostValues);
+		if(empty($AwardClassID)) {
+			// Check that the Award Class Name is Unique. This check cannot be performed by
+			// the automatic validation mechanism used with Forms, due its limitations
+			if($this->ValidateUnique(GetValue('AwardClassName', $FormPostValues), 'AwardClassName') != true) {
+				$this->Validation->AddValidationResult('AwardClassName', T('Award Class Name must be unique.'));
+				return false;
+			}
+		}
+		return parent::Save($FormPostValues, $Settings);
+	}
 }

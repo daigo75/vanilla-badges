@@ -119,6 +119,13 @@
 
 						echo "<td class=\"Buttons\">\n";
 						// Output Add/Edit button
+						echo Anchor(T('Assign'),
+												sprintf('%s?%s=%s',
+																AWARDS_PLUGIN_AWARD_ASSIGN_URL,
+																AWARDS_PLUGIN_ARG_AWARDID,
+																Gdn_Format::Url($Award->AwardID)),
+												'Button AssignAward');
+						// Output Add/Edit button
 						echo Anchor(T('Edit'),
 												sprintf('%s?%s=%s',
 																AWARDS_PLUGIN_AWARD_ADDEDIT_URL,
