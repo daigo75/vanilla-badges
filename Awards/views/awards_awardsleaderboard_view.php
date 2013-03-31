@@ -84,6 +84,7 @@ $AwardClassesData = GetValue('AwardClassesData', $this->Data);
 					}
 					else {
 						$CurrentUserID = '';
+						$LastUserScore = 0;
 						foreach($UserAwardsData as $UserAward) {
 							//var_dump($UserAward);die();
 							if($UserAward->UserID != $CurrentUserID) {
@@ -97,8 +98,10 @@ $AwardClassesData = GetValue('AwardClassesData', $this->Data);
 									echo '</td></tr>';
 								}
 
-								// Save Current User
+								// Save Current User and his total score
 								$CurrentUserID = $UserAward->UserID;
+								$LastUserScore = $UserAward->TotalAwardsScore;
+
 								echo '<tr>';
 								// Display User information
 								echo '<td class="UserInfo">';
@@ -124,6 +127,10 @@ $AwardClassesData = GetValue('AwardClassesData', $this->Data);
 												'span',
 												array('class' => 'AwardImageWrapper'));
 						} while($UserAward = $UserAwardsData->NextRow());
+						// Write Total Awards Score of last User below the Awards list
+						echo Wrap(sprintf(T('%d Points'), $LastUserScore),
+											'div',
+											array('class' => 'UserAwardsScore'));
 						echo '</td>';
 						echo '</tr>';
 					}
