@@ -14,7 +14,7 @@ require(AWARDS_PLUGIN_LIB_PATH . '/awards.validation.php');
 $PluginInfo['Awards'] = array(
 	'Name' => 'Awards Plugin',
 	'Description' => 'Awards Plugin for Vanilla Forums',
-	'Version' => '13.03.29 alpha',
+	'Version' => '13.03.31 alpha',
 	'RequiredApplications' => array('Vanilla' => '2.0'),
 	'RequiredTheme' => FALSE,
 	'RequiredPlugins' => array('Logger' => '12.10.28',
@@ -102,6 +102,7 @@ class AwardsPlugin extends Gdn_Plugin {
 		return $this->GetInstance('AwardsManager');
 
 	}
+
 	/**
 	 * Returns an instance of AwardClassesManager.
 	 *
@@ -110,6 +111,16 @@ class AwardsPlugin extends Gdn_Plugin {
 	 */
 	public function AwardClassesManager() {
 		return $this->GetInstance('AwardClassesManager');
+	}
+
+	/**
+	 * Returns an instance of UserAwardsManager.
+	 *
+	 * @return UserAwardsManager An instance of UserAwardsManager.
+	 * @see AwardsPlugin::GetInstance()
+	 */
+	public function UserAwardsManager() {
+		return $this->GetInstance('UserAwardsManager');
 	}
 
 	/**
@@ -153,7 +164,7 @@ class AwardsPlugin extends Gdn_Plugin {
 	}
 
 	/**
-	 * Base_AfterBody_Handler Event Handler.
+	 * Base_AfterBody Event Handler.
 	 *
 	 * @param Gdn_Controller Sender Sending controller instance.
 	 */
@@ -162,6 +173,23 @@ class AwardsPlugin extends Gdn_Plugin {
 		if(InArrayI($Sender->Application, $this->_AllowedApplications)) {
 			// Process (and assign) Awards
 			$this->ProcessAwards($Sender);
+		}
+	}
+
+	/**
+	 * Base_CommentInfo event Handler.
+	 *
+	 * @param Gdn_Controller Sender Sending controller instance.
+	 * @param array Args An array of Arguments passed to the Controller.
+	 */
+	public function Base_CommentInfo_Handler($Sender, $Args) {
+		// If Ranks Plugin is not available, display User's Score based on the Awards
+		// he earned
+		if(!Gdn::PluginManager()->CheckPlugin('Ranks')) {
+			$Post = GetValue('Object', $Args);
+			$UserID = GetValue('InsertUserID', $Post);
+
+			$this->UserAwardsManager()->DisplayUserAwardsScore($this, $Sender, $UserID);
 		}
 	}
 
@@ -194,7 +222,8 @@ class AwardsPlugin extends Gdn_Plugin {
 	 * @param object Sender Sending controller instance.
 	 */
 	public function Controller_Index($Sender) {
-		$this->Controller_Settings($Sender);
+		//$this->Controller_Settings($Sender);
+		$this->Controller_AwardsList($Sender);
 	}
 
 	/**
@@ -350,6 +379,19 @@ class AwardsPlugin extends Gdn_Plugin {
 	public function Controller_AwardAssign($Sender) {
 		$this->AwardsManager()->AwardAssign($this, $Sender);
 	}
+
+	/**
+	 * Renders the Awards Leaderboard page.
+	 *
+	 * @param object Sender Sending controller instance.
+	 */
+	public function Controller_AwardsLeaderboard($Sender) {
+		// Add the module with the list of configurd Award Classes
+		$Sender->AddModule(new AwardClassesModule());
+
+		$this->UserAwardsManager()->AwardsLeaderboard($this, $Sender);
+	}
+
 
 	/**
 	 * Returns a list of Users based on a search query.

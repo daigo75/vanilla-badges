@@ -41,6 +41,9 @@ define('AWARDS_PLUGIN_AWARDCLASS_CLONE_URL', AWARDS_PLUGIN_BASE_URL . '/awardcla
 define('AWARDS_PLUGIN_AWARDS_LIST_URL', AWARDS_PLUGIN_BASE_URL . '/awardslist');
 // Awards page shows the list of Awards in the frontend
 define('AWARDS_PLUGIN_AWARDS_PAGE_URL', AWARDS_PLUGIN_BASE_URL . '/awardspage');
+// Awards Leaderboard
+define('AWARDS_PLUGIN_LEADERBOARD_PAGE_URL', AWARDS_PLUGIN_BASE_URL . '/awardsleaderboard');
+
 define('AWARDS_PLUGIN_AWARD_ADDEDIT_URL', AWARDS_PLUGIN_BASE_URL . '/awardaddedit');
 define('AWARDS_PLUGIN_AWARD_DELETE_URL', AWARDS_PLUGIN_BASE_URL . '/awarddelete');
 define('AWARDS_PLUGIN_AWARD_CLONE_URL', AWARDS_PLUGIN_BASE_URL . '/awardclone');

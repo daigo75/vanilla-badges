@@ -11,6 +11,7 @@
  * @param int CurrentAwardClassID The ID of the currently selected Award Class.
  * If empty, the view is considered unfiltered.
  */
+// TODO Move Filters to separate sub-view
 function RenderAwardClassFilters($AwardClassesData, $CurrentAwardClassID) {
 	if(empty($AwardClassesData)) {
 		return '';
@@ -77,14 +78,14 @@ $AwardClassesData = GetValue('AwardClassesData', $this->Data);
 		</div>
 	</div>
 	<div class="Content">
-		<table class="AwardsList">
+		<table id="AwardsList">
 			<tbody>
 				<?php
-					if(empty($AwardsData)) {
+					if(empty($AwardsData) || ($AwardsData->NumRows() <= 0)) {
 						echo Wrap($OutputForEmptyDataSet, 'tr');
 					}
 					else {
-						foreach($AwardsData as $Award) {
+						foreach($AwardsData->Result() as $Award) {
 							echo '<tr>';
 							echo '<td class="UserAwardInfo">';
 							RenderUserAward($Award->AwardID, $UserAwardData);
@@ -94,14 +95,23 @@ $AwardClassesData = GetValue('AwardClassesData', $this->Data);
 							$AwardImage = Img($Award->AwardImageFile,
 																array('alt' => $Award->AwardName,
 																			'class' => 'AwardImage Medium ' . $Award->AwardClassName));
+							// Build link to Award page
+							$AwardImgLink = Anchor($AwardImage,
+																		 AWARDS_PLUGIN_AWARD_INFO_URL . '/' . $Award->AwardID,
+																		 '');
 
 							$AwardName = Wrap($Award->AwardName, 'h3', array('class' => 'AwardName'));
+							// Build link to Award page
+							$AwardNameLink = Anchor($AwardName,
+																			AWARDS_PLUGIN_AWARD_INFO_URL . '/' . $Award->AwardID,
+																			'');
+
 							$TotalTimesAwarded = Wrap(T('x') . '&nbsp;' . $Award->TotalTimesAwarded,
 																				'p',
 																				array('class' => 'TotalTimesAwarded',
 																							'title' => sprintf(T('%d User(s) earned this Award'),
 																																 $Award->TotalTimesAwarded)));
-							echo Wrap($AwardImage . $AwardName . $TotalTimesAwarded,
+							echo Wrap($AwardImgLink . $AwardNameLink . $TotalTimesAwarded,
 												'td',
 												array('class' => 'Name Cell'));
 

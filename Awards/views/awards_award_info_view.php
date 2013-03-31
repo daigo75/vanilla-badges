@@ -8,15 +8,6 @@
 																array('class' => 'NoResultsFound',)
 																);
 
-	function RenderUserInfo($User) {
-		$UserObj = UserBuilder($User, '');
-		$UserPhoto = UserPhoto($UserObj, 'UserPhoto');
-		$UserLink = UserAnchor($UserObj);
-
-		echo Wrap($UserPhoto . $UserLink,
-							'div');
-	}
-
 	$AwardData = GetValue('AwardData', $this->Data);
 	$UserAwardData = GetValue('UserAwardData', $this->Data);
 	//var_dump($AwardData);

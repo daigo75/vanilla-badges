@@ -3,6 +3,14 @@
 {licence}
 */
 
+/**
+ * Controller for all operations regarding Awards and Award Classes.
+ * This class covers all Award-centric operations, i.e. the ones against an
+ * Award/Award Class definition. Operations on data related the Awards earned by
+ * Users (top scorers, hall of fame, etc) are handled by UserAwardsManager class.
+ *
+ * @see UserAwardsManager.
+ */
 class AwardsManager extends BaseManager {
 	/**
 	 * Returns an instance of AwardsModel.
@@ -78,7 +86,7 @@ class AwardsManager extends BaseManager {
 	}
 
 	/**
-	 * Renders the Awards List page.
+	 * Renders the Awards List (Admin) page.
 	 *
 	 * @param AwardsPlugin Caller The Plugin who called the method.
 	 * @param Gdn_Controller Sender Sending controller instance.
@@ -627,11 +635,6 @@ class AwardsManager extends BaseManager {
 		$Sender->CssClass = 'AwardsFrontendList';
 
 		$Wheres = array();
-
-		// TODO Add support for Award Categories
-		//$AwardCategory = $Sender->Request->GetValue(AWARDS_PLUGIN_ARG_CATEGORY);
-		//if(!empty($AwardCategory)) {
-		//}
 
 		// Prepare the Award Class filter, if needed
 		$AwardClassID = $Sender->Request->GetValue(AWARDS_PLUGIN_ARG_AWARDCLASSID);

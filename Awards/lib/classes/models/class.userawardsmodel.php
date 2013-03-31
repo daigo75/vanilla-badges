@@ -60,6 +60,66 @@ class UserAwardsModel extends ModelEx {
 	}
 
 	/**
+	 * Builds the SQL query to retrieve the Awards Score for each User.
+	 *
+	 * @param int Limit Limit the amount of rows to be returned.
+	 * @return string An SQL Statement
+	 */
+	protected function GetUserAwardsScoresSQL($Limit = 10) {
+		$Px = Gdn::Database()->DatabasePrefix;
+
+		// Ensure that the passed limit is numeric and enforce default limit if it's not
+		if(!is_numeric($Limit)) {
+			$Limit = 10;
+			$this->Log()->error(sprintf(T('GetUserAwardsScoresSQL. Invalid Limit specified: %s. ' .
+																		'Replacing with default.'),
+																	$Limit));
+		}
+
+		return "
+			SELECT
+				UA.UserID
+				,SUM(AwardedRankPoints) AS TotalAwardsScore
+			FROM
+				{$Px}UserAwards UA
+			GROUP BY
+				UA.UserID
+			LIMIT " . (int)$Limit;
+	}
+
+	/**
+	 * Creates a temporary table containing the Post Count of each User in a period
+	 * of time.
+	 *
+	 * @param int Limit Limit the amount of rows to be returned.
+	 * @return object A DataSet containing a list of the scores of Top Contributors.
+	 */
+	public function CreateUserAwardsScoresTable($Limit = 10) {
+		$Px = Gdn::Database()->DatabasePrefix;
+		// Prepare the SQL to retrieve the data
+		$SelectSQL = $this->GetUserAwardsScoresSQL($Limit);
+
+		// Prepare the SQL to save the data to a temporary table
+		$CreateSQL = "
+			CREATE TEMPORARY TABLE {$Px}_UserAwardsScores (
+				UserID int
+				,TotalAwardsScore int
+				,PRIMARY KEY(UserID)
+				,INDEX(TotalAwardsScore desc)
+			)
+			AS (
+				%s
+			)
+		";
+
+		$SQL = sprintf($CreateSQL, $SelectSQL);
+
+		$Result = $this->SQL
+			->Query($SQL);
+
+		return $Result;
+	}
+	/**
 	 * Convenience method to returns a DataSet containing a list of all the
 	 * Awards obtained by Users.
 	 *
@@ -137,6 +197,68 @@ class UserAwardsModel extends ModelEx {
 		return $this->GetWhere(array('AwardID' => $AwardID),
 													 $OrderBy,
 													 $Limit);
+	}
+
+	/**
+	 * Retrieves the Users with the highest Award Score and most Awards.
+	 *
+	 * @param array Wheres An associative array of WHERE clauses. They should
+	 * be passed as specified in Gdn_SQLDriver::Where() method.
+	 * @param array OrderBy An associative array of ORDER BY clauses. They
+	 * should	be passed as specified in Gdn_SQLDriver::OrderBy() method.
+	 * @param int Limit The maximum amount of rows to return.
+	 * @return Gdn_DataSet A DataSet containing Awards data.
+	 *
+	 * @see UserAwardsModel::GetWhere()
+	 */
+	public function GetTopUsers(array $Wheres = array(), array $OrderBy = array(), $Limit = 10) {
+		// Create temporary table with User Scores. This makes it easier to use Vanilla's
+		// Database Library to query the aggregated subquery
+		$this->CreateUserAwardsScoresTable($Limit);
+
+		/* Add a bunch of fields related to the Users before calling GetWhere(). Even
+		 * though all these clauses are specified here, in a seemingly "random" way,
+		 * the SQL Builder will sort them out and build a proper query.
+		 */
+		$this->SQL
+			->Select('U.Name')
+			->Select('U.Photo')
+			->Select('U.Email')
+			->Select('U.Gender')
+			->Join('User U', '(U.UserID = VAUAL.UserID)', 'inner')
+			->Select('UAS.TotalAwardsScore')
+			->Join('_UserAwardsScores UAS', '(UAS.UserID = VAUAL.UserID)', 'inner');
+
+		// If no specific Order By was passed, use the default one
+		if(empty($OrderBy)) {
+			$OrderBy = array('UAS.TotalAwardsScore desc',
+											 'U.UserID asc',
+											 'VAUAL.AwardClassRankPoints desc',
+											 'VAUAL.RankPoints desc',
+											 'VAUAL.AwardName desc',
+											 );
+		}
+		$this->SetOrderBy($OrderBy);
+
+		// Run the query and return the result;
+		return $this->GetWhere($Wheres, $OrderBy);
+	}
+
+	/**
+	 * Calculates and returns the total Score accrued by a User by earning Awards.
+	 *
+	 * @param int User ID The ID of the User.
+	 * @return int User's Score.
+	 */
+	public function GetUserAwardsScore($UserID) {
+		$UserScoreDataSet = $this->SQL
+			->Select('AwardedRankPoints', 'SUM', 'TotalAwardsPoints')
+			->From('UserAwards')
+			->Where('UserID', $UserID)
+			->Get()
+			->FirstRow();
+
+		return GetValue('TotalAwardsPoints', $UserScoreDataSet, 0);
 	}
 
 	/**

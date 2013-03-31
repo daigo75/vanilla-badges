@@ -243,12 +243,8 @@ img.Medium {
 	font-weight: bold;
 }
 
-/* Awards Frontend Page */
-#AwardsPage {
-
-}
-
-#AwardsPage .Filters a {
+/* Filters section */
+.AwardsPlugin .Filters a {
 	display: inline-block;
 	padding: 0.1em 0.5em;
 	color: rgb(30, 121, 167);
@@ -256,56 +252,103 @@ img.Medium {
 	border-radius: 4px;
 }
 
-#AwardsPage .Filters li.Active a {
+.AwardsPlugin .Filters li.Active a {
 	background: rgb(30, 121, 167);
 	color: white;
 }
 
-#AwardsPage .Filters a:hover {
+.AwardsPlugin .Filters a:hover {
 	background: rgb(243, 252, 255);
 }
 
-#AwardsPage .Filters .FilterItem {
+.AwardsPlugin .Filters .FilterItem {
 	margin: 0 0.3em;
 }
 
-#AwardsPage .Filters {
+.AwardsPlugin .Filters {
 	text-align: right;
 	background: none;
 	border: none;
 }
 
-#AwardsPage .AwardsList {
-	width: 100%;
-	margin-top: 1em;
+/* Awards Frontend Page */
+#AwardsPage {
+
 }
 
-#AwardsPage .AwardsList td {
+#AwardsPage #AwardsList {
+	width: 100%;
+	margin-top: 1em;
+	padding: 0.5em;
+	border-collapse: collapse;
+}
+
+#AwardsPage #AwardsList td {
 	vertical-align: top;
 	padding: 0.5em;
 }
 
-#AwardsPage .AwardsList .Name {
+#AwardsPage #AwardsList .Name {
 	width: 40%;
 }
 
-#AwardsPage .AwardsList .AwardImage {
+#AwardsPage #AwardsList .AwardImage {
 	float: left;
 	margin-right: 1em;
 }
 
-#AwardsPage .AwardsList .UserAwardInfo {
+#AwardsPage #AwardsList .UserAwardInfo {
 	width: 40px;
 	vertical-align: middle;
 }
 
-#AwardsPage .AwardsList .Tick {
+#AwardsPage #AwardsList .Tick {
 	font-weight: bold;
 	text-indent: -999999px;
 	background: url("../images/ui/tick-icon.png") center center no-repeat;
 	padding: 10px;
 	display: block
 }
+
+/* Awards Leaderboard Page */
+#AwardsLeaderboard {
+
+}
+
+#AwardsLeaderboard #TopUsers {
+	width: 100%;
+	margin-top: 1em;
+	padding: 0.5em;
+	border-collapse: collapse;
+}
+
+#AwardsLeaderboard #TopUsers tbody tr {
+	border-top: 1px dashed silver;
+	border-bottom: 1px dashed silver;
+}
+
+#AwardsLeaderboard #TopUsers td {
+	vertical-align: middle;
+	padding: 0.5em;
+}
+
+#AwardsLeaderboard .UserInfo {
+	width: 15%;
+	text-align: center;
+}
+
+#AwardsLeaderboard .UserAwardsScore {
+	border-top: 1px dotted gray;
+	text-align: center;
+	margin-top: 0.5em;
+	font-size: 110%;
+	font-weight: bold;
+}
+
+#AwardsLeaderboard .AwardImageWrapper {
+	margin-left: 0.5em;
+}
+
 
 
 /* Awards and Award Classes List page */
