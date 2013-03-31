@@ -56,7 +56,7 @@ function RenderUserAward($AwardID, $UserAwardData) {
 $AwardsTableColumns = 3;
 
 // The following HTML will be displayed when the DataSet is empty.
-$OutputForEmptyDataSet = Wrap(T('Award not found.'),
+$OutputForEmptyDataSet = Wrap(T('No Awards found.'),
 															'td',
 															array('colspan' => $AwardsTableColumns,
 																		'class' => 'NoResultsFound',)
