@@ -223,7 +223,7 @@ class AwardsPlugin extends Gdn_Plugin {
 	 */
 	public function Controller_Index($Sender) {
 		//$this->Controller_Settings($Sender);
-		$this->Controller_AwardsList($Sender);
+		$this->Controller_AwardsPage($Sender);
 	}
 
 	/**
@@ -275,7 +275,8 @@ class AwardsPlugin extends Gdn_Plugin {
 	 */
 	public function Base_GetAppSettingsMenuItems_Handler($Sender) {
 		$Menu = $Sender->EventArguments['SideMenu'];
-		$Menu->AddLink('Add-ons', $this->GetPluginKey('Name'), 'plugin/awards', 'Garden.AdminUser.Only');
+		//$Menu->AddItem('Reputation', T('Karma Bank'),FALSE, array('class' => 'Reputation'));
+		$Menu->AddLink('Reputation', $this->GetPluginKey('Name'), 'plugin/awards/settings', 'Garden.AdminUser.Only');
 	}
 
 	/**
@@ -385,7 +386,7 @@ class AwardsPlugin extends Gdn_Plugin {
 	 *
 	 * @param object Sender Sending controller instance.
 	 */
-	public function Controller_AwardsLeaderboard($Sender) {
+	public function Controller_Leaderboard($Sender) {
 		// Add the module with the list of configurd Award Classes
 		$Sender->AddModule(new AwardClassesModule());
 
@@ -593,6 +594,29 @@ class AwardsPlugin extends Gdn_Plugin {
 		Gdn::SQL()->Delete('ActivityType', array('Name' => 'AwardEarned'));
 	}
 
+	public function MenuModule_BeforeToString_Handler($Sender) {
+		$AwardsMenu = array();
+
+		// Link to Awards Page
+		$AwardsMenu[] = array(
+			'Text' => T('Awards'),
+			'Url' => AWARDS_PLUGIN_AWARDS_PAGE_URL,
+			'Permission' => false,
+			'Attributes' => array('class' => 'AwardsMenu'),
+			'AnchorAttributes' => array(),
+		);
+
+		// Link to Awards Leaderboard Page
+		$AwardsMenu[] = array(
+			'Text' => T('Awards Leaderboard'),
+			'Url' => AWARDS_PLUGIN_LEADERBOARD_PAGE_URL,
+			'Permission' => false,
+			'Attributes' => array('class' => 'SubMenuItem'),
+			'AnchorAttributes' => array(),
+		);
+		$Sender->Items['Awards'] = $AwardsMenu;
+	}
+
 	/**
 	 * ActivityModel_AfterActivityQuery Event Handler.
 	 *
@@ -646,12 +670,18 @@ class AwardsPlugin extends Gdn_Plugin {
 	 * addition/modification ofconfig file settings, filesystem changes, etc.
 	 */
 	public function Setup() {
-		// TODO Set up the plugin's default values
+		// Set up the plugin's default values for Notification
 		SaveToConfig('Preferences.Email.' . self::ACTIVITY_AWARDEARNED, 1);
 		SaveToConfig('Preferences.Popup.' . self::ACTIVITY_AWARDEARNED, 1);
 
 		// Set up the Activity Types related to the Awards
 		$this->AddAwardsActivityTypes();
+
+		// Create shortcut Route to Awards Plugin pages
+		Gdn::Router()->SetRoute('^awards(/?.*)$',
+														AWARDS_PLUGIN_BASE_URL . '$1',
+														'Internal');
+
 
 		// Create Database Objects needed by the Plugin
 		require('install/awards.schema.php');
@@ -665,6 +695,8 @@ class AwardsPlugin extends Gdn_Plugin {
 	 * perform cleanup tasks such as deletion of unsued files and folders.
 	 */
 	public function OnDisable() {
+		// Remove the Routes created by the Plugin.
+		Gdn::Router()->DeleteRoute('^awards(/?.*)$');
 	}
 
 	/**
