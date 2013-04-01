@@ -81,6 +81,37 @@
 	margin-top: 1em;
 }
 
+.Credits {
+	padding: 20px;
+	text-align: right;
+	color: silver;
+	font-size: small;
+}
+
+.Credits .Author {
+	padding-left: 16px;
+	background: url('http://www.aelia.co/downloads/AeliaFavicon') top left no-repeat;
+}
+
+/* Awards Menu Style */
+.AwardsMenu {
+	position: relative;
+}
+
+.AwardsMenu > ul {
+	position: absolute;
+	z-index: 99999;
+	left: 0;
+}
+
+.AwardsMenu > ul {
+	display: none;
+}
+
+.AwardsMenu:hover > ul {
+	display: block;
+}
+
 /* General styles for modules */
 .Plugin.awards .PanelInfo ul {
 	padding-top: 0.5em;

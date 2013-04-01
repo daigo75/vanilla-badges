@@ -242,3 +242,4 @@ $IsNewAward = empty($AwardID) ? true : false;
 		echo $this->Form->Close();
 	?>
 </div>
+<?php include('awards_admin_footer.php'); ?>

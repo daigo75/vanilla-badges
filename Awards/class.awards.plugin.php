@@ -14,7 +14,7 @@ require(AWARDS_PLUGIN_LIB_PATH . '/awards.validation.php');
 $PluginInfo['Awards'] = array(
 	'Name' => 'Awards Plugin',
 	'Description' => 'Awards Plugin for Vanilla Forums',
-	'Version' => '13.03.31 alpha',
+	'Version' => '13.04.01 alpha',
 	'RequiredApplications' => array('Vanilla' => '2.0'),
 	'RequiredTheme' => FALSE,
 	'RequiredPlugins' => array('Logger' => '12.10.28',
@@ -275,8 +275,34 @@ class AwardsPlugin extends Gdn_Plugin {
 	 */
 	public function Base_GetAppSettingsMenuItems_Handler($Sender) {
 		$Menu = $Sender->EventArguments['SideMenu'];
-		//$Menu->AddItem('Reputation', T('Karma Bank'),FALSE, array('class' => 'Reputation'));
-		$Menu->AddLink('Reputation', $this->GetPluginKey('Name'), 'plugin/awards/settings', 'Garden.AdminUser.Only');
+
+		// Unless another sort order is defined, put Awards menu directly below Users
+		if(!C('Garden.DashboardMenu.Sort')) {
+			// Extract the menu from the item immediately after "Users" to the end
+			$UsersMenuIdx = array_search('Users', array_keys($Menu->Items));
+			$AfterUsers = array_splice($Menu->Items, $UsersMenuIdx);
+    }
+
+		// Add Plugin's menu items
+		$Menu->AddItem('Awards', T('Awards'), false, array('class' => 'Reputation'));
+		$Menu->AddLink('Awards',
+									 T('General Settings'),
+									 AWARDS_PLUGIN_GENERALSETTINGS_URL,
+									 'Plugins.Awards.Manage');
+		$Menu->AddLink('Awards',
+									 T('Award Classes'),
+									 AWARDS_PLUGIN_AWARDCLASSES_LIST_URL,
+									 'Plugins.Awards.Manage');
+		$Menu->AddLink('Awards',
+									 T('Awards'),
+									 AWARDS_PLUGIN_AWARDS_LIST_URL,
+									 'Plugins.Awards.Manage');
+
+		// If AfterUsers is defined, it means that the menu was spliced and it must
+		// now be restored, by appending the previously removed items
+		if(isset($AfterUsers)) {
+			$Menu->Items = array_merge($Menu->Items, $AfterUsers);
+		}
 	}
 
 	/**
@@ -595,26 +621,22 @@ class AwardsPlugin extends Gdn_Plugin {
 	}
 
 	public function MenuModule_BeforeToString_Handler($Sender) {
-		$AwardsMenu = array();
-
 		// Link to Awards Page
-		$AwardsMenu[] = array(
-			'Text' => T('Awards'),
-			'Url' => AWARDS_PLUGIN_AWARDS_PAGE_URL,
-			'Permission' => false,
-			'Attributes' => array('class' => 'AwardsMenu'),
-			'AnchorAttributes' => array(),
-		);
-
+		$Sender->AddLink('Awards',
+										 T('Awards'),
+										 AWARDS_PLUGIN_AWARDS_PAGE_URL,
+										 false,
+										 array('class' => 'AwardsMenu'),
+										 array()
+										 );
 		// Link to Awards Leaderboard Page
-		$AwardsMenu[] = array(
-			'Text' => T('Awards Leaderboard'),
-			'Url' => AWARDS_PLUGIN_LEADERBOARD_PAGE_URL,
-			'Permission' => false,
-			'Attributes' => array('class' => 'SubMenuItem'),
-			'AnchorAttributes' => array(),
-		);
-		$Sender->Items['Awards'] = $AwardsMenu;
+		$Sender->AddLink('Awards',
+										 T('Awards Leaderboard'),
+										 AWARDS_PLUGIN_LEADERBOARD_PAGE_URL,
+										 false,
+										 array('class' => 'SubMenuItem'),
+										 array()
+										 );
 	}
 
 	/**

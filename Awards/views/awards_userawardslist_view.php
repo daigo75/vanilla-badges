@@ -37,3 +37,4 @@
 		?>
 	</div>
 </div>
+<?php include('awards_admin_footer.php'); ?>

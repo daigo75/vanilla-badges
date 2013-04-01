@@ -156,3 +156,4 @@ function GetCurrentAction(Gdn_Form $Form, $Data) {
 		echo $this->Form->Close();
 	?>
 </div>
+<?php include('awards_admin_footer.php'); ?>

@@ -29,6 +29,7 @@ define('AWARDS_PLUGIN_CUSTOM_RULES_DIR', 'custom');
 
 // URLs
 define('AWARDS_PLUGIN_BASE_URL', 'plugin/awards');
+define('AWARDS_PLUGIN_SHORT_URL', 'awards');
 
 // URLs for Award Classes Management
 define('AWARDS_PLUGIN_AWARDCLASSES_LIST_URL', AWARDS_PLUGIN_BASE_URL . '/awardclasseslist');
@@ -39,17 +40,19 @@ define('AWARDS_PLUGIN_AWARDCLASS_CLONE_URL', AWARDS_PLUGIN_BASE_URL . '/awardcla
 // URLs for Awards Management
 // Awards page shows the list of Awards in the backend, for management and editing
 define('AWARDS_PLUGIN_AWARDS_LIST_URL', AWARDS_PLUGIN_BASE_URL . '/awardslist');
-// Awards page shows the list of Awards in the frontend
-define('AWARDS_PLUGIN_AWARDS_PAGE_URL', AWARDS_PLUGIN_BASE_URL . '/awardspage');
-// Awards Leaderboard
-define('AWARDS_PLUGIN_LEADERBOARD_PAGE_URL', AWARDS_PLUGIN_BASE_URL . '/awardsleaderboard');
-
 define('AWARDS_PLUGIN_AWARD_ADDEDIT_URL', AWARDS_PLUGIN_BASE_URL . '/awardaddedit');
 define('AWARDS_PLUGIN_AWARD_DELETE_URL', AWARDS_PLUGIN_BASE_URL . '/awarddelete');
 define('AWARDS_PLUGIN_AWARD_CLONE_URL', AWARDS_PLUGIN_BASE_URL . '/awardclone');
 define('AWARDS_PLUGIN_AWARD_ENABLE_URL', AWARDS_PLUGIN_BASE_URL . '/awardenable');
-define('AWARDS_PLUGIN_AWARD_INFO_URL', AWARDS_PLUGIN_BASE_URL . '/awardinfo');
 define('AWARDS_PLUGIN_AWARD_ASSIGN_URL', AWARDS_PLUGIN_BASE_URL . '/awardassign');
+
+// FrontEnd URLs. They use a shorterclea URL for better User Experience
+// Awards page shows the list of Awards in the frontend
+define('AWARDS_PLUGIN_AWARDS_PAGE_URL', AWARDS_PLUGIN_SHORT_URL . '/index');
+// Awards Leaderboard
+define('AWARDS_PLUGIN_LEADERBOARD_PAGE_URL', AWARDS_PLUGIN_SHORT_URL . '/leaderboard');
+// Award Details page
+define('AWARDS_PLUGIN_AWARD_INFO_URL', AWARDS_PLUGIN_SHORT_URL . '/awardinfo');
 
 
 // URLs for User's Awards Management
