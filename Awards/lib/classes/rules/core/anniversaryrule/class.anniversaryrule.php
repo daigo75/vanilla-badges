@@ -7,8 +7,8 @@
 AwardRulesManager::RegisterRule('AnniversaryRule',
 																array('Label' => T('Anniversary'),
 																			'Description' => T('Checks User\'s Anniversary of Registration'),
-																			'Type' => AwardRulesManager::TYPE_CONTENT,
 																			'Group' => AwardRulesManager::GROUP_GENERAL,
+																			'Type' => AwardRulesManager::TYPE_USER,
 																			)
 																);
 
