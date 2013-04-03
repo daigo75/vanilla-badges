@@ -22,7 +22,7 @@ $this->Form->SetFormValue('Comments_Amount', GetValue('Amount', $CommentsSetting
 		<li>
 			<div class="Discussions">
 			<?php
-				echo Wrap(T('Discussions'), 'h4');
+				//echo Wrap(T('Discussions'), 'h4');
 				PostCountRule::RenderRuleField($this->Form->CheckBox('Discussions_Enabled', T('User started at least X Discussions')));
 				PostCountRule::RenderRuleField($this->Form->TextBox('Discussions_Amount',
 																														array('class' => 'InputBox Numeric')));
@@ -32,7 +32,7 @@ $this->Form->SetFormValue('Comments_Amount', GetValue('Amount', $CommentsSetting
 		<li>
 			<div class="Comments">
 			<?php
-				echo Wrap(T('Comments'), 'h4');
+				//echo Wrap(T('Comments'), 'h4');
 				PostCountRule::RenderRuleField($this->Form->CheckBox('Comments_Enabled', T('User posted at least X Comments')));
 				PostCountRule::RenderRuleField($this->Form->TextBox('Comments_Amount',
 																														array('class' => 'InputBox Numeric')));
