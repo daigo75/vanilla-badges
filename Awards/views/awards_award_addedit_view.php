@@ -202,6 +202,7 @@ $IsNewAward = empty($AwardID) ? true : false;
 										array('class' => 'Label')
 										);
 
+					// Render each Rule Type Section
 					foreach($GroupInfo->TypeSections as $TypeID => $TypeInfo) {
 						// Don't render empty sections
 						if(empty($TypeInfo->Rules)) {
