@@ -73,7 +73,7 @@ class AnniversaryRule extends BaseAwardRule {
 	protected function _ValidateSettings(array $Settings) {
 		$Result = array();
 
-		// Check settings for Discussions threshold
+		// Check settings for Anniversary
 		$AnniversarySettings = GetValue('Anniversary', $Settings);
 
 		$YearsThreshold = GetValue('Years', $AnniversarySettings);
