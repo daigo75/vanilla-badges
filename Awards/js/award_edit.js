@@ -1,19 +1,23 @@
 /**
 {licence}
-*/jQuery(document).ready(function(){
+*/
+jQuery(document).ready(function(){
 	var TabsList = $('<ul>');
 
 	// Add a link, which will be transformed into a Tab, for each Rule
 	$('.Tab').each(function() {
 		var Element = $(this);
 		// Find the Label to use to create a Tab for the Group
-		var Label = Element.find('.Label').first().html();
-		Element.find('.Label').hide();
+		var Label = Element.find('.Label').first()
+		Label.hide();
+
+		// Extract the text from the Label
+		var LabelText = Label.html();
 
 		// Add a link that will become a Tab
 		var MenuLink = $('<a>')
 			.attr('href', '#' + Element.attr('id'))
-			.html(Label)
+			.html(LabelText)
 
 		TabsList.append($('<li>').html(MenuLink));
 	});
