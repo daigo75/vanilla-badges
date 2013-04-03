@@ -70,9 +70,10 @@ class BaseAwardRule extends Gdn_Controller implements IAwardRule {
 	 * @see UserModel::GetID()
 	 */
 	protected function GetUserData($UserID) {
-		if(!isset($this->_UserData)) {
+		if(!isset($this->_UserData) || ($UserID != GetValue('_CurrentUserID', $this))) {
 			$UserModel = new UserModel();
 
+			$this->_CurrentUserID = $UserID;
 			$this->_UserData = $UserModel->GetID($UserID);
 		}
 
@@ -152,6 +153,16 @@ class BaseAwardRule extends Gdn_Controller implements IAwardRule {
 	 * @return string The new field name, in format "Rules[RuleClass][GroupName][FieldName]".
 	 */
 	protected static function RenameRuleField($FieldName) {
+		// If FieldName ends with brackets, it means that it's an array field. In
+		// such case, the brackets must be removed before the field is renamed. They
+		// will be added again later
+		$ArrayFieldBracketsPos = strrpos($FieldName, '[]');
+		if($ArrayFieldBracketsPos !== false) {
+			$FieldName = substr($FieldName, 0, $ArrayFieldBracketsPos);
+		}
+		$FieldIsArray = ($ArrayFieldBracketsPos !== false);
+
+
 		/* Split the field into its sub-parts. Rule field names should be declared
 		 * as follows:
 		 * - Simple fields - MyField, SomeField, etc.
@@ -176,7 +187,14 @@ class BaseAwardRule extends Gdn_Controller implements IAwardRule {
 		 * belong will automatically resolve any ambiguity, allowing all Rules to
 		 * name their fields as they like.
 		 */
-		return 'Rules[' . get_called_class() . '][' . implode('][', $FieldNameParts) . ']';
+		$NewFieldName = 'Rules[' . get_called_class() . '][' . implode('][', $FieldNameParts) . ']';
+
+		// If field is an array, add back the brackets that were removed previously
+		if($FieldIsArray) {
+			$NewFieldName .= '[]';
+		}
+
+		return $NewFieldName;
 	}
 
 	/**
@@ -208,6 +226,7 @@ class BaseAwardRule extends Gdn_Controller implements IAwardRule {
 
 			// Process field name by transforming it into a hierarchical name
 			$InputNameParts[] = self::RenameRuleField($FieldName);
+
 
 			// Replace the name in the processed HTML Input element
 			$Input->{$InputAttribute} = implode('/', $InputNameParts);
