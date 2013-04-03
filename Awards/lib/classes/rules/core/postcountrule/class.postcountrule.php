@@ -94,8 +94,10 @@ class PostCountRule extends BaseAwardRule {
 		// Check settings for Discussions threshold
 		$DiscussionsSettings = GetValue('Discussions', $Settings);
 		$DiscussionsThreshold = GetValue('Amount', $DiscussionsSettings);
-		if(GetValue('Enabled', $DiscussionsSettings) || !empty($DiscussionsThreshold)) {
-			if(!is_numeric($DiscussionsThreshold) || ($DiscussionsThreshold <= 0)) {
+		if(GetValue('Enabled', $DiscussionsSettings)) {
+			if(empty($DiscussionsThreshold) ||
+				 !is_numeric($DiscussionsThreshold) ||
+				 ($DiscussionsThreshold <= 0)) {
 				$this->Validation->AddValidationResult('Discussions_Amount',
 																							 T('Discussions threshold must be a positive integer.'));
 			}
@@ -104,8 +106,10 @@ class PostCountRule extends BaseAwardRule {
 		// Check settings for Comments  threshold
 		$CommentsSettings = GetValue('Comments', $Settings);
 		$CommentsThreshold = GetValue('Amount', $CommentsSettings);
-		if(GetValue('Enabled', $CommentsSettings) || !empty($CommentsThreshold)) {
-			if(!is_numeric($CommentsThreshold) || ($CommentsThreshold <= 0)) {
+		if(GetValue('Enabled', $CommentsSettings)) {
+			if(empty($CommentsThreshold) ||
+				 !is_numeric($CommentsThreshold) ||
+				 ($CommentsThreshold <= 0)) {
 				$this->Validation->AddValidationResult('Comments_Amount',
 																							 T('Comments threshold must be a positive integer.'));
 			}
