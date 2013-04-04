@@ -46,6 +46,34 @@ class LikesRule extends BaseAwardRule {
 	}
 
 	/**
+	 * Checks User's Likes to Messages ratio.
+	 *
+	 * @param int UserID The ID of the User.
+	 * @param stdClass Settings The Rule settings.
+	 * @return int "1" if check passed, "0" otherwise.
+	 */
+	private function CheckUserLikesToPostsRatio($UserID, stdClass $Settings) {
+		$LikesToPostsThreshold = $Settings->LikesToPostsRatio->Amount;
+		$this->Log()->trace(sprintf(T('Checking Likes to Posts Ratio for User ID %d. Threshold: %d.'),
+																$UserID,
+																$LikesToPostsThreshold));
+		$UserData = $this->GetUserData($UserID);
+		//var_dump($UserData);
+
+		// Get total Posts (Discussions and Comments)
+		$TotalPosts = (int)(GetValue('CountDiscussions', $UserData, 0) + GetValue('CountComments', $UserData, 0));
+		// Get total Likes received
+		$TotalReceivedLikes = (int)GetValue('Liked', $UserData, 0);
+		// Check passes if Likes to Posts ratio is greater or equal to the specified one
+		if(($TotalReceivedLikes / $TotalPosts) >= $LikesToPostsThreshold) {
+			$this->Log()->trace(T('Passed.'));
+			return self::ASSIGN_ONE;
+		}
+		$this->Log()->trace(T('Failed.'));
+		return self::NO_ASSIGNMENTS;
+	}
+
+	/**
 	 * Runs the processing of the Rule, which will return how many times the Award
 	 * should be assigned to the User, based on the specified configuration.
 	 *
@@ -55,6 +83,11 @@ class LikesRule extends BaseAwardRule {
 		// Check Received Likes Count
 		if(GetValue('Enabled', $Settings->ReceivedLikes) == 1) {
 			$Results[] = $this->CheckUserReceivedLikesCount($UserID, $Settings);
+		}
+
+		// Check Likes to Posts Ratio
+		if(GetValue('Enabled', $Settings->LikesToPostsRatio) == 1) {
+			$Results[] = $this->CheckUserLikesToPostsRatio($UserID, $Settings);
 		}
 
 		//var_dump("LikesRule Result: " . min($Results));
@@ -82,6 +115,18 @@ class LikesRule extends BaseAwardRule {
 			}
 		}
 
+		// Check settings for LikesToPostsRatio threshold
+		$LikesToPostsRatioSettings = GetValue('LikesToPostsRatio', $Settings);
+		$LikesToPostsRatioThreshold = GetValue('Amount', $LikesToPostsRatioSettings);
+		if(GetValue('Enabled', $LikesToPostsRatioSettings)) {
+			if(empty($LikesToPostsRatioThreshold) ||
+				 !is_numeric($LikesToPostsRatioThreshold) ||
+				 ($LikesToPostsRatioThreshold <= 0)) {
+				$this->Validation->AddValidationResult('LikesToPostsRatio_Amount',
+																							 T('Likes to Posts  Ratio must be a positive floating point number.'));
+			}
+		}
+
 		return (count($this->Validation->Results()) == 0);
 	}
 
@@ -96,7 +141,8 @@ class LikesRule extends BaseAwardRule {
 	 * - BaseAwardRule::RULE_ENABLED_CANNOT_PROCESS
 	 */
 	protected function _IsRuleEnabled(stdClass $Settings) {
-		if((GetValue('Enabled', $Settings->ReceivedLikes) == 1)) {
+		if((GetValue('Enabled', $Settings->ReceivedLikes) == 1) ||
+			 (GetValue('Enabled', $Settings->LikesToPostsRatio) == 1)) {
 			return self::RULE_ENABLED;
 		}
 

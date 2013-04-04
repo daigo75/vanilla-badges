@@ -9,9 +9,15 @@
  */
 $RuleSettings = GetValue('LikesRule', $this->Data['RulesSettings']);
 
+// Set fields for "Received Likes"
 $ReceivedLikesSettings = GetValue('ReceivedLikes', $RuleSettings);
 $this->Form->SetFormValue('ReceivedLikes_Enabled', (int)GetValue('Enabled', $ReceivedLikesSettings));
 $this->Form->SetFormValue('ReceivedLikes_Amount', GetValue('Amount', $ReceivedLikesSettings));
+
+// Set fields for "Likes to Posts Ratio"
+$LikesToPostsRatioSettings = GetValue('LikesToPostsRatio', $RuleSettings);
+$this->Form->SetFormValue('LikesToPostsRatio_Enabled', (int)GetValue('Enabled', $LikesToPostsRatioSettings));
+$this->Form->SetFormValue('LikesToPostsRatio_Amount', GetValue('Amount', $LikesToPostsRatioSettings));
 
 $MissingRuleRequirements = GetValue('LikesRule', GetValue('MissingRuleRequirements', $this->Data), array());
 
@@ -24,9 +30,18 @@ $ExtraCssClass = empty($MissingRuleRequirements) ? '' : 'Disabled';
 			<li>
 				<div class="ReceivedLikes">
 				<?php
-					//echo Wrap(T('ReceivedLikes'), 'h4');
 					LikesRule::RenderRuleField($this->Form->CheckBox('ReceivedLikes_Enabled', T('User received at least X Likes')));
 					LikesRule::RenderRuleField($this->Form->TextBox('ReceivedLikes_Amount',
+																													 array('class' => 'InputBox Numeric')));
+				?>
+				</div>
+			</li>
+			<li>
+				<div class="LikesToPostsRatio">
+				<?php
+					LikesRule::RenderRuleField($this->Form->CheckBox('LikesToPostsRatio_Enabled',
+																													 T('User\'s Likes to Messages ratio is at least X')));
+					LikesRule::RenderRuleField($this->Form->TextBox('LikesToPostsRatio_Amount',
 																													 array('class' => 'InputBox Numeric')));
 				?>
 				</div>
