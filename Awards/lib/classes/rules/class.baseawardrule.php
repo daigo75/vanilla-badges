@@ -12,7 +12,7 @@ interface IAwardRule {
 	// @see BaseAwardRule::Process();
 	public function IsRuleEnabled(stdClass $Settings);
 	public function Process($UserID, stdClass $Settings, array $EventInfo = null);
-	public function GetConfigUI();
+	public function GetConfigUI($Sender);
 	public function ValidateSettings(Gdn_Form $Form, array $Settings);
 
 	public static function RenderRuleField($InputHTML);
@@ -134,10 +134,20 @@ class BaseAwardRule extends Gdn_Controller implements IAwardRule {
 	 * Retrieves and returns the name of the View used to render the configuration
 	 * interface for the Rule.
 	 *
+	 * @param Gdn_Controller Sender The Controller which is rendering the page.
 	 * @return string The name of the View used to render the configuration
 	 * interface for the Rule.
 	 */
-	public function GetConfigUI() {
+	public function GetConfigUI($Sender) {
+		// TODO Improve the display of Missing Requirements
+		// Before passing the View to the Sender, add any eventual error message
+		// related to missing requirements
+		if(!$this->_CheckRequirements()) {
+			$MissingRequirements = $Sender->Data('MissingRuleRequirements', array());
+			$MissingRequirements[get_called_class()] = $this->_MissingRequirements;
+			$Sender->SetData('MissingRuleRequirements', $MissingRequirements);
+		}
+
 		$Reflector = new ReflectionClass(get_class($this));
 		return dirname($Reflector->getFileName()) . '/views/settings_view.php';
 	}
@@ -276,6 +286,15 @@ class BaseAwardRule extends Gdn_Controller implements IAwardRule {
 	}
 
 	/**
+	 * Checks if Rule should be enabled, based on the Settings.
+	 * @throws A "not implemented" Exception. This method must be implemented by
+	 * descendat classes.
+	 */
+	protected function _IsRuleEnabled(stdClass $Settings) {
+		throw new Exception(T('Not implemented. Descendant classes must implement this method.'));
+	}
+
+	/**
 	 * Checks if the Rule is enabled, based on the settings and other criteria.
 	 * Descendant classes must implement this method.
 	 *
@@ -287,7 +306,21 @@ class BaseAwardRule extends Gdn_Controller implements IAwardRule {
 	 * - BaseAwardRule::RULE_ENABLED_CANNOT_PROCESS
 	 */
 	public function IsRuleEnabled(stdClass $Settings) {
-		throw new Exception(T('Not implemented. Descendant classes must implement this method.'));
+		if($this->_CheckRequirements() === false) {
+			return self::RULE_ENABLED_CANNOT_PROCESS;
+		}
+
+		return $this->_IsRuleEnabled($Settings);
+	}
+
+	/**
+	 * Checks if all the Requirements needed by the rule are present. Base method
+	 * always returns True, it's up to the descendant Rules to implement it.
+	 *
+	 * @return bool True, if all Requirements are satisfied, False otherwise.
+	 */
+	protected function _CheckRequirements() {
+		return true;
 	}
 
 	/**
@@ -309,6 +342,7 @@ class BaseAwardRule extends Gdn_Controller implements IAwardRule {
 	public function __construct() {
 		parent::__construct();
 		$this->Validation = new Gdn_Validation();
+		$this->_MissingRequirements = array();
 
 		self::$CountTypes = array(1 => T('At'),
 															2 => T('Every'),);

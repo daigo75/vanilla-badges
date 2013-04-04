@@ -179,7 +179,7 @@ class UserRolesRule extends BaseAwardRule {
 	 * - BaseAwardRule::RULE_DISABLED
 	 * - BaseAwardRule::RULE_ENABLED_CANNOT_PROCESS
 	 */
-	public function IsRuleEnabled(stdClass $Settings) {
+	protected function _IsRuleEnabled(stdClass $Settings) {
 		if((GetValue('Enabled', $Settings->AnyRoles) == 1) ||
 			 (GetValue('Enabled', $Settings->NoRoles) == 1)) {
 			return self::RULE_ENABLED;

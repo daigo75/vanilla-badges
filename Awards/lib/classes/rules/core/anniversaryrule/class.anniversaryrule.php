@@ -99,7 +99,7 @@ class AnniversaryRule extends BaseAwardRule {
 	 * - BaseAwardRule::RULE_DISABLED
 	 * - BaseAwardRule::RULE_ENABLED_CANNOT_PROCESS
 	 */
-	public function IsRuleEnabled(stdClass $Settings) {
+	protected function _IsRuleEnabled(stdClass $Settings) {
 		if((GetValue('Enabled', $Settings->Anniversary) == 1)) {
 			return self::RULE_ENABLED;
 		}

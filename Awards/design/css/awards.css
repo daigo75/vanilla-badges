@@ -505,6 +505,10 @@ img.Medium {
 	padding: 0;
 }
 
+#Content .AwardsPlugin .RuleGroup .Rule {
+	position: relative;
+}
+
 #Content .AwardsPlugin .RuleGroup .Rule ul {
 	padding: 0;
 }

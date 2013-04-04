@@ -186,7 +186,6 @@ $IsNewAward = empty($AwardID) ? true : false;
 				foreach($AwardRules as $AwardRule) {
 					//var_dump($AwardRule);
 					//var_dump($this);die();
-					//include($AwardRule['Instance']->GetConfigUI());
 					AddRuleToUI($AwardRulesSections, $AwardRule);
 				}
 
@@ -222,7 +221,7 @@ $IsNewAward = empty($AwardID) ? true : false;
 						// Render the Rule's Configuration UI
 						foreach($TypeInfo->Rules as $AwardRule) {
 							echo '<li>';
-							include($AwardRule->GetConfigUI());
+							include($AwardRule->GetConfigUI($this));
 							echo '</li>';
 						}
 
