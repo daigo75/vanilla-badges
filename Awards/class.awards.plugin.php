@@ -545,7 +545,7 @@ class AwardsPlugin extends Gdn_Plugin {
 	 * @param object Sender Sending controller instance.
 	 */
 	public function Controller_RulesList($Sender) {
-		$this->RulesManager()->RulesList($Sender);
+		$this->RulesManager()->RulesList($this, $Sender);
 	}
 
 	/**

@@ -10,6 +10,8 @@ AwardRulesManager::RegisterRule(
 				'Description' => T('Checks if a User has one or more Roles'),
 				'Group' => AwardRulesManager::GROUP_GENERAL,
 				'Type' => AwardRulesManager::TYPE_USER,
+				// Version is for reference only
+				'Version' => '13.04.03',
 			)
 );
 

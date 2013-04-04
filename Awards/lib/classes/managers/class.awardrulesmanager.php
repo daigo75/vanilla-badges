@@ -368,13 +368,15 @@ class AwardRulesManager extends BaseManager {
 	 * @param object Sender Sending controller instance.
 	 */
 	public function RulesList(Gdn_Plugin $Caller, $Sender) {
-		//$Sender->SetData('CurrentPath', AWARDS_PLUGIN_RULES_LIST_URL);
-		//// Prevent non authorised Users from accessing this page
-		//$Sender->Permission('Plugins.Awards.Manage');
-		//
-		//// TODO Implement Awards Rules List page
-		//$Sender->Render($this->GetView('awards_ruleslist_view.php'));
-		throw new Exception(T('Not implemented.'));
+		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_RULES_LIST_URL);
+		// Prevent non authorised Users from accessing this page
+		$Sender->Permission('Plugins.Awards.Manage');
+
+		$Sender->SetData('Rules', $this->GetRules());
+
+		// TODO Implement Awards Rules List page
+		$Sender->Render($Caller->GetView('awards_ruleslist_view.php'));
+		//throw new Exception(T('Not implemented.'));
 	}
 
 	/**

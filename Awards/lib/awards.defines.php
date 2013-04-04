@@ -46,6 +46,9 @@ define('AWARDS_PLUGIN_AWARD_CLONE_URL', AWARDS_PLUGIN_BASE_URL . '/awardclone');
 define('AWARDS_PLUGIN_AWARD_ENABLE_URL', AWARDS_PLUGIN_BASE_URL . '/awardenable');
 define('AWARDS_PLUGIN_AWARD_ASSIGN_URL', AWARDS_PLUGIN_BASE_URL . '/awardassign');
 
+// URLs for Rules Management
+define('AWARDS_PLUGIN_RULES_LIST_URL', AWARDS_PLUGIN_BASE_URL . '/ruleslist');
+
 // FrontEnd URLs. They use a shorterclea URL for better User Experience
 // Awards page shows the list of Awards in the frontend
 define('AWARDS_PLUGIN_AWARDS_PAGE_URL', AWARDS_PLUGIN_SHORT_URL . '/index');
