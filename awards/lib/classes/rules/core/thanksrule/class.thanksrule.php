@@ -94,7 +94,7 @@ class ThanksRule extends BaseAwardRule {
 	 * - BaseAwardRule::RULE_DISABLED
 	 * - BaseAwardRule::RULE_ENABLED_CANNOT_PROCESS
 	 */
-	public function IsRuleEnabled(stdClass $Settings) {
+	protected function _IsRuleEnabled(stdClass $Settings) {
 		if((GetValue('Enabled', $Settings->ReceivedThanks) == 1)) {
 			return self::RULE_ENABLED;
 		}
@@ -109,7 +109,8 @@ class ThanksRule extends BaseAwardRule {
 	 */
 	public function __construct() {
 		parent::__construct();
-	}
 
-	// TODO Add Model (if needed) to perform Rule checks
+		$this->_RequiredPlugins[] = 'ThankfulPeople';
+	}
 }
+;

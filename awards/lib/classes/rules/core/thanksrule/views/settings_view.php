@@ -12,18 +12,26 @@ $RuleSettings = GetValue('ThanksRule', $this->Data['RulesSettings']);
 $ReceivedThanksSettings = GetValue('ReceivedThanks', $RuleSettings);
 $this->Form->SetFormValue('ReceivedThanks_Enabled', (int)GetValue('Enabled', $ReceivedThanksSettings));
 $this->Form->SetFormValue('ReceivedThanks_Amount', GetValue('Amount', $ReceivedThanksSettings));
+
+$MissingRuleRequirements = GetValue('ThanksRule', GetValue('MissingRuleRequirements', $this->Data));
+
+//var_dump($MissingRuleRequirements);die();
+$ExtraCssClass = empty($MissingRuleRequirements) ? '' : 'Disabled';
 ?>
-<div class="Rule">
-	<ul>
-		<li>
-			<div class="ReceivedThanks">
-			<?php
-				//echo Wrap(T('ReceivedThanks'), 'h4');
-				ThanksRule::RenderRuleField($this->Form->CheckBox('ReceivedThanks_Enabled', T('User received at least X Thanks')));
-				ThanksRule::RenderRuleField($this->Form->TextBox('ReceivedThanks_Amount',
-																												 array('class' => 'InputBox Numeric')));
-			?>
-			</div>
-		</li>
-	</ul>
+<div class="Rule clearfix <?php echo $ExtraCssClass; ?>">
+	<div class="Fields">
+		<ul>
+			<li>
+				<div class="ReceivedThanks">
+				<?php
+					//echo Wrap(T('ReceivedThanks'), 'h4');
+					ThanksRule::RenderRuleField($this->Form->CheckBox('ReceivedThanks_Enabled', T('User received at least X Thanks')));
+					ThanksRule::RenderRuleField($this->Form->TextBox('ReceivedThanks_Amount',
+																													 array('class' => 'InputBox Numeric')));
+				?>
+				</div>
+			</li>
+		</ul>
+	</div>
+	<?php BaseAwardRule::RenderMissingRequirements($MissingRuleRequirements); ?>
 </div>
