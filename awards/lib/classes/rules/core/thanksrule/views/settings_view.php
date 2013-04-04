@@ -13,7 +13,7 @@ $ReceivedThanksSettings = GetValue('ReceivedThanks', $RuleSettings);
 $this->Form->SetFormValue('ReceivedThanks_Enabled', (int)GetValue('Enabled', $ReceivedThanksSettings));
 $this->Form->SetFormValue('ReceivedThanks_Amount', GetValue('Amount', $ReceivedThanksSettings));
 
-$MissingRuleRequirements = GetValue('ThanksRule', GetValue('MissingRuleRequirements', $this->Data));
+$MissingRuleRequirements = GetValue('ThanksRule', GetValue('MissingRuleRequirements', $this->Data), array());
 
 //var_dump($MissingRuleRequirements);die();
 $ExtraCssClass = empty($MissingRuleRequirements) ? '' : 'Disabled';

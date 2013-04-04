@@ -5,39 +5,37 @@
 
 // Register Rule with the Rule Manager
 AwardRulesManager::RegisterRule(
-	'ThanksRule',
-	array('Label' => T('Thanks'),
-				'Description' => T('Checks "Thanks" received by the User'),
+	'PhotogenicRule',
+	array('Label' => T('Post Count'),
+				'Description' => T('Checks if User uploaded a Profile Picture'),
 				'Group' => AwardRulesManager::GROUP_GENERAL,
 				'Type' => AwardRulesManager::TYPE_CONTENT,
 				// Version is for reference only
-				'Version' => '13.04.03',
+				'Version' => '13.04.04',
 				)
 );
 
 
 /**
- * Thanks Award Rule.
+ * Photogenic Award Rule.
  *
- * Assigns an Award based on the Thanks received by a User.
+ * Assigns an Award when User uploads a Profile picture.
  */
-class ThanksRule extends BaseAwardRule {
+class PhotogenicRule extends BaseAwardRule {
 	/**
-	 * Checks if the User received enough Thanks to be assigned an Award based
-	 * on such criteria.
+	 * Checks if the User uploaded a Profile picture.
 	 *
 	 * @param int UserID The ID of the User.
 	 * @param stdClass Settings The Rule settings.
 	 * @return int "1" if check passed, "0" otherwise.
 	 */
-	private function CheckUserReceivedThanksCount($UserID, stdClass $Settings) {
-		$ReceivedThanksThreshold = $Settings->ReceivedThanks->Amount;
-		$this->Log()->trace(sprintf(T('Checking count of Received Thanks for User ID %d. Threshold: %d.'),
-																$UserID,
-																$ReceivedThanksThreshold));
+	private function CheckUserUploadedProfilePicture($UserID, stdClass $Settings) {
+		$this->Log()->trace(sprintf(T('Checking if User uploaded a Profile picture. User ID %d'),
+																$UserID));
 		$UserData = $this->GetUserData($UserID);
 		//var_dump($UserData);
-		if(GetValue('ReceivedThankCount', $UserData, 0) >= $ReceivedThanksThreshold) {
+		$UserPhoto = GetValue('Photo', $UserData);
+		if(!empty($UserPhoto)) {
 			$this->Log()->trace(T('Passed.'));
 			return self::ASSIGN_ONE;
 		}
@@ -52,12 +50,12 @@ class ThanksRule extends BaseAwardRule {
 	 * @see AwardBaseRule::Process().
 	 */
 	protected function _Process($UserID, stdClass $Settings, array $EventInfo = null) {
-		// Check Received Thanks Count
-		if(GetValue('Enabled', $Settings->ReceivedThanks) == 1) {
-			$Results[] = $this->CheckUserReceivedThanksCount($UserID, $Settings);
+		// Check Received Photogenic Count
+		if(GetValue('Enabled', $Settings->Photogenic) == 1) {
+			$Results[] = $this->CheckUserUploadedProfilePicture($UserID, $Settings);
 		}
 
-		//var_dump("ThanksRule Result: " . min($Results));
+		//var_dump("PhotogenicRule Result: " . min($Results));
 		return min($Results);
 	}
 
@@ -70,17 +68,7 @@ class ThanksRule extends BaseAwardRule {
 	protected function _ValidateSettings(array $Settings) {
 		$Result = array();
 
-		// Check settings for ReceivedThanks threshold
-		$ReceivedThanksSettings = GetValue('ReceivedThanks', $Settings);
-		$ReceivedThanksThreshold = GetValue('Amount', $ReceivedThanksSettings);
-		if(GetValue('Enabled', $ReceivedThanksSettings)) {
-			if(empty($ReceivedThanksThreshold) ||
-				 !is_numeric($ReceivedThanksThreshold) ||
-				 ($ReceivedThanksThreshold <= 0)) {
-				$this->Validation->AddValidationResult('ReceivedThanks_Amount',
-																							 T('Received Thanks threshold must be a positive integer.'));
-			}
-		}
+		// No validation required
 
 		return (count($this->Validation->Results()) == 0);
 	}
@@ -96,21 +84,10 @@ class ThanksRule extends BaseAwardRule {
 	 * - BaseAwardRule::RULE_ENABLED_CANNOT_PROCESS
 	 */
 	protected function _IsRuleEnabled(stdClass $Settings) {
-		if((GetValue('Enabled', $Settings->ReceivedThanks) == 1)) {
+		if((GetValue('Enabled', $Settings->Photogenic) == 1)) {
 			return self::RULE_ENABLED;
 		}
 
 		return self::RULE_DISABLED;
-	}
-
-	/**
-	 * Class constructor.
-	 *
-	 * @return ThanksRule.
-	 */
-	public function __construct() {
-		parent::__construct();
-
-		$this->_RequiredPlugins[] = 'ThankfulPeople';
 	}
 }

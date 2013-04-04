@@ -5,39 +5,39 @@
 
 // Register Rule with the Rule Manager
 AwardRulesManager::RegisterRule(
-	'ThanksRule',
-	array('Label' => T('Thanks'),
-				'Description' => T('Checks "Thanks" received by the User'),
+	'LikesRule',
+	array('Label' => T('Likes'),
+				'Description' => T('Checks "Likes" received by the User'),
 				'Group' => AwardRulesManager::GROUP_GENERAL,
 				'Type' => AwardRulesManager::TYPE_CONTENT,
 				// Version is for reference only
-				'Version' => '13.04.03',
+				'Version' => '13.04.04',
 				)
 );
 
 
 /**
- * Thanks Award Rule.
+ * Likes Award Rule.
  *
- * Assigns an Award based on the Thanks received by a User.
+ * Assigns an Award based on the Likes received by a User.
  */
-class ThanksRule extends BaseAwardRule {
+class LikesRule extends BaseAwardRule {
 	/**
-	 * Checks if the User received enough Thanks to be assigned an Award based
+	 * Checks if the User received enough Likes to be assigned an Award based
 	 * on such criteria.
 	 *
 	 * @param int UserID The ID of the User.
 	 * @param stdClass Settings The Rule settings.
 	 * @return int "1" if check passed, "0" otherwise.
 	 */
-	private function CheckUserReceivedThanksCount($UserID, stdClass $Settings) {
-		$ReceivedThanksThreshold = $Settings->ReceivedThanks->Amount;
-		$this->Log()->trace(sprintf(T('Checking count of Received Thanks for User ID %d. Threshold: %d.'),
+	private function CheckUserReceivedLikesCount($UserID, stdClass $Settings) {
+		$ReceivedLikesThreshold = $Settings->ReceivedLikes->Amount;
+		$this->Log()->trace(sprintf(T('Checking count of Received Likes for User ID %d. Threshold: %d.'),
 																$UserID,
-																$ReceivedThanksThreshold));
+																$ReceivedLikesThreshold));
 		$UserData = $this->GetUserData($UserID);
 		//var_dump($UserData);
-		if(GetValue('ReceivedThankCount', $UserData, 0) >= $ReceivedThanksThreshold) {
+		if(GetValue('Liked', $UserData, 0) >= $ReceivedLikesThreshold) {
 			$this->Log()->trace(T('Passed.'));
 			return self::ASSIGN_ONE;
 		}
@@ -52,12 +52,12 @@ class ThanksRule extends BaseAwardRule {
 	 * @see AwardBaseRule::Process().
 	 */
 	protected function _Process($UserID, stdClass $Settings, array $EventInfo = null) {
-		// Check Received Thanks Count
-		if(GetValue('Enabled', $Settings->ReceivedThanks) == 1) {
-			$Results[] = $this->CheckUserReceivedThanksCount($UserID, $Settings);
+		// Check Received Likes Count
+		if(GetValue('Enabled', $Settings->ReceivedLikes) == 1) {
+			$Results[] = $this->CheckUserReceivedLikesCount($UserID, $Settings);
 		}
 
-		//var_dump("ThanksRule Result: " . min($Results));
+		//var_dump("LikesRule Result: " . min($Results));
 		return min($Results);
 	}
 
@@ -70,15 +70,15 @@ class ThanksRule extends BaseAwardRule {
 	protected function _ValidateSettings(array $Settings) {
 		$Result = array();
 
-		// Check settings for ReceivedThanks threshold
-		$ReceivedThanksSettings = GetValue('ReceivedThanks', $Settings);
-		$ReceivedThanksThreshold = GetValue('Amount', $ReceivedThanksSettings);
-		if(GetValue('Enabled', $ReceivedThanksSettings)) {
-			if(empty($ReceivedThanksThreshold) ||
-				 !is_numeric($ReceivedThanksThreshold) ||
-				 ($ReceivedThanksThreshold <= 0)) {
-				$this->Validation->AddValidationResult('ReceivedThanks_Amount',
-																							 T('Received Thanks threshold must be a positive integer.'));
+		// Check settings for ReceivedLikes threshold
+		$ReceivedLikesSettings = GetValue('ReceivedLikes', $Settings);
+		$ReceivedLikesThreshold = GetValue('Amount', $ReceivedLikesSettings);
+		if(GetValue('Enabled', $ReceivedLikesSettings)) {
+			if(empty($ReceivedLikesThreshold) ||
+				 !is_numeric($ReceivedLikesThreshold) ||
+				 ($ReceivedLikesThreshold <= 0)) {
+				$this->Validation->AddValidationResult('ReceivedLikes_Amount',
+																							 T('Received Likes threshold must be a positive integer.'));
 			}
 		}
 
@@ -96,7 +96,7 @@ class ThanksRule extends BaseAwardRule {
 	 * - BaseAwardRule::RULE_ENABLED_CANNOT_PROCESS
 	 */
 	protected function _IsRuleEnabled(stdClass $Settings) {
-		if((GetValue('Enabled', $Settings->ReceivedThanks) == 1)) {
+		if((GetValue('Enabled', $Settings->ReceivedLikes) == 1)) {
 			return self::RULE_ENABLED;
 		}
 
@@ -106,11 +106,11 @@ class ThanksRule extends BaseAwardRule {
 	/**
 	 * Class constructor.
 	 *
-	 * @return ThanksRule.
+	 * @return LikesRule.
 	 */
 	public function __construct() {
 		parent::__construct();
 
-		$this->_RequiredPlugins[] = 'ThankfulPeople';
+		$this->_RequiredPlugins[] = 'LikeThis';
 	}
 }
