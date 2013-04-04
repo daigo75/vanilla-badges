@@ -260,6 +260,8 @@ class AwardRulesManager extends BaseManager {
 		$AwardAssignCounts = array();
 
 		foreach($RulesSettings as $RuleClass => $Settings) {
+			$this->Log()->debug(sprintf(T('Inspecting Rule %s...'), $RuleClass));
+
 			// Retrieve the instance of the Rule to process
 			$RuleInstance = $this->GetRuleInstance($RuleClass);
 
@@ -270,6 +272,8 @@ class AwardRulesManager extends BaseManager {
 				continue;
 			}
 
+
+			$this->Log()->debug(T('Checking if Rule is enabled...'));
 			$IsRuleEnabled = $RuleInstance->IsRuleEnabled($Settings);
 			// Check if the Rule is enabled
 			switch($IsRuleEnabled) {
