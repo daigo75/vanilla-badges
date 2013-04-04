@@ -70,7 +70,8 @@ $IsNewAward = empty($AwardID) ? true : false;
 		</legend>
 		<div class="Tabs">
 			<div id="AwardInfo" class="Tab">
-				<h2 class="Label"><?php echo T('Award Info'); ?></h2>
+				<h2 class="Label"><?php echo T('Award Details'); ?></h2>
+				<h3><?php echo T('Options'); ?></h3>
 				<ul id="Fields">
 					<li>
 						<?php
@@ -212,7 +213,7 @@ $IsNewAward = empty($AwardID) ? true : false;
 						// Render Rule Type section
 						echo '<div class="RuleType">';
 						echo Wrap($TypeInfo->Label,
-											'h5',
+											'h3',
 											array('class' => 'Label')
 											);
 

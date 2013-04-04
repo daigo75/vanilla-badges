@@ -389,7 +389,7 @@ class AwardRulesManager extends BaseManager {
 		self::$RuleGroups = array(self::GROUP_GENERAL => T('General'),
 															self::GROUP_CUSTOM => T('Custom'));
 
-		self::$RuleTypes = array(self::TYPE_CONTENT => T('Content'),
+		self::$RuleTypes = array(self::TYPE_CONTENT => T('Content and Achievements'),
 														 self::TYPE_USER => T('User'),
 														 self::TYPE_MISC => T('Misc.'));
 
