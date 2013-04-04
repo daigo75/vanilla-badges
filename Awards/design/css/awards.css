@@ -13,13 +13,19 @@
 /* Style override for links that happen to be inside a <li> element, inside a
  * Tab. Such links become tab-looking due to Vanilla default styles.
  */
+.AwardsPlugin a.Help,
 .AwardsPlugin a.Standard {
 	border: none !important;
+	border-radius: 0;
 	background: none !important;
 	color: #2786C2;
 	top: 0 !important;
 	padding: 0 !important;
 	font-weight: normal !important;
+}
+
+.AwardsPlugin a.Help {
+	border-bottom: 1px dotted gray !important;
 }
 
 .AwardsPlugin h1 {
@@ -64,11 +70,11 @@
 }
 
 .AwardsPlugin .Disabled {
-	background: silver;
-	color: whitesmoke;
-	border: 1px solid #aaa;
+	background: #eee;
+	color: gray;
+	border: 1px solid #ccc;
 	border-radius: 4px;
-	padding: 6px;
+	padding: 0.5em 0;
 }
 
 .AwardsPlugin fieldset .Error {
@@ -196,6 +202,10 @@
 	font-size: 100%;
 	color: maroon;
 	border: 1px solid maroon;
+}
+
+.AwardsPlugin .Warning h5 {
+	font-weight: bold;
 }
 
 .AwardsPlugin.ConfirmationDialog .Name {
@@ -537,6 +547,20 @@ img.Medium {
 .AwardsPlugin .ui-tabs-nav .ui-tabs-active a {
 	background: #DBF3FC;
 	border-bottom: 1px solid #DBF3FC;
+}
+
+/* Rule settings snippets */
+.AwardsPlugin .Rule .Fields {
+	float: left;
+}
+
+.AwardsPlugin .Rule .MissingRequirements {
+	float: left;
+	margin-left: 2em;
+}
+
+.AwardsPlugin .Rule .MissingRequirements h5 {
+	border-bottom: 1px dotted gray;
 }
 
 .AwardsPlugin .Rule label {
