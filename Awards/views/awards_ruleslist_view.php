@@ -55,7 +55,7 @@ $OutputForEmptyDataSet = Wrap(T('No Award Rules loaded.'),
 					foreach($Rules as $Rule) {
 						echo "<tr>\n";
 						// Output Rule Name, Version and Description
-						echo Wrap(Gdn_Format::Text(GetValue('Label', $Rule)), 'td', array('class' => 'Name',));
+						echo Wrap(Gdn_Format::Text(GetValue('Label', $Rule, T('N/A'))), 'td', array('class' => 'Name',));
 						echo Wrap(Gdn_Format::Text(GetValue('Version', $Rule, T('N/A'))), 'td', array('class' => 'Version',));
 						echo Wrap(Gdn_Format::Text(GetValue('Description', $Rule, T('N/A'))), 'td', array('class' => 'Description',));
 						echo Wrap(Gdn_Format::Text(GetValue('Group', $Rule, T('N/A'))), 'td', array('class' => 'Group',));

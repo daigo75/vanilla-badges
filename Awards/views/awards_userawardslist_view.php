@@ -27,13 +27,15 @@
 					// TODO Display search box to find User
 					// TODO Display list of Awards earned by a User
 
+					echo Wrap('Page not yet implemented.', 'h2');
+
 					// TODO Display Revoke button for each Award
 					// TODO Display, next to each Award, how many times it has been awarded
 				?></li>
 			</ul>
 		</fieldset>
 		<?php
-			 echo $this->Form->Close('Save');
+			 echo $this->Form->Close();
 		?>
 	</div>
 </div>
