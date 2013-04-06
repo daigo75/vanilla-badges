@@ -208,6 +208,7 @@
 	font-weight: bold;
 }
 
+.AwardsPlugin.AssignAward .Name,
 .AwardsPlugin.ConfirmationDialog .Name {
 	font-weight: bold;
 	border-bottom: 1px dotted gray;
