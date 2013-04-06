@@ -17,7 +17,7 @@ $MissingRuleRequirements = GetValue('PhotogenicRule', GetValue('MissingRuleRequi
 //var_dump($MissingRuleRequirements);die();
 $ExtraCssClass = empty($MissingRuleRequirements) ? '' : 'Disabled';
 ?>
-<div class="Rule clearfix <?php echo $ExtraCssClass; ?>">
+<div id="PhotogenicRule" class="Rule clearfix <?php echo $ExtraCssClass; ?>">
 	<div class="Fields">
 		<ul>
 			<li>

@@ -9,7 +9,7 @@ AwardRulesManager::RegisterRule(
 	array('Label' => T('Post Count'),
 				'Description' => T('Checks if User uploaded a Profile Picture'),
 				'Group' => AwardRulesManager::GROUP_GENERAL,
-				'Type' => AwardRulesManager::TYPE_CONTENT,
+				'Type' => AwardRulesManager::TYPE_USER,
 				// Version is for reference only
 				'Version' => '13.04.04',
 				)

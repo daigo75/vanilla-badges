@@ -24,7 +24,7 @@ $MissingRuleRequirements = GetValue('LikesRule', GetValue('MissingRuleRequiremen
 //var_dump($MissingRuleRequirements);die();
 $ExtraCssClass = empty($MissingRuleRequirements) ? '' : 'Disabled';
 ?>
-<div class="Rule clearfix <?php echo $ExtraCssClass; ?>">
+<div id="LikesRule" class="Rule clearfix <?php echo $ExtraCssClass; ?>">
 	<div class="Fields">
 		<ul>
 			<li>
