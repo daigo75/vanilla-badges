@@ -274,6 +274,7 @@ class AwardClassesManager extends BaseManager {
 																		));
 
 				$Sender->InformMessage(T('Award Class deleted.'));
+				$Caller->FireEvent('ConfigChanged');
 			}
 			// Render AwardClasses List page
 			Redirect(AWARDS_PLUGIN_AWARDCLASSES_LIST_URL);
