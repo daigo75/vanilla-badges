@@ -492,10 +492,6 @@ img.Medium {
 	border-bottom: 1px dashed gray;
 }
 
-.AwardsPlugin #Fields {
-	padding-top: 1em;
-}
-
 .AwardsPlugin #Fields .Column {
 	float: left;
 }
@@ -517,7 +513,7 @@ img.Medium {
 }
 
 #Content .AwardsPlugin form ul {
-	padding-top: 0;
+	padding-top: 1px;
 }
 
 #Content .AwardsPlugin .RuleGroup h4 {

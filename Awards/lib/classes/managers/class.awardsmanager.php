@@ -634,7 +634,8 @@ class AwardsManager extends BaseManager {
 		// Add a class to help uniquely identifying this page
 		$Sender->CssClass = 'AwardsFrontendList';
 
-		$Wheres = array();
+		// Display only enabled Awards
+		$Wheres = array('VAAL.AwardIsEnabled' => 1);
 
 		// Prepare the Award Class filter, if needed
 		$AwardClassID = $Sender->Request->GetValue(AWARDS_PLUGIN_ARG_AWARDCLASSID);

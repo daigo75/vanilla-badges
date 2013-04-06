@@ -35,17 +35,20 @@ function GetCurrentAction(Gdn_Form $Form, $Data) {
 		echo $this->Form->Hidden('AwardClassImageFile');
 		// TODO Add Side box with guidelines in creating the Award Class
 	?>
-	<fieldset class="Buttons Top">
-		<?php
-			echo $this->Form->Button(T('Save'), array('Name' => 'Save',));
-			echo $this->Form->Button(T('Cancel'));
-		?>
-	</fieldset>
 	<fieldset id="AwardClass">
-		<legend><?php
-			echo Wrap(GetCurrentAction($this->Form, $this->Data), 'h1');
-		?></legend>
-		<ul>
+		<legend class="Title">
+			<?php
+				echo Wrap(GetCurrentAction($this->Form, $this->Data), 'h1');
+			?>
+			<div class="Buttons Top">
+				<?php
+					echo $this->Form->Button(T('Save'), array('Name' => 'Save',));
+					echo $this->Form->Button(T('Cancel'));
+				?>
+			</div>
+		</legend>
+		<div>
+			<ul id="Fields">
 			<li>
 				<?php
 					echo $this->Form->Label(T('Award Class Name'), 'AwardClassName');
@@ -145,6 +148,7 @@ function GetCurrentAction(Gdn_Form $Form, $Data) {
 				?>
 			</li>
 		</ul>
+		</div>
 	</fieldset>
 	<fieldset class="Buttons">
 		<?php

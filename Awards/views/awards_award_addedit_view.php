@@ -58,8 +58,9 @@ $IsNewAward = empty($AwardID) ? true : false;
 		echo $this->Form->Hidden('AwardImageFile');
 	?>
 	<fieldset id="Award">
-		<legend class="Title"><?php
-			echo Wrap(GetCurrentAction($this->Form, $this->Data), 'h1');
+		<legend class="Title">
+			<?php
+				echo Wrap(GetCurrentAction($this->Form, $this->Data), 'h1');
 			?>
 			<div class="Buttons Top">
 				<?php
