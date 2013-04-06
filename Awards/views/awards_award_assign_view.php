@@ -43,7 +43,7 @@
 											'matching User Names will appear.'),
 										'div',
 										array('class' => 'Info',));
-					echo $this->Form->TextBox('UserName', array('value' => 'do'));
+					echo $this->Form->TextBox('UserName');
 
 					echo $this->Form->Label(T('Selected Users'), 'SelectedUsers');
 					echo Wrap(T('This is the list of the Users who will receive the Award. ' .
