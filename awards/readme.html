@@ -1,0 +1,169 @@
+<html>
+<head>
+	<title>Awards Plugin for Vanilla 2.0</title>
+	<style type="text/css">
+	body {
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 14px;
+		line-height: 1.5em;
+	}
+
+	code {
+		background-color: #EEEEEE;
+	}
+
+	code.example {
+		display: block;
+		padding: 0.5em 1em;
+		border: 1px dashed gray;
+	}
+
+	.OverridesOK {
+		font-weight: bold;
+		color: green;
+	}
+
+	.OverridesError {
+		font-weight: bold;
+		color: red;
+	}
+
+	li {
+
+	}
+	</style>
+</head>
+<body>
+	<h1>Awards Plugin for Vanilla 2.0</h1>
+
+	<div>
+		<h3>Description</h3>
+		<p>
+			Awards Plugin adds gamification features to your self-hosted Vanilla Forum, by allowing you to create Badges and assign them to Users based on a combination of criteria.
+		</p>
+		<p>
+			The plugin implements a Rule system, which provides a high degree of flexibility in determining how Users can earn an Award, by supporting a virtually unlimited amount of Rules.<br />The plugin comes with a set of Rules, and it can be extended by adding Custom Rules.
+		</p>
+		<p>
+			For more information about the implementation of Custom Rules, see the <a href="#Customisation">Customisation</a> section.
+		</p>
+	</div>
+	<div>
+		<h3>Installation</h3>
+		<div>
+			<ol>
+				<li>Copy the Awards Plugin folder in the <strong>/plugins</strong> folder, which can be found in your Vanilla installation folder.</li>
+				<li>Delete all <strong>.ini</strong> files from the <strong>cache</strong> folder and all its subfolders. <strong>Cache</strong> folder is also in your Vanilla installation folder.</li>
+				<li>Enable the Awards Plugin.</li>
+			</ol>
+		</div>
+
+		<h3>Upgrade</h3>
+		<div>
+			<ol>
+				<li>In Vanilla Control Panel, disable the Awards Plugin. <strong>Do not skip this step.</strong></li>
+				<li>Delete all <strong>.ini</strong> files from the <strong>cache</strong> folder and all its subfolders. <strong>Cache</strong> folder is also in your Vanilla installation folder.</li>
+				<li>Enable the Awards Plugin.</li>
+			</ol>
+		</div>
+	</div>
+	<div>
+		<h3>Usage</h3>
+		<p>
+			The Plugin provides an intuitive User Interface. However, there are a few key concepts that you must learn before using it.
+		</p>
+		<h4>Award Classes</h4>
+		<p>
+			Awards are divided into <strong>Classes</strong>. This allows to group them, for example to distinguish the ones that are easy to earn from the most difficult ones. Classes can be configured easily:
+		</p>
+		<ul>
+			<li>In Vanilla Forums Admin area, click on Award Classes in the side menu.</li>
+			<li>Click on <strong>Add Award Class</strong>.</li>
+			<li>Enter <strong>Award Class Details</strong></li>
+			<ul>
+				<li>Fill the Name and the Description.</li>
+				<li>Upload an image for the Class (optional). Such image will be used as a background for all the Awards in the class, and can help distinguishing them at a glance.</li>
+				<li>Specify the Score to add to all Awards in this class (optional)</li>
+				<li>For fine tuning of Class' look and feel, enter additional CSS properties (optional).
+				<p>
+				<strong>Important</strong>: specify CSS attributes <strong>without enclosing them in braces</strong>. The plugin will add them automatically.</p></li>
+			</ul>
+			<li>Click on <strong>Save</strong>.</li>
+		</ul>
+		<p>
+			The Award Class is now configured and can be used when creating new Awards.
+		</p>
+		<p>
+			If you do not wish to use the features provided by Award Classes, simply create a single one without a background image and/or a score, and assign all Awards to it.
+		</p>
+
+		<h4>Awards</h4>
+		<p>
+			Awards (also called Badges) are assigned to Users who satisfy certain criteria. Creating an Award is very easy:
+		</p>
+		<ul>
+			<li>In Vanilla Forums Admin area, click on Awards in the side menu.</li>
+			<li>Click on <strong>Add Award</strong>.</li>
+			<li>Enter <strong>Award Details</strong></li>
+			<ul>
+				<li>Fill the Name, Description and Rank Points fields.</li>
+				<li>Select a Class for the Award.</li>
+				<li>Upload an image for the Award.</li>
+			</ul>
+			<li>Configure the Rules that will have to be satisfied for the Award to be assigned to a User. To do so:</li>
+			<ul>
+				<li>Tick the checkbox of the Rule that you would like to enable.</li>
+				<li>Fill the related field(s).</li>
+			</ul>
+			<li>When you're done with the Rules, click on <strong>Save</strong>.</li>
+		</ul>
+		<p>
+			The Award is now configured, and you will be able to see it in the <strong>Awards List</strong> page and in the frontend <strong>Awards</strong> page. <strong>Note</strong>: the latter will only display Enabled Awards.
+		</p>
+
+		<h4>Assigning Awards</h4>
+		<p>Awards can be assigned in two ways:</p>
+		<ul>
+			<li><strong>Automatically</strong>, whenever a User visits the forum. The plugin will go through the Awards that the User has not yet earned, and check if he satisfies the conditions for one or more of them. If he does, he will earn the Award(s) assigned, and a notification will be saved to the Activity List.</li>
+			<li><strong>Manually</strong>, from the Awards List page in the Admin section. By clicking on the <strong>Assign</strong> button next to an Award, you will open a page where you will be able to select one or more Users who will receive the Award.
+			<p>
+				<strong>Note</strong>: if a User already earned the Award, he will not get it again.
+			</p></li>
+		</ul>
+
+		<h4>Revoking Awards</h4>
+		<p>
+			The possibility to revoke an Award is currently work in progress and it <strong>will be available in later versions</strong>.
+		</p>
+	</div>
+	<div>
+		<h3>Requirements</h3>
+		<ul>
+			<li>PHP 5.3+</li>
+			<li>Vanilla 2.0.18</li>
+			<li>Logger Plugin (either <a href="http://dev.pathtoenlightenment.net/shop/basic-logger-for-vanilla-forums-2-0/" title="Basic Logger">Basic</a> or <a href="http://dev.pathtoenlightenment.net/shop/advanced-logger-for-vanilla-forums-2-0/" title="Advanced Logger">Advanced</a> version) 12.10.28 or newer</li>
+			<li>Aelia Foundation Classes 13.02.27 or newer</li>
+		</ul>
+	</div>
+	<div>
+		<h3>Notes</h3>
+		<ul>
+			<li>
+				Plugin is still in Beta. Although care has been taken in testing it, it may contain bugs and it may not work properly in all circumstances. If you encounter any issue, please report it by contacting <a href="#Support">Support</a>. <br />
+				Also, please note that Beta versions are not automatically covered by Free Support, as per <a href="http://dev.pathtoenlightenment.net/terms-and-conditions-of-sale/">Terms and Conditions</a>. We might provide Support on such version at our discretion.
+			</li>
+			<li>
+				Due to its beta status, some features might be missing from the plugin. This simply means that they are still being implemented, and that they will be included in later versions. We encourage you to keep an eye on <a href="http://dev.pathtoenlightenment.net/">our website</a> to check for new versions.
+			</li>
+			<li>
+				Plugin <strong>has not been tested</strong> with Vanilla 2.1. We cannot guarantee that it will work with such version.
+			</li>
+		</ul>
+	</div>
+	<div id="Support">
+		<h3>Support</h3>
+		<p>
+			If you encounter any issue, or you have any question or suggestion, please <a href="http://dev.pathtoenlightenment.net/contact/">contact Us</a>. We will get back to you as soon as possible.
+		</p>
+	</div>
+</body>
