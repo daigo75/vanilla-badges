@@ -23,7 +23,6 @@
 			echo $this->Form->Open();
 			echo $this->Form->Errors();
 		?>
-		<h3><?php echo T('Configured Award Classes'); ?></h3>
 		<div class="Info">
 			<?php
 				echo Wrap(T('Here you can configure the Award Classes. Classes are useful to group the ' .

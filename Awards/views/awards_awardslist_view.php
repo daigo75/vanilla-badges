@@ -23,10 +23,10 @@
 			echo $this->Form->Open();
 			echo $this->Form->Errors();
 		?>
-		<h3><?php echo T('Configured Awards'); ?></h3>
 		<div class="Info">
 			<?php
-				echo Wrap(T('Here you can configure the Awards that can be assigned to the Users.'), 'p');
+				echo Wrap(T('Here you can configure the Awards that can be assigned to ' .
+										'Forum Users.'), 'p');
 			?>
 		</div>
 		<div class="FilterMenu">

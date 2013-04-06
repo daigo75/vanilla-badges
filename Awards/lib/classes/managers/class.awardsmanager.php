@@ -287,8 +287,8 @@ class AwardsManager extends BaseManager {
 						$Caller->FireEvent('ConfigChanged');
 
 						// Once changes have been saved, redirect to the main page
-						//Redirect(AWARDS_PLUGIN_AWARDS_LIST_URL);
-						return $this->AwardsList($Caller, $Sender);
+						Redirect(AWARDS_PLUGIN_AWARDS_LIST_URL);
+						//return $this->AwardsList($Caller, $Sender);
 					}
 					else {
 						/* If data has been posted back and it contains errors, extract the
@@ -728,7 +728,7 @@ class AwardsManager extends BaseManager {
 
 			//var_dump($AwardData, $AwardAssignmentCount);
 
-			// TODO Assign Award to User, if needed
+			// Assign Award to User, if needed
 			if($AwardAssignmentCount > 0) {
 				$this->AssignAward($UserID, $AwardData, $AwardAssignmentCount);
 			}

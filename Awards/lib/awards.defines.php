@@ -10,6 +10,7 @@
  */
 
 // Default Configuration Settings
+define('AWARDS_PLUGIN_MINSEARCHLENGTH', 2);
 
 // Paths
 define('AWARDS_PLUGIN_PATH', PATH_PLUGINS . '/Awards');

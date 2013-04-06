@@ -17,8 +17,8 @@ $this->Form->SetFormValue('AnyRoles_Enabled', (int)GetValue('Enabled', $UserRole
 $this->Form->SetFormValue('AnyRoles_Roles', GetValue('Roles', $UserRolesSettings));
 
 ?>
-<div class="Rule">
-	<?php echo Wrap(T('User Roles'), 'h4'); ?>
+<div id="UserRolesRule" class="Rule">
+	<?php //echo Wrap(T('User Roles'), 'h4'); ?>
 	<ul>
 		<li>
 			<div class="AnyRoles clearfix">

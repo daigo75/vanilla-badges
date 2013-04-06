@@ -4,40 +4,10 @@
 */
 
 /**
- * Renders some links that will allow to filter the view by Award Class.
+ * Extracts the User Information from an Awards and renders them.
  *
- * @param Gdn_DataSet AwardClassesData A DataSet containing all the available
- * Award Classes.
- * @param int CurrentAwardClassID The ID of the currently selected Award Class.
- * If empty, the view is considered unfiltered.
+ * @param stdClass AwardsData The data of an Award earned by a User.
  */
-// TODO Move Filters to separate sub-view
-function RenderAwardClassFilters($AwardClassesData, $CurrentAwardClassID) {
-	if(empty($AwardClassesData)) {
-		return '';
-	}
-
-	echo '<div class="Filters Tabs">';
-	echo '<ol id="ClassFilters">';
-	$CssClass = empty($CurrentAwardClassID) ? 'Active' : '';
-	echo Wrap(Anchor(T('All'),
-									 AWARDS_PLUGIN_LEADERBOARD_PAGE_URL),
-						'li',
-						array('class' => 'FilterItem ' . $CssClass));
-
-	// Render a filter for each Award Class
-	foreach($AwardClassesData as $UserAwardClass) {
-		$CssClass = ($CurrentAwardClassID === $UserAwardClass->AwardClassID) ? 'Active' : '';
-		$FilterAnchor = Anchor($UserAwardClass->AwardClassName,
-													 AWARDS_PLUGIN_LEADERBOARD_PAGE_URL . '?' . AWARDS_PLUGIN_ARG_AWARDCLASSID . '=' . $UserAwardClass->AwardClassID);
-		echo Wrap($FilterAnchor,
-							'li',
-							array('class' => 'FilterItem ' . $CssClass));
-	}
-	echo '</ol>';
-	echo '</div>';
-}
-
 function RenderUserInfo($AwardsData) {
 	$UserObj = UserBuilder($AwardsData, '');
 	$UserPhoto = UserPhoto($UserObj);
@@ -51,6 +21,21 @@ function RenderUserInfo($AwardsData) {
 						array('class' => 'UserLink'));
 }
 
+function RenderScores($TotalScore, $ClassScore, $ClassIDFilter) {
+	$ScoreText = Wrap(sprintf(T('%d Points'), $TotalScore),
+										'span',
+										array('class' => 'Total'));
+	// If data is filtered by Award Class, show the subtotal for
+	// the class
+	if(!empty($ClassIDFilter)) {
+		$ScoreText .= Wrap(sprintf(T('(%d in this Class)'), $ClassScore),
+											 'span',
+											 array('class' => 'ClassTotal'));
+	}
+	echo Wrap($ScoreText,
+						'div',
+						array('class' => 'UserAwardsScore'));
+}
 
 // Indicates how many columns there are in the table that shows the list of
 // Awards. It's mainly used to set the "colspan" attributes of
@@ -66,13 +51,15 @@ $OutputForEmptyDataSet = Wrap(T('No data found.'),
 
 $UserAwardsData = GetValue('UserAwardsData', $this->Data);
 $AwardClassesData = GetValue('AwardClassesData', $this->Data);
+$AwardClassIDFilter = GetValue('AwardClassID', $this->Data);
 //var_dump($AwardClassesData);
 ?>
 <div id="AwardsLeaderboard" class="AwardsPlugin">
 	<div class="Header">
 		<?php
 			echo Wrap(T('Awards Leaderboard'), 'h1');
-			RenderAwardClassFilters($AwardClassesData, GetValue('AwardClassID', $this->Data));
+			// Render Award Class Filters
+			AwardClassesManager::RenderAwardClassFilters($AwardClassesData, $AwardClassIDFilter);
 		?>
 	</div>
 	<div class="Content">
@@ -83,24 +70,24 @@ $AwardClassesData = GetValue('AwardClassesData', $this->Data);
 						echo Wrap($OutputForEmptyDataSet, 'tr');
 					}
 					else {
-						$CurrentUserID = '';
-						$LastUserScore = 0;
+						$LastUserID = '';
+						$LastUserTotalScore = 0;
+						$LastUserClassScore = 0;
 						foreach($UserAwardsData as $UserAward) {
-							//var_dump($UserAward);die();
-							if($UserAward->UserID != $CurrentUserID) {
-								if(!empty($CurrentUserID)) {
-									// Write Total Awards Score below the Awards list
-									echo Wrap(sprintf(T('%d Points'), $UserAward->TotalAwardsScore),
-														'div',
-														array('class' => 'UserAwardsScore'));
+							//var_dump($UserAward);
+							if($UserAward->UserID != $LastUserID) {
+								if(!empty($LastUserID)) {
+									RenderScores($LastUserTotalScore, $LastUserClassScore, $AwardClassIDFilter);
 
 									// Close previous User's row and open a new one
 									echo '</td></tr>';
+
+									$LastUserClassScore = 0;
 								}
 
 								// Save Current User and his total score
-								$CurrentUserID = $UserAward->UserID;
-								$LastUserScore = $UserAward->TotalAwardsScore;
+								$LastUserID = $UserAward->UserID;
+								$LastUserTotalScore = $UserAward->TotalAwardsScore;
 
 								echo '<tr>';
 								// Display User information
@@ -111,11 +98,15 @@ $AwardClassesData = GetValue('AwardClassesData', $this->Data);
 								echo '<td class="Awards">';
 							}
 
+							// Add the awarded points for current Award to the Class total
+							$LastUserClassScore += $UserAward->AwardedRankPoints;
+
 							//var_dump($UserAward);die();
 							$UserAwardImage = Img($UserAward->AwardImageFile,
 																		array('alt' => $UserAward->AwardName,
 																					'class' => 'AwardImage Medium ' . $UserAward->AwardClassName,
-																					'title' => $UserAward->AwardName));
+																					'title' => $UserAward->AwardName . ' ' .
+																											sprintf(T('(%d points)'), $UserAward->AwardedRankPoints)));
 
 							// Build link to Award page
 							$UserAwardImgLink = Anchor($UserAwardImage,
@@ -127,10 +118,9 @@ $AwardClassesData = GetValue('AwardClassesData', $this->Data);
 												'span',
 												array('class' => 'AwardImageWrapper'));
 						} while($UserAward = $UserAwardsData->NextRow());
-						// Write Total Awards Score of last User below the Awards list
-						echo Wrap(sprintf(T('%d Points'), $LastUserScore),
-											'div',
-											array('class' => 'UserAwardsScore'));
+
+						// Display Score for last USer
+						RenderScores($LastUserTotalScore, $LastUserClassScore, $AwardClassIDFilter);
 						echo '</td>';
 						echo '</tr>';
 					}

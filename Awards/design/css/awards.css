@@ -383,7 +383,14 @@ img.Medium {
 	text-align: center;
 	margin-top: 0.5em;
 	font-size: 110%;
+}
+
+#AwardsLeaderboard .UserAwardsScore .Total {
 	font-weight: bold;
+}
+
+#AwardsLeaderboard .UserAwardsScore .ClassTotal {
+	margin-left: 0.5em;
 }
 
 #AwardsLeaderboard .AwardImageWrapper {
@@ -509,6 +516,10 @@ img.Medium {
 	padding: 0;
 }
 
+#Content .AwardsPlugin form ul {
+	padding-top: 0;
+}
+
 #Content .AwardsPlugin .RuleGroup h4 {
 	font-size: 120%;
 	font-weight: bold;
@@ -517,6 +528,7 @@ img.Medium {
 
 #Content .AwardsPlugin .RuleGroup .Rule {
 	position: relative;
+	border-bottom: 1px dotted silver;
 }
 
 #Content .AwardsPlugin .RuleGroup .Rule ul {
@@ -524,12 +536,30 @@ img.Medium {
 }
 
 #Content .AwardsPlugin .RuleGroup .Rule li {
-	margin-right: 1em;
+	display: block;
+	margin: 0.5em 0;
+}
+
+#Content #UserRolesRule .CheckBoxList {
+	min-width: 20em;
+}
+
+#Content #UserRolesRule .CheckBoxList li {
+	margin: 0;
 }
 
 /* Tabs links */
 .AwardsPlugin .Tabs {
 	padding: 0;
+	border-bottom: 1px solid #8bc1de;
+}
+
+.AwardsPlugin .Tabs.Filters {
+	border-bottom: none;
+}
+
+#dashboard_plugin_awards .Tabs > ul {
+	padding-left: 0.5em;
 }
 
 .AwardsPlugin .ui-tabs-nav {
@@ -564,11 +594,11 @@ img.Medium {
 }
 
 .AwardsPlugin .Rule label {
+	min-width: 25em;
 	display: inline-block;
 }
 
 #Content .AwardsPlugin ul.Rules {
-	padding-top: 1em;
 }
 
 .AwardsPlugin .Rule ul li span {

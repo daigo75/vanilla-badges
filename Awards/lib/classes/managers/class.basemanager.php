@@ -38,7 +38,6 @@ class BaseManager extends Gdn_Plugin {
 	 * @return object An instance of the specified class.
 	 * @throws An Exception if the specified class does not exist.
 	 */
-	// TODO Find a way to move this function in a central place, as it's used by many classes
 	protected function GetInstance($ClassName) {
 		$FieldName = '_' . $ClassName;
 

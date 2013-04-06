@@ -24,7 +24,6 @@ $OutputForEmptyDataSet = Wrap(T('No Award Rules loaded.'),
 			echo $this->Form->Open();
 			echo $this->Form->Errors();
 		?>
-		<h3><?php echo T('Loaded Award Rules'); ?></h3>
 		<div class="Info">
 			<?php
 				echo Wrap(T('Here you can see a list of currently loaded Award Rules.'), 'p');

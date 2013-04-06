@@ -40,7 +40,7 @@
 	<div class="Tabs">
 		<ul>
 			<?php
-				echo RenderTabItem(T('General Settings'), AWARDS_PLUGIN_GENERALSETTINGS_URL, $TabsClasses);
+				echo RenderTabItem(T('Settings'), AWARDS_PLUGIN_GENERALSETTINGS_URL, $TabsClasses);
 				echo RenderTabItem(T('Award Classes'), AWARDS_PLUGIN_AWARDCLASSES_LIST_URL, $TabsClasses);
 				echo RenderTabItem(T('Awards'), AWARDS_PLUGIN_AWARDS_LIST_URL, $TabsClasses);
 				echo RenderTabItem(T('User Awards'), AWARDS_PLUGIN_USERAWARDS_LIST_URL, $TabsClasses);

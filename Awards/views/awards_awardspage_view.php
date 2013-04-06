@@ -3,39 +3,6 @@
 {licence}
 */
 
-/**
- * Renders some links that will allow to filter the view by Award Class.
- *
- * @param Gdn_DataSet AwardClassesData A DataSet containing all the available
- * Award Classes.
- * @param int CurrentAwardClassID The ID of the currently selected Award Class.
- * If empty, the view is considered unfiltered.
- */
-// TODO Move Filters to separate sub-view
-function RenderAwardClassFilters($AwardClassesData, $CurrentAwardClassID) {
-	if(empty($AwardClassesData)) {
-		return '';
-	}
-
-	echo '<ol id="ClassFilters">';
-	$CssClass = empty($CurrentAwardClassID) ? 'Active' : '';
-	echo Wrap(Anchor(T('All'),
-									 AWARDS_PLUGIN_AWARDS_PAGE_URL),
-						'li',
-						array('class' => 'FilterItem ' . $CssClass));
-
-	// Render a filter for each Award Class
-	foreach($AwardClassesData as $AwardClass) {
-		$CssClass = ($CurrentAwardClassID === $AwardClass->AwardClassID) ? 'Active' : '';
-		$FilterAnchor = Anchor($AwardClass->AwardClassName,
-													 AWARDS_PLUGIN_AWARDS_PAGE_URL . '?' . AWARDS_PLUGIN_ARG_AWARDCLASSID . '=' . $AwardClass->AwardClassID);
-		echo Wrap($FilterAnchor,
-							'li',
-							array('class' => 'FilterItem ' . $CssClass));
-	}
-	echo '</ol>';
-}
-
 function RenderUserAward($AwardID, $UserAwardData) {
 	$UserAward = GetValue($AwardID, $UserAwardData);
 	if(empty($UserAward)) {
@@ -73,7 +40,8 @@ $AwardClassesData = GetValue('AwardClassesData', $this->Data);
 		<?php echo Wrap(T('Awards'), 'h1'); ?>
 		<div class="Filters Tabs">
 			<?php
-				RenderAwardClassFilters($AwardClassesData, GetValue('AwardClassID', $this->Data));
+				// Render Award Class Filters
+				AwardClassesManager::RenderAwardClassFilters($AwardClassesData, GetValue('AwardClassID', $this->Data));
 			?>
 		</div>
 	</div>

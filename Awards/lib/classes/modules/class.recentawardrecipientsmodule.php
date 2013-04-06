@@ -4,7 +4,7 @@
 */
 
 /**
- * Renders the widget that displays the Awards earned by the User.
+ * Renders the widget that displays the recent recipients of an Award.
  */
 class RecentAwardRecipientsModule extends ModuleEx {
 	// @var Gdn_Dataset Stores the list of the User Awards to display

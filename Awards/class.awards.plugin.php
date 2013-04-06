@@ -57,6 +57,22 @@ class AwardsPlugin extends Gdn_Plugin {
 	);
 
 	/**
+	 * Set Validation Rules related to Configuration Model.
+	 *
+	 * @param Gdn_Validation $Validation The Validation that is (or will be)
+	 * associated to the Configuration Model.
+	 *
+	 * @return void
+	 */
+	protected function _SetConfigModelValidationRules(Gdn_Validation $Validation) {
+		$Validation->AddRule('PositiveInteger', 'function:ValidatePositiveInteger');
+
+		$Validation->ApplyRule('Plugin.Awards.MinSearchLength', 'Required', T('Please specify a value for Minimum Search Length.'));
+		$Validation->ApplyRule('Plugin.Awards.MinSearchLength', 'PositiveInteger', T('Minimum Search Length must be a positive Integer.'));
+	}
+
+
+	/**
 	 * Returns an instance of a Class and stores it as a property of this class.
 	 * The function follows the principle of lazy initialization, instantiating
 	 * the class the first time it's requested.
@@ -239,10 +255,12 @@ class AwardsPlugin extends Gdn_Plugin {
 		$Sender->SetData('PluginDescription', $this->GetPluginKey('Description'));
 
 		$Validation = new Gdn_Validation();
+		$this->_SetConfigModelValidationRules($Validation);
+
 		$ConfigurationModel = new Gdn_ConfigurationModel($Validation);
 		$ConfigurationModel->SetField(array(
-			// TODO Set default configuration values
-
+			// Set default configuration values
+			'Plugin.Awards.MinSearchLength' => AWARDS_PLUGIN_MINSEARCHLENGTH,
 		));
 
 		// Set the model on the form.
@@ -254,8 +272,6 @@ class AwardsPlugin extends Gdn_Plugin {
 			$Sender->Form->SetData($ConfigurationModel->Data);
 		}
 		else {
-			// TODO Validate Configuration settings
-
 			$Saved = $Sender->Form->Save();
 			if($Saved) {
 				$Sender->StatusMessage = T('Your changes have been saved.');
@@ -433,8 +449,7 @@ class AwardsPlugin extends Gdn_Plugin {
 		$SearchString = GetValue(0, $Args);
 		//var_dump($SearchString);
 
-		// TODO Replace 2 with constant
-		if(strlen($SearchString) < 2) {
+		if(strlen($SearchString) < C('Plugin.Awards.MinSearchLength', AWARDS_PLUGIN_MINSEARCHLENGTH)) {
 			$Sender->SetData('Error', sprintf(T('Search string must be at least %d characters long'), 2));
 		}
 		else {
@@ -482,8 +497,7 @@ class AwardsPlugin extends Gdn_Plugin {
 			$Result = false;
 		}
 
-		// TODO Replace 2 with constant
-		if(strlen($SearchString) < 2) {
+		if(strlen($SearchString) < C('Plugin.Awards.MinSearchLength', AWARDS_PLUGIN_MINSEARCHLENGTH)) {
 			$Sender->SetData('Error', sprintf(T('Search string must be at least %d characters long.'), 2));
 			$Result = false;
 		}
@@ -696,6 +710,9 @@ class AwardsPlugin extends Gdn_Plugin {
 		SaveToConfig('Preferences.Email.' . self::ACTIVITY_AWARDEARNED, 1);
 		SaveToConfig('Preferences.Popup.' . self::ACTIVITY_AWARDEARNED, 1);
 
+		// Miscellaneous default settings
+		SaveToConfig('Plugin.Awards.MinSearchLength', AWARDS_PLUGIN_MINSEARCHLENGTH);
+
 		// Set up the Activity Types related to the Awards
 		$this->AddAwardsActivityTypes();
 
@@ -728,6 +745,7 @@ class AwardsPlugin extends Gdn_Plugin {
 		// TODO Remove Plugin's configuration parameters
 		RemoveFromConfig('Preferences.Email.' . self::ACTIVITY_AWARDEARNED);
 		RemoveFromConfig('Preferences.Popup.' . self::ACTIVITY_AWARDEARNED);
+		RemoveFromConfig('Plugin.Awards.MinSearchLength');
 
 		$this->RemoveAwardsActivityTypes();
 

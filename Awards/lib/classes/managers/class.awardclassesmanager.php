@@ -280,7 +280,12 @@ class AwardClassesManager extends BaseManager {
 		}
 	}
 
-	// TODO Document method
+	/**
+	 * Generates the CSS file containing the styles for the configured Award
+	 * classes. If file already exists, it's overwritten.
+	 *
+	 * @param Gdn_Pluggable Sender Sending controller instance.
+	 */
 	public function GenerateAwardClassesCSS(Gdn_Pluggable $Sender) {
 		// TODO Implement automatic generation of CSS file containing the styles for each Award Class
 		$AwardClassesDataSet = $this->AwardClassesModel()->Get();
@@ -315,5 +320,39 @@ class AwardClassesManager extends BaseManager {
 		}
 
 		$this->WriteToFile(AWARDS_PLUGIN_AWARDCLASSES_CSS_FILE, implode("\n", $CSSEntries));
+	}
+
+	/**
+	 * Renders some links that will allow to filter the view by Award Class.
+	 *
+	 * @param Gdn_DataSet AwardClassesData A DataSet containing all the available
+	 * Award Classes.
+	 * @param int CurrentAwardClassID The ID of the currently selected Award Class.
+	 * If empty, the view is considered unfiltered.
+	 */
+	public static function RenderAwardClassFilters($AwardClassesData, $CurrentAwardClassID) {
+		if(empty($AwardClassesData)) {
+			return '';
+		}
+
+		echo '<div class="Filters Tabs">';
+		echo '<ol id="ClassFilters">';
+		$CssClass = empty($CurrentAwardClassID) ? 'Active' : '';
+		echo Wrap(Anchor(T('All'),
+										 AWARDS_PLUGIN_LEADERBOARD_PAGE_URL),
+							'li',
+							array('class' => 'FilterItem ' . $CssClass));
+
+		// Render a filter for each Award Class
+		foreach($AwardClassesData as $UserAwardClass) {
+			$CssClass = ($CurrentAwardClassID === $UserAwardClass->AwardClassID) ? 'Active' : '';
+			$FilterAnchor = Anchor($UserAwardClass->AwardClassName,
+														 AWARDS_PLUGIN_LEADERBOARD_PAGE_URL . '?' . AWARDS_PLUGIN_ARG_AWARDCLASSID . '=' . $UserAwardClass->AwardClassID);
+			echo Wrap($FilterAnchor,
+								'li',
+								array('class' => 'FilterItem ' . $CssClass));
+		}
+		echo '</ol>';
+		echo '</div>';
 	}
 }

@@ -208,7 +208,12 @@ class AwardRulesManager extends BaseManager {
 		closedir($Handle);
 	}
 
-	// TODO Document method
+	/**
+	 * Validates the settings for each of the Rules configured for an Award.
+	 *
+	 * @param Gdn_Form Form The form which contains the posted values.
+	 * @return bool True, if validation is successful, False otherwise.
+	 */
 	public function ValidateRulesSettings(Gdn_Form $Form) {
 		$RulesSettings = &$Form->GetFormValue('Rules');
 
@@ -228,7 +233,13 @@ class AwardRulesManager extends BaseManager {
 		return $Result;
 	}
 
-	// TODO Document method
+	/**
+	 * Transforms the settings of Award Rules into a JSON string, which will then
+	 * be saved with an Award.
+	 *
+	 * @param Gdn_Form Form The form containing the Rule settings.
+	 * @return string The settings, converted to JSON.
+	 */
 	public function RulesSettingsToJSON(Gdn_Form $Form) {
 		$FormRulesSettings = &$Form->GetFormValue('Rules');
 
@@ -374,9 +385,7 @@ class AwardRulesManager extends BaseManager {
 
 		$Sender->SetData('Rules', $this->GetRules());
 
-		// TODO Implement Awards Rules List page
 		$Sender->Render($Caller->GetView('awards_ruleslist_view.php'));
-		//throw new Exception(T('Not implemented.'));
 	}
 
 	/**

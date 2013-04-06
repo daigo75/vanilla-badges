@@ -80,8 +80,10 @@ $IsNewAward = empty($AwardID) ? true : false;
 								$this->Form->SetValue('AwardIsEnabled', 1);
 							}
 							echo $this->Form->CheckBox('AwardIsEnabled',
-																				 T('<strong>Award is Enabled</strong>. Disabled Awards cannot be assigned, but ' .
-																					 'they will be displayed for Users who already obtained them.'),
+																				 T('<strong>Award is Enabled</strong>. Disabled Awards are ' .
+																					 'not assigned automatically, but they can be assigned ' .
+																					 'manually. They will be displayed for Users who ' .
+																					 'already obtained them.'),
 																				 array('value' => 1,));
 						?>
 					</li>
