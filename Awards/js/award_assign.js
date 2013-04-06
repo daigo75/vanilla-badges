@@ -64,7 +64,8 @@ jQuery(document).ready(function(){
 		// Prepare the Remove Icon for the element
 		var RemoveIcon = BaseRemoveIcon
 			.clone()
-			.attr('id', 'RemoveUser_' + User.UserID);
+			.attr('id', 'RemoveUser_' + User.UserID)
+			.attr('title', gdn.definition('Remove_User'));
 
 		// Add User to the list of the selected ones
 		var UserElement = $('<div>')
