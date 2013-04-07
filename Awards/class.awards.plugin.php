@@ -14,7 +14,7 @@ require(AWARDS_PLUGIN_LIB_PATH . '/awards.validation.php');
 $PluginInfo['Awards'] = array(
 	'Name' => 'Awards Plugin',
 	'Description' => 'Awards Plugin for Vanilla Forums',
-	'Version' => '13.04.06 beta',
+	'Version' => '13.04.07 beta',
 	'RequiredApplications' => array('Vanilla' => '2.0'),
 	'RequiredTheme' => FALSE,
 	'RequiredPlugins' => array('Logger' => '12.10.28',
@@ -22,7 +22,7 @@ $PluginInfo['Awards'] = array(
 														 ),
 	'HasLocale' => FALSE,
 	'MobileFriendly' => TRUE,
-	'SettingsUrl' => '/plugin/awards',
+	'SettingsUrl' => '/plugin/awards/settings',
 	'SettingsPermission' => 'Garden.Settings.Manage',
 	'Author' => 'D.Zanella',
 	'AuthorEmail' => 'diego@pathtoenlightenment.net',
