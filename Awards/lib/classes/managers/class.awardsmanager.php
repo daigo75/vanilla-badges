@@ -96,8 +96,16 @@ class AwardsManager extends BaseManager {
 		// Prevent non authorised Users from accessing this page
 		$Sender->Permission('Plugins.Awards.Manage');
 
+		$Wheres = array();
+		// Prepare the Award Class filter, if needed
+		$AwardClassID = $Sender->Request->GetValue(AWARDS_PLUGIN_ARG_AWARDCLASSID);
+		if(!empty($AwardClassID)) {
+			$Wheres['VAAL.AwardClassID'] = $AwardClassID;
+			$Sender->SetData('AwardClassID', $AwardClassID);
+		}
+
 		// TODO Handle Limit and Offset
-		$AwardsDataSet = $this->AwardsModel()->GetWithTimesAwarded(array(), array('AwardName asc'));
+		$AwardsDataSet = $this->AwardsModel()->GetWithTimesAwarded($Wheres, array('AwardName asc'));
 		// TODO Add Pager
 
 		$Sender->SetData('AwardsDataSet', $AwardsDataSet);
@@ -662,10 +670,6 @@ class AwardsManager extends BaseManager {
 			}
 		}
 		$Sender->SetData('UserAwardData', $UserAwardData);
-
-		// Load Award Classes data
-		$AwardClassesData = $this->AwardClassesModel()->GetWhere(array(), array('AwardClassName asc'));
-		$Sender->SetData('AwardClassesData', $AwardClassesData);
 
 		// Retrieve the View to display the Awards
 		$Sender->Render($Caller->GetView('awards_awardspage_view.php'));

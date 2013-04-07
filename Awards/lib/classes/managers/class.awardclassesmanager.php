@@ -326,12 +326,15 @@ class AwardClassesManager extends BaseManager {
 	/**
 	 * Renders some links that will allow to filter the view by Award Class.
 	 *
-	 * @param Gdn_DataSet AwardClassesData A DataSet containing all the available
-	 * Award Classes.
+	 * @param string PageURL The URL of the Page where the filters are applied.
 	 * @param int CurrentAwardClassID The ID of the currently selected Award Class.
 	 * If empty, the view is considered unfiltered.
 	 */
-	public static function RenderAwardClassFilters($AwardClassesData, $CurrentAwardClassID) {
+	public static function RenderAwardClassFilters($PageURL, $CurrentAwardClassID) {
+		// Retrieve Award Classes
+		$AwardClassesModel = new AwardClassesModel();
+		$AwardClassesData = $AwardClassesModel->GetWhere(array(), array('AwardClassName asc'));
+
 		if(empty($AwardClassesData)) {
 			return '';
 		}
@@ -340,7 +343,7 @@ class AwardClassesManager extends BaseManager {
 		echo '<ol id="ClassFilters">';
 		$CssClass = empty($CurrentAwardClassID) ? 'Active' : '';
 		echo Wrap(Anchor(T('All'),
-										 AWARDS_PLUGIN_LEADERBOARD_PAGE_URL),
+										 $PageURL),
 							'li',
 							array('class' => 'FilterItem ' . $CssClass));
 
@@ -348,7 +351,7 @@ class AwardClassesManager extends BaseManager {
 		foreach($AwardClassesData as $UserAwardClass) {
 			$CssClass = ($CurrentAwardClassID === $UserAwardClass->AwardClassID) ? 'Active' : '';
 			$FilterAnchor = Anchor($UserAwardClass->AwardClassName,
-														 AWARDS_PLUGIN_LEADERBOARD_PAGE_URL . '?' . AWARDS_PLUGIN_ARG_AWARDCLASSID . '=' . $UserAwardClass->AwardClassID);
+														 $PageURL . '?' . AWARDS_PLUGIN_ARG_AWARDCLASSID . '=' . $UserAwardClass->AwardClassID);
 			echo Wrap($FilterAnchor,
 								'li',
 								array('class' => 'FilterItem ' . $CssClass));

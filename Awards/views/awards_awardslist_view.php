@@ -34,6 +34,13 @@
 			echo Anchor(T('Add Award'), AWARDS_PLUGIN_AWARD_ADDEDIT_URL, 'Button');
 		?>
 		</div>
+		<div class="ClassFilters">
+		<?php
+			// Render Award Class Filters
+			AwardClassesManager::RenderAwardClassFilters(AWARDS_PLUGIN_AWARDS_LIST_URL,
+																									 GetValue('AwardClassID', $this->Data));
+		?>
+		</div>
 		<table id="AwardsList" class="display AltRows">
 			<thead>
 				<tr>

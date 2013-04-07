@@ -50,7 +50,6 @@ $OutputForEmptyDataSet = Wrap(T('No data found.'),
 															);
 
 $UserAwardsData = GetValue('UserAwardsData', $this->Data);
-$AwardClassesData = GetValue('AwardClassesData', $this->Data);
 $AwardClassIDFilter = GetValue('AwardClassID', $this->Data);
 //var_dump($AwardClassesData);
 ?>
@@ -59,7 +58,8 @@ $AwardClassIDFilter = GetValue('AwardClassID', $this->Data);
 		<?php
 			echo Wrap(T('Awards Leaderboard'), 'h1');
 			// Render Award Class Filters
-			AwardClassesManager::RenderAwardClassFilters($AwardClassesData, $AwardClassIDFilter);
+			AwardClassesManager::RenderAwardClassFilters(AWARDS_PLUGIN_LEADERBOARD_PAGE_URL,
+																									 $AwardClassIDFilter);
 		?>
 	</div>
 	<div class="Content">

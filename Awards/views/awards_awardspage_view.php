@@ -32,7 +32,6 @@ $OutputForEmptyDataSet = Wrap(T('No Awards found.'),
 
 $AwardsData = GetValue('AwardsData', $this->Data);
 $UserAwardData = GetValue('UserAwardData', $this->Data);
-$AwardClassesData = GetValue('AwardClassesData', $this->Data);
 //var_dump($UserAwardData);
 ?>
 <div id="AwardsPage" class="AwardsPlugin">
@@ -41,7 +40,8 @@ $AwardClassesData = GetValue('AwardClassesData', $this->Data);
 		<div class="Filters Tabs">
 			<?php
 				// Render Award Class Filters
-				AwardClassesManager::RenderAwardClassFilters($AwardClassesData, GetValue('AwardClassID', $this->Data));
+				AwardClassesManager::RenderAwardClassFilters(AWARDS_PLUGIN_AWARDS_PAGE_URL,
+																										 GetValue('AwardClassID', $this->Data));
 			?>
 		</div>
 	</div>
