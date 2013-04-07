@@ -1,0 +1,4 @@
+Award Plugin for Vanilla Forums 2.0 - Change Log
+
+13.04.06 beta
+- Preview Release
