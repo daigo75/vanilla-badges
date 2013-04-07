@@ -29,7 +29,7 @@ $ExtraCssClass = empty($MissingRuleRequirements) ? '' : 'Disabled';
 			<li>
 				<div class="Sample">
 				<?php
-					// TODO Output the Rule fields using SampleRule::RenderRuleField().
+					// GUIDE Output the Rule fields using SampleRule::RenderRuleField().
 
 					/* IMPORTANT: You MUST use such method, as it will transform the field
 					 * names so that, upon saving, they will be returned as a hierarchy,

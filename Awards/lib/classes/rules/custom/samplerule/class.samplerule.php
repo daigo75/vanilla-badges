@@ -36,9 +36,9 @@ class SampleRule extends BaseAwardRule {
 	 * @see AwardBaseRule::Process().
 	 */
 	protected function _Process($UserID, stdClass $Settings, array $EventInfo = null) {
-		// TODO Perform the checks you need here, determining how many times an Award should be assigned to the User
+		// GUIDE Perform the checks you need here, determining how many times an Award should be assigned to the User
 
-		// TODO Replace NO_ASSIGNMENTS with the amount of times the Award should be assigned
+		// GUIDE Replace NO_ASSIGNMENTS with the amount of times the Award should be assigned
 		return self::NO_ASSIGNMENTS;
 	}
 
@@ -51,7 +51,7 @@ class SampleRule extends BaseAwardRule {
 	protected function _ValidateSettings(array $Settings) {
 		$Result = array();
 
-		// TODO Check the settings entered for the Rule. If any of them is incorrect, add an error message to the Validation object. See example below.
+		// GUIDE Check the settings entered for the Rule. If any of them is incorrect, add an error message to the Validation object. See example below.
 
 		// A Rule can receive several settings. In this example, we are checking the
 		// array with the key "Sample"
@@ -83,7 +83,7 @@ class SampleRule extends BaseAwardRule {
 	 * - BaseAwardRule::RULE_ENABLED_CANNOT_PROCESS
 	 */
 	protected function _IsRuleEnabled(stdClass $Settings) {
-		// TODO Add your logic to determine if the Rule is enabled or not. See example below.
+		// GUIDE Add your logic to determine if the Rule is enabled or not. See example below.
 
 		//  Example: Rule is enabled if field SampleSettings->Enabled is set to "1"
 		if((GetValue('Enabled', $Settings->SampleSettings) == 1)) {
@@ -101,7 +101,7 @@ class SampleRule extends BaseAwardRule {
 	public function __construct() {
 		parent::__construct();
 
-		// TODO Add any required plugin to the _RequiresPlugins array. If any of the required plugins is not installed, or not enabled, the rule will not be processed (although it can still be configured from the Admin interface)
+		// GUIDE Add any required plugin to the _RequiresPlugins array. If any of the required plugins is not installed, or not enabled, the rule will not be processed (although it can still be configured from the Admin interface)
 		$this->_RequiredPlugins[] = 'QnA';
 	}
 }
