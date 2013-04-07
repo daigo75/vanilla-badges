@@ -62,7 +62,6 @@ class PictureManager extends BaseManager {
 										 'that the destination directory exists and that it is writable',
 										 $ParsedValues['SaveName'],
 										 $PictureFileName);
-			$this->Log()->error($Msg);
 			throw new Exception($Msg);
 		}
 
