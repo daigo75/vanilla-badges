@@ -57,7 +57,9 @@ class PictureManager extends BaseManager {
 		 * command was already invoked by Gdn_UploadImage::SaveAs(). The file we
 		 * are moving here is, therefore.
 		 */
-		if(rename($ParsedValues['SaveName'], $PictureFileName) === false) {
+		$TempPictureFileName = PATH_LOCAL_UPLOADS . '/' . pathinfo($ParsedValues['SaveName'], PATHINFO_BASENAME);
+		//var_dump($TempPictureFileName, $PictureFileName);die();
+		if(rename($TempPictureFileName, $PictureFileName) === false) {
 			$Msg = sprintf('Could not rename file "%s" to "%s". Please make sure ' .
 										 'that the destination directory exists and that it is writable',
 										 $ParsedValues['SaveName'],
