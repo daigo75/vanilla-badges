@@ -30,7 +30,7 @@
 				echo $this->Form->Hidden('AwardClassID');
 				echo $this->Form->Hidden('AwardClassName');
 				echo $this->Form->Button(T('OK'), array('Name' => 'OK',));
-				echo $this->Form->Button(T('Cancel'));
+				echo $this->Form->Button(T('Cancel'), array('Name' => 'Cancel',));
 			?>
 		</div>
 	</fieldset>

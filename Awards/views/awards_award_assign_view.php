@@ -68,7 +68,7 @@
 			<?php
 				echo $this->Form->Hidden('AwardDataJSON');
 				echo $this->Form->Button(T('OK'), array('Name' => 'OK',));
-				echo $this->Form->Button(T('Cancel'));
+				echo $this->Form->Button(T('Cancel'), array('Name' => 'Cancel',));
 			?>
 		</div>
 	</fieldset>

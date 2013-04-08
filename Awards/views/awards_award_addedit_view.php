@@ -65,7 +65,7 @@ $IsNewAward = empty($AwardID) ? true : false;
 			<div class="Buttons Top">
 				<?php
 					echo $this->Form->Button(T('Save'), array('Name' => 'Save',));
-					echo $this->Form->Button(T('Cancel'));
+					echo $this->Form->Button(T('Cancel'), array('Name' => 'Cancel',));
 				?>
 			</div>
 		</legend>
@@ -237,7 +237,7 @@ $IsNewAward = empty($AwardID) ? true : false;
 			<div class="Buttons">
 				<?php
 					echo $this->Form->Button(T('Save'), array('Name' => 'Save',));
-					echo $this->Form->Button(T('Cancel'));
+					echo $this->Form->Button(T('Cancel'), array('Name' => 'Cancel',));
 				?>
 			</div>
 		</div> <!-- End Tabs Container -->

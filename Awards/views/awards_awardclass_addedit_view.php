@@ -43,7 +43,7 @@ function GetCurrentAction(Gdn_Form $Form, $Data) {
 			<div class="Buttons Top">
 				<?php
 					echo $this->Form->Button(T('Save'), array('Name' => 'Save',));
-					echo $this->Form->Button(T('Cancel'));
+					echo $this->Form->Button(T('Cancel'), array('Name' => 'Cancel',));
 				?>
 			</div>
 		</legend>
@@ -153,7 +153,7 @@ function GetCurrentAction(Gdn_Form $Form, $Data) {
 	<fieldset class="Buttons">
 		<?php
 			echo $this->Form->Button(T('Save'), array('Name' => 'Save',));
-			echo $this->Form->Button(T('Cancel'));
+			echo $this->Form->Button(T('Cancel'), array('Name' => 'Cancel',));
 		?>
 	</fieldset>
 	<?php
