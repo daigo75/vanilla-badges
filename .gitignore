@@ -1,6 +1,6 @@
 *.komodotools
 /FeaturedPosts/install/plugin.schema.php
 /Awards/install/plugin.schema.php
-/Images/Screenshots/*.png
+/Images/*
 /Awards/design/images/awards/*.png
 /Awards/design/images/awards/*.jpg
