@@ -7,3 +7,7 @@ Award Plugin for Vanilla Forums 2.0 - Change Log
 - Fixed bug in PictureManager
 - Fixed incorrect link for Settings button
 - Added .clearfix styles to CSS
+
+13.04.08 beta
+- Forced Name attribute on Cancel buttons, to allow them to work with different languages
+- Corrected logic in manipulation of uploaded files
