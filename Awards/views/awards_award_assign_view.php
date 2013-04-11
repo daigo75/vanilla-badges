@@ -28,7 +28,7 @@
 								'p',
 								array('class' => 'Info'));
 
-			echo Wrap(Wrap(T('This page is much easier to use with JavaScript enabled. Please enable ' .
+			echo Wrap(Wrap(T('This page is easier to use with JavaScript enabled. Please enable ' .
 											 'to access all the features. If you prefer to continue without enabling ' .
 											 'JavaScript, please follow the instructions below.'),
 										 'p',
