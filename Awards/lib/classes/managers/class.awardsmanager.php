@@ -584,6 +584,37 @@ class AwardsManager extends BaseManager {
 	}
 
 	/**
+	 * Renders the page to export Awards and Awards Classes.
+	 *
+	 * @param AwardsPlugin Caller The Plugin which called the method.
+	 * @param Gdn_Controller Sender Sending controller instance.
+	 */
+	public function Export(AwardsPlugin $Caller, $Sender) {
+		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_EXPORT_URL);
+		// Prevent Users without proper permissions from accessing this page.
+		$Sender->Permission('Plugins.Awards.Manage');
+
+		// If seeing the form for the first time...
+		if ($Sender->Form->AuthenticatedPostBack() === FALSE) {
+			// Just Load auxiliary files
+			$Sender->AddJsFile('awards_export.js', 'plugins/Awards/js');
+
+		}
+		else {
+			//var_dump($Sender->Form->FormValues());
+			$Data = $Sender->Form->FormValues();
+
+			// The field named "OK" is actually the OK button. If it exists, it means
+			// that the User confirmed the deletion.
+			if(Gdn::Session()->ValidateTransientKey($Data['TransientKey']) && $Sender->Form->ButtonExists('OK')) {
+				// TODO Export data
+			}
+		}
+		// Render the page
+		$Sender->Render($Caller->GetView('awards_export_view.php'));
+	}
+
+	/**
 	 * Loads and configures the Recent Award Recipients module, which will display
 	 * a list of the last Users who earned an Award.
 	 *

@@ -51,8 +51,8 @@ define('AWARDS_PLUGIN_AWARD_ASSIGN_URL', AWARDS_PLUGIN_BASE_URL . '/awardassign'
 define('AWARDS_PLUGIN_RULES_LIST_URL', AWARDS_PLUGIN_BASE_URL . '/ruleslist');
 
 // URLs for Import/Export
-define('AWARDS_PLUGIN_AWARD_EXPORT_URL', AWARDS_PLUGIN_BASE_URL . '/export');
-define('AWARDS_PLUGIN_AWARD_IMPORT_URL', AWARDS_PLUGIN_BASE_URL . '/import');
+define('AWARDS_PLUGIN_EXPORT_URL', AWARDS_PLUGIN_BASE_URL . '/export');
+define('AWARDS_PLUGIN_IMPORT_URL', AWARDS_PLUGIN_BASE_URL . '/import');
 
 // FrontEnd URLs. They use a shorter URL for better User Experience
 // Awards page shows the list of Awards in the frontend

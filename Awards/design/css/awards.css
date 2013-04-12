@@ -18,6 +18,7 @@
 	height: 0;
 }
 
+#dashboard_plugin_awards .AwardsPlugin .clearfix,
 .clearfix {
 	display: inline-block;
 }
@@ -48,12 +49,16 @@ html[xmlns] .clearfix {
 	font-weight: normal !important;
 }
 
-.AwardsPlugin a.Help {
+#Content .AwardsPlugin a.Help {
 	border-bottom: 1px dotted gray !important;
 }
 
-.AwardsPlugin h1 {
+#Content .AwardsPlugin h1 {
 	text-align: center;
+}
+
+#Content .AwardsPlugin h4 {
+	padding: 0;
 }
 
 #Content .AwardsPlugin .Info {
@@ -517,7 +522,7 @@ img.Medium {
 	border-bottom: 1px dashed gray;
 }
 
-.AwardsPlugin #Fields .Column {
+.AwardsPlugin .Column {
 	float: left;
 }
 
@@ -713,4 +718,14 @@ img.Medium {
 	text-indent: -99999px;
 	margin: 2px 0 0 0.5em;
 	vertical-align:
+}
+
+/* Import Export pages */
+#Content .AwardsPlugin.Export .Column {
+	width: 33%;
+}
+
+#Content .AwardsPlugin.Export #Form_ExportLabel,
+#Content .AwardsPlugin.Export #Form_ExportDescription {
+	width: 100%;
 }

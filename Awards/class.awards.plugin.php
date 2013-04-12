@@ -424,6 +424,15 @@ class AwardsPlugin extends Gdn_Plugin {
 	}
 
 	/**
+	 * Renders the page that allows to export Awards and Award Classes.
+	 *
+	 * @param object Sender Sending controller instance.
+	 */
+	public function Controller_Export($Sender) {
+		$this->AwardsManager()->Export($this, $Sender);
+	}
+
+	/**
 	 * Renders the Awards Leaderboard page.
 	 *
 	 * @param object Sender Sending controller instance.
