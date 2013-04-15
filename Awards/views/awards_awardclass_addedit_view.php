@@ -93,7 +93,7 @@ function GetCurrentAction(Gdn_Form $Form, $Data) {
 				</div>
 				<div class="ImageSelector">
 					<?php
-						echo Wrap(T('Select new Image'), 'h5');
+						echo Wrap(T('Upload new Image'), 'h5');
 						// TODO Get picture size from configuration
 						echo Wrap(sprintf(T('Select an image on your computer (2mb max) to be used as ' .
 																'an icon for the Award. Image will be resized to %dx%d (width ' .
