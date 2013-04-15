@@ -11,3 +11,6 @@ Award Plugin for Vanilla Forums 2.0 - Change Log
 13.04.08 beta
 - Forced Name attribute on Cancel buttons, to allow them to work with different languages
 - Corrected logic in manipulation of uploaded files
+
+13.04.15 beta
+- Added handling of image Previews for Awards
