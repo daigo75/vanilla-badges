@@ -26,4 +26,18 @@ jQuery(document).ready(function(){
 	var TabsElement = $('.AwardsPlugin').find('.Tabs').first();
 	TabsElement.prepend(TabsList);
 	TabsElement.tabs();
+
+	// Handle clearing of new image, restoring original one
+	$('.AwardImageWrapper').delegate('#RestoreImage', 'click', function() {
+		var ImageInput = $('#Form_Picture');
+		ImageInput.replaceWith(ImageInput = ImageInput.val('').clone(true));
+		$('.AwardImageWrapper').removeClass('Preview');
+	});
+
+	// Display a Preview when a new Image has been selected
+	$('#Form_Picture').change(function() {
+		if($(this).val()) {
+			$('.AwardImageWrapper').addClass('Preview');
+		}
+	})
 });
