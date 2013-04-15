@@ -262,6 +262,7 @@ html[xmlns] .clearfix {
 	background: none;
 	text-align: center;
 	background-size: contain !important;
+	display: inline-block;
 }
 
 img.Large {
