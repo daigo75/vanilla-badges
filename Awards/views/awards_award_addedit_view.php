@@ -136,11 +136,11 @@ $IsNewAward = empty($AwardID) ? true : false;
 							echo Wrap(T('Current Image'), 'h5');
 
 							// Overlay that will inform user when an image is a Preview
-							$ImagePreviewOverlay = Wrap('Preview',
+							$ImagePreviewOverlay = Wrap(T('Preview'),
 																	 'div',
 																	 array('id' => 'ImageOverlay'));
 							// Button to restore original image, discarding the one selected for upload
-							$RestoreButton = $this->Form->Button('Restore original',
+							$RestoreButton = $this->Form->Button(T('Restore original'),
 																									 array('id' => 'RestoreImage',
 																												 'class' => 'SmallButton',
 																												 'type' => 'button'));
