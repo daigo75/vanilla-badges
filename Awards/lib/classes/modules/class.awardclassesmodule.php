@@ -57,7 +57,7 @@ class AwardClassesModule extends ModuleEx {
 
 			// Retrieve Image for Award Class, using a dummy one if none is found
 			if(empty($AwardClass->AwardClassImageFile)) {
-				$AwardClass->AwardClassImageFile = AWARDS_PLUGIN_AWARDCLASSES_PICS_PATH . '/dummy-class-bg.png';
+				$AwardClass->AwardClassImageFile = AWARDS_PLUGIN_UI_PICS_PATH . '/dummy-class-bg.png';
 			}
 
 			$AwardClassImage = Img($AwardClass->AwardClassImageFile,

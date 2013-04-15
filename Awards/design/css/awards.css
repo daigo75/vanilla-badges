@@ -613,6 +613,7 @@ img.Medium {
 .AwardsPlugin .Rule .MissingRequirements {
 	float: left;
 	margin-left: 2em;
+	margin-right: 1em;
 }
 
 .AwardsPlugin .Rule .MissingRequirements h5 {
@@ -728,4 +729,28 @@ img.Medium {
 #Content .AwardsPlugin.Export #Form_ExportLabel,
 #Content .AwardsPlugin.Export #Form_ExportDescription {
 	width: 100%;
+}
+
+.AwardEdit .AwardImageWrapper {
+	position: relative;
+}
+
+.AwardEdit .AwardImageWrapper #ImageOverlay {
+	width: 100%;
+	position: absolute;
+	top: 45px;
+	left: 0;
+	background: whitesmoke;
+	opacity: 0.7;
+	font-size: large;
+	display: none;
+}
+
+.AwardEdit .AwardImageWrapper #RestoreImage {
+	display: none;
+}
+
+.AwardEdit .AwardImageWrapper.Preview #ImageOverlay,
+.AwardEdit .AwardImageWrapper.Preview #RestoreImage {
+	display: inline-block;
 }

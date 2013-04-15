@@ -128,21 +128,39 @@ $IsNewAward = empty($AwardID) ? true : false;
 					</li>
 					<li class="clearfix">
 						<?php
+							// TODO Extract image manipulation interface to a separate module or view
 							echo $this->Form->Label(T('Award Picture'), 'Picture');
 						?>
 						<div class="ImageColumn">
 						<?php
 							echo Wrap(T('Current Image'), 'h5');
-							echo Wrap(Wrap(Img($this->Form->GetValue('AwardImageFile'),
-																 array('class' => 'AwardImage Large',)),
-														 'td'),
+
+							// Overlay that will inform user when an image is a Preview
+							$ImagePreviewOverlay = Wrap('Preview',
+																	 'div',
+																	 array('id' => 'ImageOverlay'));
+							// Button to restore original image, discarding the one selected for upload
+							$RestoreButton = $this->Form->Button('Restore original',
+																									 array('id' => 'RestoreImage',
+																												 'class' => 'SmallButton',
+																												 'type' => 'button'));
+
+							// Dummy Image to use when none has been selected
+							$DummyImageFile = AWARDS_PLUGIN_UI_PICS_PATH . '/dummy-award-img.png';
+							$AwardImage = Wrap(Img($this->Form->GetValue('AwardImageFile', $DummyImageFile),
+																		 array('class' => 'AwardImage Large',)),
+																 'div');
+
+							echo Wrap($ImagePreviewOverlay .
+												$AwardImage .
+												$RestoreButton,
 												'div',
 												array('class' => 'AwardImageWrapper'));
 						?>
 						</div>
 						<div class="ImageSelector">
 							<?php
-								echo Wrap(T('Select new Image'), 'h5');
+								echo Wrap(T('Upload new Image'), 'h5');
 								// TODO Get picture size from configuration
 								echo Wrap(sprintf(T('Select an image on your computer (2mb max) to be used as ' .
 																		'an icon for the Award. Image will be resized to %dx%d (width ' .

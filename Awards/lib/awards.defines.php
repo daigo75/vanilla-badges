@@ -20,8 +20,10 @@ define('AWARDS_PLUGIN_MODEL_PATH', AWARDS_PLUGIN_CLASS_PATH . '/models');
 define('AWARDS_PLUGIN_EXTERNAL_PATH', AWARDS_PLUGIN_LIB_PATH . '/external');
 define('AWARDS_PLUGIN_VIEWS_PATH', AWARDS_PLUGIN_PATH . '/views');
 define('AWARDS_PLUGIN_RULES_PATH', AWARDS_PLUGIN_CLASS_PATH . '/rules');
-define('AWARDS_PLUGIN_AWARD_PICS_PATH', 'plugins/Awards/design/images/awards');
-define('AWARDS_PLUGIN_AWARDCLASSES_PICS_PATH', 'plugins/Awards/design/images/awardclasses');
+define('AWARDS_PLUGIN_PICS_PATH', 'plugins/Awards/design/images');
+define('AWARDS_PLUGIN_UI_PICS_PATH', AWARDS_PLUGIN_PICS_PATH . '/ui');
+define('AWARDS_PLUGIN_AWARD_PICS_PATH', AWARDS_PLUGIN_PICS_PATH . '/awards');
+define('AWARDS_PLUGIN_AWARDCLASSES_PICS_PATH', AWARDS_PLUGIN_PICS_PATH . '/awardclasses');
 define('AWARDS_PLUGIN_AWARDCLASSES_CSS_FILE', AWARDS_PLUGIN_PATH . '/design/css/awardclasses.css');
 
 // Subdirectories where Core and Custom Rules will be located
