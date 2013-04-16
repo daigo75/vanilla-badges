@@ -5,7 +5,7 @@
 // Indicates how many columns there are in the table that shows the list of
 // configured Award Rules. It's mainly used to set the "colspan" attributes of
 // single-valued table rows, such as Title, or the "No Results Found" message.
-$AwardRulesTableColumns = 5;
+$AwardRulesTableColumns = 6;
 
 // The following HTML will be displayed when the DataSet is empty.
 $OutputForEmptyDataSet = Wrap(T('No Award Rules loaded.'),
@@ -37,6 +37,7 @@ $OutputForEmptyDataSet = Wrap(T('No Award Rules loaded.'),
 					<th class="Description"><?php echo T('Description'); ?></th>
 					<th class="Group"><?php echo T('Group'); ?></th>
 					<th class="Type"><?php echo T('Type'); ?></th>
+					<th class="Path"><?php echo T('Path'); ?></th>
 				</tr>
 			</thead>
 			<tfoot>
@@ -59,6 +60,17 @@ $OutputForEmptyDataSet = Wrap(T('No Award Rules loaded.'),
 						echo Wrap(Gdn_Format::Text(GetValue('Description', $Rule, T('N/A'))), 'td', array('class' => 'Description',));
 						echo Wrap(Gdn_Format::Text(GetValue('Group', $Rule, T('N/A'))), 'td', array('class' => 'Group',));
 						echo Wrap(Gdn_Format::Text(GetValue('Type', $Rule, T('N/A'))), 'td', array('class' => 'Type',));
+
+						$RuleFile = GetValue('File', $Rule);
+						$RuleFullPath = dirname($RuleFile);
+						// The short path contains only the two last folders in the full path, i.e.:
+						// - The Rule folder
+						// - The Rule folder's parent folder
+						$RuleShortPath = basename(dirname(dirname($RuleFile))) . '/' . basename($RuleFullPath);
+						echo Wrap(Gdn_Format::Text($RuleShortPath),
+											'td',
+											array('class' => 'Type',
+														'title' => $RuleFile));
 						echo "</tr>\n";
 					}
 				?>
