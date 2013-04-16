@@ -32,6 +32,10 @@ html[xmlns] .clearfix {
 }
 
 /* General CSS for configuration pages sections */
+.Hidden {
+	display: none !important;
+}
+
 .AwardsPlugin {
 }
 
@@ -525,6 +529,7 @@ img.Medium {
 
 .AwardsPlugin .Column {
 	float: left;
+	margin-right: 1em;
 }
 
 .AwardsPlugin .FieldLabel,
@@ -732,6 +737,36 @@ img.Medium {
 	width: 100%;
 }
 
+#Content .AwardsPlugin #Output {
+	width: 100%;
+	margin-top: 1em;
+	padding-left: 20px;
+	border-top: 1px dashed silver;
+}
+
+#Content .AwardsPlugin #Output h2 {
+	margin-bottom: 0.5em;
+	font-size: x-large;
+}
+
+#Content .AwardsPlugin #Output #Messages {
+	border: 1px solid silver;
+	width: 50em;
+	color: lime;
+	background: black;
+	height: 20em;
+	overflow-y: auto;
+}
+
+#Content .AwardsPlugin #Output #DownloadInfo {
+}
+
+#Content .AwardsPlugin #Output .Title {
+	font-weight: bold;
+}
+
+
+/* Award Add/Edit */
 .AwardEdit .AwardImageWrapper {
 	position: relative;
 }
