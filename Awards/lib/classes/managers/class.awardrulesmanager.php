@@ -49,6 +49,9 @@ class AwardRulesManager extends BaseManager {
 		if(empty($Type) || !isset(self::$RuleTypes[$Type])) {
 			self::$Rules[$RuleClass]['Type'] = self::TYPE_MISC;
 		}
+
+		$Reflector = new ReflectionClass($RuleClass);
+		self::$Rules[$RuleClass]['File'] = $Reflector->getFileName();
 	}
 
 	/**
@@ -180,7 +183,7 @@ class AwardRulesManager extends BaseManager {
 
 		try {
 			// Look for subfolders in Rules folder. Each Rule should be stored in its
-			// SubFolder.
+			// SubFolder
 			while($RuleDirName = readdir($Handle)) {
 				if($this->IsValidDirectory($RulesDir, $RuleDirName)) {
 					// If a Rule with the same name has already been loaded, skip this one
