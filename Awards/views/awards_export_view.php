@@ -65,6 +65,50 @@
 		<?php
 			 echo $this->Form->Close();
 		?>
+		<?php
+			$OutputCssClass = GetValue('ZipFileName', $this->Data, false) ? '' : 'Hidden';
+		?>
+		<div id="Output" class="clearfix <?php echo $OutputCssClass; ?>">
+			<?php
+				echo Wrap(T('Export completed'), 'h2');
+			?>
+			<div class="Column">
+				<div id="DownloadInfo">
+				<?php
+					$ZipFileName = GetValue('ZipFileName', $this->Data);
+
+					if(!empty($ZipFileName)) {
+						echo Wrap(T('Export file ready. Click to download.'),
+											'div',
+											array('class' => 'Title'));
+						echo Anchor($ZipFileName,
+												AWARDS_PLUGIN_EXPORT_URL . '/' . $ZipFileName,
+												'Download');
+					}
+				?>
+				</div>
+			</div>
+			<div class="Column">
+				<div id="MessageLog">
+					<?php
+						echo Wrap(T('Export Log'),
+											'div',
+											array('class' => 'Title'));
+
+						$Messages = GetValue('ExportMessages', $this->Data);
+						if(!empty($Messages)) {
+							echo '<div id="Messages">';
+							echo '<ul>';
+							echo '<li>';
+							echo implode('</li><li>', $Messages);
+							echo '</li>';
+							echo '</ul>';
+							echo '</div>';
+						}
+					?>
+				</div>
+			</div>
+		</div>
 	</div>
 	<?php include('awards_admin_footer.php'); ?>
 </div>
