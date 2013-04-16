@@ -12,6 +12,11 @@
  * @see UserAwardsManager.
  */
 class AwardsManager extends BaseManager {
+	/* @var string The version of the export data. It will be used in the future
+	 * to distinguish exports created by different versions of the plugin.
+	 */
+	const EXPORT_V1 = '1';
+
 	/**
 	 * Returns an instance of AwardsModel.
 	 *
@@ -584,12 +589,189 @@ class AwardsManager extends BaseManager {
 	}
 
 	/**
+	 * Stores a log message in a list. Messages will be printed out to screen
+	 * later on.
+	 *
+	 * @param string Message The message to store.
+	 * @return string The message to store, unaltered. This allows to pass the
+	 * result of this function to the Logger.
+	 */
+	// TODO Move method to its own class
+	// TODO Improve integration with Logger plugin and use it to display the messages.
+	private function StoreMessage($Message) {
+		$this->_Messages[] = sprintf('%s - %s', date('Y-m-d H:i:s'), $Message);
+		return $Message;
+	}
+
+	/**
+	 * Cleans up a Data object by removing all internal fields, such as DateInserted,
+	 * DateUpdated, InsertUser and UpdateUser. Such fields are meaningful only in
+	 * current system, and are not needed to import or export data.
+	 *
+	 * @param stdClass Data The data object to clean up.
+	 * @return stdClass The cleaned up object.
+	 */
+	// TODO Move method to its own class
+	private function CleanupData(stdClass $Data) {
+		unset($Data->DateInserted);
+		unset($Data->InsertUser);
+		unset($Data->DateUpdated);
+		unset($Data->UpdateUser);
+		return $Data;
+	}
+
+	// TODO Move method to its own class
+	private function ExportData($Sender) {
+		$ExportTimeStamp = now();
+		$this->_Messages = array();
+		$this->Log()->info($this->StoreMessage(T('Exporting Awards...')));
+
+		// Create a temporary folder for the data to export
+		$TempFolder = '/tmp/' . (string)uniqid('awards_export_', true);
+		if(!mkdir($TempFolder)) {
+			$LogMsg = sprintf(T('Could not create temporary folder "%s". Export aborted.'),
+												$TempFolder);
+			$this->Log()->error($this->StoreMessage($LogMsg));
+			return AWARDS_ERR_COULD_NOT_CREATE_FOLDER;
+		}
+
+		$Form = $Sender->Form;
+
+		// Create the result object
+		$Result = new stdClass();
+
+		$this->Log()->info($this->StoreMessage(T('Preparing Export MetaData...')));
+		// Store Export metadata
+		$ExportInfo = new stdClass();
+		$ExportInfo->Version = self::EXPORT_V1;
+		$ExportInfo->Label = $Form->GetValue('ExportLabel');
+		$ExportInfo->Description = $Form->GetValue('ExportDescription');
+		$ExportInfo->TimeStamp = date('Y-m-d H:i:s', $ExportTimeStamp);
+		$Result->ExportInfo = $ExportInfo;
+
+		// Initialise the list of image files to be exported
+		$ImagesToExport = array();
+
+		// If requested, export Award Classes
+		if($Form->GetValue('ExportClasses') == 1) {
+			$this->Log()->info($this->StoreMessage(T('Exporting Award Classes...')));
+
+			$ImagesToExport['awardclasses'] = array();
+			$AwardClasses = $this->AwardClassesModel()->Get()->Result();
+
+			foreach($AwardClasses as $AwardClass) {
+				$this->Log()->info($this->StoreMessage(sprintf(T('Processing Award Class "%s"...'),
+																												 $AwardClass->AwardClassName)));
+				$AwardClass = $this->CleanupData($AwardClass);
+
+				// Skip Classes without an image
+				if(empty($AwardClass->AwardClassImageFile)) {
+					continue;
+				}
+				$ImagesToExport['awardclasses'][] = PATH_ROOT . '/' . $AwardClass->AwardClassImageFile;
+				// Remove path info from the image
+				$AwardClass->AwardClassImageFile = basename($AwardClass->AwardClassImageFile);
+			}
+			$Result->AwardClasses = &$AwardClasses;
+			$this->Log()->info($this->StoreMessage(T('OK')));
+		}
+
+		$this->Log()->info($this->StoreMessage(T('Exporting Awards...')));
+		// Export the Awards
+		$ImagesToExport['awards'] = array();
+		$Awards = $this->AwardsModel()->Get()->Result();
+
+		foreach($Awards as $Award) {
+			$this->Log()->info($this->StoreMessage(sprintf(T('Processing Award "%s"...'),
+																											 $Award->AwardName)));
+			$Award = $this->CleanupData($Award);
+
+			$ImagesToExport['awards'][] = PATH_ROOT . '/' . $Award->AwardImageFile;
+			// Remove path info from the image
+			$Award->AwardImageFile = basename($Award->AwardImageFile);
+		}
+		$Result->Awards = &$Awards;
+		$this->Log()->info($this->StoreMessage(T('OK')));
+
+		// Store the Awards data in JSON format
+		$ExportDataFileName = 'awards_data.json';
+
+		// Export and compress the data and the images
+		$Zip = new ZipArchive();
+		$ZipFileName = AWARDS_PLUGIN_EXPORT_PATH . '/vanilla_awards_' . (string)date('YmdHis', $ExportTimeStamp) . '.zip';
+
+		$this->Log()->info($this->StoreMessage(sprintf(T('Compressing data into file "%s"...'),
+																										 $ZipFileName)));
+		$ZipResult = $Zip->open($ZipFileName, ZIPARCHIVE::OVERWRITE);
+		if($ZipResult !== true) {
+			$this->Log()->error($this->StoreMessage(sprintf(T('Error creating zip file "%s"...'),
+																											$ZipFileName)));
+			return $ZipResult;
+		}
+		$this->Log()->info($this->StoreMessage(T('Storing Awards data...')));
+		// Store Awards data, in JSON format
+		$Zip->addFromString($ExportDataFileName, json_encode($Result));
+
+		$this->Log()->info($this->StoreMessage(T('Storing images...')));
+
+		// Store images in Zip file
+		foreach($ImagesToExport as $DirName => $ImageFiles) {
+			$LocaDirName = 'images/' . $DirName;
+			$Zip->addEmptyDir($LocaDirName);
+			$this->Log()->error($this->StoreMessage(sprintf(T('Storing files in folder "%s"...'),
+																											$LocaDirName)));
+
+			foreach($ImageFiles as $ImageFile) {
+				$this->Log()->info($this->StoreMessage(sprintf(T('Storing image file "%s"...'),
+																											 $ImageFile)));
+				if(!$Zip->addFile($ImageFile, $LocaDirName . '/' . basename($ImageFile))) {
+					$this->Log()->error($this->StoreMessage(sprintf(T('Error storing file "%s"...'),
+																													$ImageFile)));
+				};
+			}
+		}
+
+		$Zip->close();
+		$this->Log()->info($this->StoreMessage(T('Export completed successfully.')));
+
+		return $ZipFileName;
+	}
+
+	// TODO Move method to its own class
+	protected function ServeExportFile(Gdn_Controller $Sender, $FileName) {
+		$BaseName = basename($FileName);
+		$FileName = AWARDS_PLUGIN_EXPORT_PATH . '/' . $BaseName;
+		if(!file_exists($FileName)) {
+			$ErrorMsg = sprintf(T('Invalid export file requested: "%s".'),
+													$FileName);
+			$this->Log()->error($ErrorMsg);
+			throw new InvalidArgumentException($ErrorMsg);
+		}
+
+
+		$this->Log()->info(sprintf(T('Serving Export file "%s"...'),
+															 $FileName));
+		header('Content-Type: application/zip');
+    header('Content-Disposition: attachment; filename=' . $BaseName);
+    header('Content-Length: ' . filesize($FileName));
+		readfile($FileName);
+		$this->Log()->info(T('Operation completed.'));
+	}
+
+	/**
 	 * Renders the page to export Awards and Awards Classes.
 	 *
 	 * @param AwardsPlugin Caller The Plugin which called the method.
 	 * @param Gdn_Controller Sender Sending controller instance.
 	 */
 	public function Export(AwardsPlugin $Caller, $Sender) {
+		$Sender->Permission('Plugins.Awards.Manage');
+
+		$FileName = Gdn::Request()->Filename();
+		if(!empty($FileName) && ($FileName !== 'default')) {
+			$this->ServeExportFile($Sender, $FileName);
+		}
+
 		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_EXPORT_URL);
 		// Prevent Users without proper permissions from accessing this page.
 		$Sender->Permission('Plugins.Awards.Manage');
@@ -604,10 +786,11 @@ class AwardsManager extends BaseManager {
 			//var_dump($Sender->Form->FormValues());
 			$Data = $Sender->Form->FormValues();
 
-			// The field named "OK" is actually the OK button. If it exists, it means
-			// that the User confirmed the deletion.
-			if(Gdn::Session()->ValidateTransientKey($Data['TransientKey']) && $Sender->Form->ButtonExists('OK')) {
+			if(Gdn::Session()->ValidateTransientKey($Data['TransientKey']) && $Sender->Form->ButtonExists('Export')) {
 				// TODO Export data
+				$ZipFileName = $this->ExportData($Sender);
+				$Sender->SetData('ZipFileName', basename($ZipFileName));
+				$Sender->SetData('ExportMessages', $this->_Messages);
 			}
 		}
 		// Render the page
