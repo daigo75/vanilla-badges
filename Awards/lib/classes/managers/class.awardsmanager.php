@@ -698,6 +698,7 @@ class AwardsManager extends BaseManager {
 
 		// Export and compress the data and the images
 		$Zip = new ZipArchive();
+		// TODO Allow to configure another Export path
 		$ZipFileName = AWARDS_PLUGIN_EXPORT_PATH . '/vanilla_awards_' . (string)date('YmdHis', $ExportTimeStamp) . '.zip';
 
 		$this->Log()->info($this->StoreMessage(sprintf(T('Compressing data into file "%s"...'),
