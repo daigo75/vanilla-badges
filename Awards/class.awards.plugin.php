@@ -14,7 +14,7 @@ require(AWARDS_PLUGIN_LIB_PATH . '/awards.validation.php');
 $PluginInfo['Awards'] = array(
 	'Name' => 'Awards Plugin',
 	'Description' => 'Awards Plugin for Vanilla Forums',
-	'Version' => '13.04.15 beta',
+	'Version' => '13.04.16 beta',
 	'RequiredApplications' => array('Vanilla' => '2.0'),
 	'RequiredTheme' => FALSE,
 	'RequiredPlugins' => array('Logger' => '12.10.28',
@@ -312,6 +312,10 @@ class AwardsPlugin extends Gdn_Plugin {
 		$Menu->AddLink('Awards',
 									 T('Awards'),
 									 AWARDS_PLUGIN_AWARDS_LIST_URL,
+									 'Plugins.Awards.Manage');
+		$Menu->AddLink('Awards',
+									 T('Export'),
+									 AWARDS_PLUGIN_EXPORT_URL,
 									 'Plugins.Awards.Manage');
 
 		// If AfterUsers is defined, it means that the menu was spliced and it must
@@ -751,7 +755,7 @@ class AwardsPlugin extends Gdn_Plugin {
 	 * Plugin cleanup
 	 */
 	public function CleanUp() {
-		// TODO Remove Plugin's configuration parameters
+		// Remove Plugin's configuration parameters
 		RemoveFromConfig('Preferences.Email.' . self::ACTIVITY_AWARDEARNED);
 		RemoveFromConfig('Preferences.Popup.' . self::ACTIVITY_AWARDEARNED);
 		RemoveFromConfig('Plugin.Awards.MinSearchLength');

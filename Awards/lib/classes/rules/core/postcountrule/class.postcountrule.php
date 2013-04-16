@@ -147,6 +147,4 @@ class PostCountRule extends BaseAwardRule {
 	public function __construct() {
 		parent::__construct();
 	}
-
-	// TODO Add Model (if needed) to perform Rule checks
 }
