@@ -4,20 +4,19 @@
 */
 
 /**
- * Handles the export of Awards, Award Classes and relatedi images.
+ * Handles the export of Awards, Award Classes and related images.
  */
-class AwardsExporter extends BaseManager {
-	private $_Messages = array();
+class AwardsExporter extends BaseIntegration {
 	private $_ZipFileName = array();
 
-	public function GetMessages() {
-		return $this->_Messages;
-	}
-
+	/**
+	 * Returns the full path and name of the Zip file created by the Exporter.
+	 *
+	 * @return string The full name of the file created by the exporter.
+	 */
 	public function GetZipFileName() {
 		return $this->_ZipFileName;
 	}
-
 
 	/**
 	 * Returns an instance of AwardsModel.
@@ -45,37 +44,14 @@ class AwardsExporter extends BaseManager {
 	const EXPORT_V1 = '1';
 
 	/**
-	 * Stores a log message in a list. Messages will be printed out to screen
-	 * later on.
+	 * Compresses Awards Data, Award Classes Data and related images into a ZIP
+	 * file.
 	 *
-	 * @param string Message The message to store.
-	 * @return string The message to store, unaltered. This allows to pass the
-	 * result of this function to the Logger.
+	 * @param stdClass ExportData An object containing the Awards and Award Classes
+	 * Data.
+	 * @param array ImagesToExport An array of image file names.
+	 * @return int A value that indicates the result of the operation.
 	 */
-	// TODO Move method to its own class
-	// TODO Improve integration with Logger plugin and use it to display the messages.
-	private function StoreMessage($Message) {
-		$this->_Messages[] = sprintf('%s - %s', date('Y-m-d H:i:s'), $Message);
-		return $Message;
-	}
-
-	/**
-	 * Cleans up a Data object by removing all internal fields, such as DateInserted,
-	 * DateUpdated, InsertUser and UpdateUser. Such fields are meaningful only in
-	 * current system, and are not needed to import or export data.
-	 *
-	 * @param stdClass Data The data object to clean up.
-	 * @return stdClass The cleaned up object.
-	 */
-	// TODO Move method to its own class
-	private function CleanupData(stdClass $Data) {
-		unset($Data->DateInserted);
-		unset($Data->InsertUser);
-		unset($Data->DateUpdated);
-		unset($Data->UpdateUser);
-		return $Data;
-	}
-
 	private function CompressData(stdClass $ExportData, array $ImagesToExport) {
 		// TODO Allow to configure another Export path
 		$this->_ZipFileName = AWARDS_PLUGIN_EXPORT_PATH . '/vanilla_awards_' . (string)date('YmdHis', $ExportData->ExportInfo->RawTimeStamp) . '.zip';
@@ -126,20 +102,33 @@ class AwardsExporter extends BaseManager {
 		return AWARDS_OK;
 	}
 
-	private function GenerateExportMetaData(Gdn_Form $Form) {
+	/**
+	 * Returns an object containing some metadata related to the Export operation
+	 * about to be performed.
+	 *
+	 * @param array Settings An array of settings to use for the export.
+	 * @return stdClass An object containing the export metadata.
+	 */
+	private function GenerateExportMetaData(array $Settings) {
 		$this->Log()->info($this->StoreMessage(T('Preparing Export MetaData...')));
 
 		// Store Export metadata
 		$ExportMetaData = new stdClass();
 		$ExportMetaData->Version = self::EXPORT_V1;
-		$ExportMetaData->Label = $Form->GetValue('ExportLabel');
-		$ExportMetaData->Description = $Form->GetValue('ExportDescription');
+		$ExportMetaData->Label = GetValue('ExportLabel', $Settings, '');
+		$ExportMetaData->Description = GetValue('ExportDescription', $Settings, '');
 		$ExportMetaData->RawTimeStamp = now();
 		$ExportMetaData->TimeStamp = date('Y-m-d H:i:s', $ExportMetaData->RawTimeStamp);
 
 		return $ExportMetaData;
 	}
 
+	/**
+	 * Retrieves and returns the Award Classes data to be exported.
+	 *
+	 * @return stdClass An object containing Award Classes data and a list of the
+	 * images used by the Classes.
+	 */
 	private function GetAwardClassesData() {
 		$this->Log()->info($this->StoreMessage(T('Exporting Award Classes...')));
 
@@ -167,6 +156,12 @@ class AwardsExporter extends BaseManager {
 		return $Result;
 	}
 
+	/**
+	 * Retrieves and returns the Awards data to be exported.
+	 *
+	 * @return stdClass An object containing Awards data and a list of the
+	 * images used by the Awards.
+	 */
 	private function GetAwardsData() {
 		$this->Log()->info($this->StoreMessage(T('Exporting Awards...')));
 		// Export the Awards
@@ -190,8 +185,13 @@ class AwardsExporter extends BaseManager {
 		return $Result;
 	}
 
-	// TODO Move method to its own class
-	public function ExportData($Sender) {
+	/**
+	 * Exports Awards, Award Classes and their images to a compressed file.
+	 *
+	 * @param array ExportSettings An array of settings to be used for the export.
+	 * @return int An integer value indicating the result of the operation.
+	 */
+	public function ExportData(array $ExportSettings) {
 		$this->_Messages = array();
 		$this->Log()->info($this->StoreMessage(T('Exporting Awards...')));
 
@@ -208,13 +208,13 @@ class AwardsExporter extends BaseManager {
 		$ExportData = new stdClass();
 
 		// Generate some metadata about the export
-		$ExportData->ExportInfo = $this->GenerateExportMetaData($Sender->Form);
+		$ExportData->ExportInfo = $this->GenerateExportMetaData($ExportSettings);
 
 		// Initialise the list of image files to be exported
 		$ImagesToExport = array();
 
 		// If requested, export Award Classes
-		if($Sender->Form->GetValue('ExportClasses') == 1) {
+		if(GetValue('ExportClasses', $ExportSettings) == 1) {
 			$AwardClassesData = $this->GetAwardClassesData();
 
 			$ImagesToExport['awardclasses'] = &$AwardClassesData->ImagesToExport;
@@ -226,7 +226,7 @@ class AwardsExporter extends BaseManager {
 		$ImagesToExport['awards'] = &$AwardsData->ImagesToExport;
 		$ExportData->Awards = &$AwardsData->Data;
 
+		// Generate compressed file with all the data and the images
 		return $this->CompressData($ExportData, $ImagesToExport);
 	}
-
 }
