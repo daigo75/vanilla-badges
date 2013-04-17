@@ -7,7 +7,7 @@
  * Base class to be used by classes related to integration with external sources
  * (e.g. import and export of data).
  */
-class AwardsExporter extends BaseClass {
+class BaseIntegration extends BaseClass {
 	private $_Messages = array();
 
 	/**
