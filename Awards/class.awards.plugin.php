@@ -720,7 +720,7 @@ class AwardsPlugin extends Gdn_Plugin {
 	 */
 	public function Setup() {
 		// Set up the plugin's default values for Notification
-		SaveToConfig('Preferences.Email.' . self::ACTIVITY_AWARDEARNED, 1);
+		SaveToConfig('Preferences.Email.' . self::ACTIVITY_AWARDEARNED, 0);
 		SaveToConfig('Preferences.Popup.' . self::ACTIVITY_AWARDEARNED, 1);
 
 		// Miscellaneous default settings
