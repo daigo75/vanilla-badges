@@ -66,12 +66,22 @@
 			 echo $this->Form->Close();
 		?>
 		<?php
-			$OutputCssClass = GetValue('ZipFileName', $this->Data, false) ? '' : 'Hidden';
+			// Display output section after an export has been completed
+			$ExportResult = GetValue('ExportResult', $this->Data, null);
+			$OutputCssClass = $ExportResult !== null ? '' : 'Hidden';
 		?>
 		<div id="Output" class="clearfix <?php echo $OutputCssClass; ?>">
-			<?php
-				echo Wrap(T('Export completed'), 'h2');
-			?>
+			<div class="Header">
+				<?php
+					echo Wrap(T('Export completed'), 'h2');
+					if(isset($ExportResult) && ($ExportResult !== AWARDS_OK)) {
+						echo Wrap(sprintf(T('Operation failed. Export result code: %d.'),
+															$ExportResult),
+											'p',
+											array('class' => 'Warning'));
+					}
+				?>
+			</div>
 			<div class="Column">
 				<div id="DownloadInfo">
 				<?php
@@ -79,7 +89,7 @@
 
 					if(!empty($ZipFileName)) {
 						echo Wrap(T('Export file ready. Click to download.'),
-											'div',
+											'h4',
 											array('class' => 'Title'));
 						echo Anchor($ZipFileName,
 												AWARDS_PLUGIN_EXPORT_URL . '/' . $ZipFileName,
@@ -92,7 +102,7 @@
 				<div id="MessageLog">
 					<?php
 						echo Wrap(T('Export Log'),
-											'div',
+											'h4',
 											array('class' => 'Title'));
 
 						$Messages = GetValue('ExportMessages', $this->Data);

@@ -738,23 +738,26 @@ img.Medium {
 }
 
 #Content .AwardsPlugin #Output {
-	width: 100%;
+	width: 95%;
 	margin-top: 1em;
 	padding-left: 20px;
 	border-top: 1px dashed silver;
 }
 
-#Content .AwardsPlugin #Output h2 {
+#Content .AwardsPlugin #Output .Header {
 	margin-bottom: 0.5em;
+}
+
+#Content .AwardsPlugin #Output h2 {
 	font-size: x-large;
 }
 
 #Content .AwardsPlugin #Output #Messages {
 	border: 1px solid silver;
 	width: 50em;
+	height: 30em;
 	color: lime;
 	background: black;
-	height: 20em;
 	overflow-y: auto;
 }
 
