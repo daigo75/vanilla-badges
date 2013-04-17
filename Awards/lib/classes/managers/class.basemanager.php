@@ -11,7 +11,7 @@
  * only in a specific place, which doesn't include Plugins directories. Thus, if
  * class name contains "controller", it won't be loaded automatically.
  */
-class BaseManager extends Gdn_Plugin {
+class BaseManager extends BaseClass {
 	// @var Logger The Logger used by the class.
 	private $_Log;
 
