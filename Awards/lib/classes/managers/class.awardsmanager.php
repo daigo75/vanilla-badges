@@ -637,7 +637,8 @@ class AwardsManager extends BaseManager {
 				// Export data
 				$AwardsExporter = new AwardsExporter();
 
-				$ExportResult = $AwardsExporter->ExportData($Sender);
+				$ExportSettings = $Sender->Form->FormValues();
+				$ExportResult = $AwardsExporter->ExportData($ExportSettings);
 				$Sender->SetData('ExportResult', $ExportResult);
 				$Sender->SetData('ZipFileName', basename($AwardsExporter->GetZipFileName()));
 				$Sender->SetData('ExportMessages', $AwardsExporter->GetMessages());
