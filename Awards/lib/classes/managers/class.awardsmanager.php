@@ -54,6 +54,16 @@ class AwardsManager extends BaseManager {
 	}
 
 	/**
+	 * Returns an instance of AwardsImporter.
+	 *
+	 * @return AwardsImporter An instance of AwardsImporter.
+	 * @see BaseManager::GetInstance()
+	 */
+	private function AwardsImporter() {
+		return $this->GetInstance('AwardsImporter');
+	}
+
+	/**
 	 * Prepares some Award Data to be used for cloning an Award. This method
 	 * removes or alters all data that identifies an Award, so that the User will
 	 * be forced to enter different details for the clone.
@@ -612,8 +622,6 @@ class AwardsManager extends BaseManager {
 	 * @param Gdn_Controller Sender Sending controller instance.
 	 */
 	public function Export(AwardsPlugin $Caller, $Sender) {
-		$Sender->Permission('Plugins.Awards.Manage');
-
 		$FileName = Gdn::Request()->Filename();
 		if(!empty($FileName) && ($FileName !== 'default')) {
 			$this->ServeExportFile($Sender, $FileName);
@@ -647,6 +655,47 @@ class AwardsManager extends BaseManager {
 		}
 		// Render the page
 		$Sender->Render($Caller->GetView('awards_export_view.php'));
+	}
+
+
+	/**
+	 * Renders the page to import Awards and Awards Classes.
+	 *
+	 * @param AwardsPlugin Caller The Plugin which called the method.
+	 * @param Gdn_Controller Sender Sending controller instance.
+	 */
+	public function Import(AwardsPlugin $Caller, $Sender) {
+		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_IMPORT_URL);
+		// Prevent Users without proper permissions from accessing this page.
+		$Sender->Permission('Plugins.Awards.Manage');
+
+		// If seeing the form for the first time...
+		if ($Sender->Form->AuthenticatedPostBack() === FALSE) {
+			// Just Load auxiliary files
+			$Sender->AddJsFile('awards_import.js', 'plugins/Awards/js');
+
+		}
+		else {
+			//var_dump($Sender->Form->FormValues());
+			$Data = $Sender->Form->FormValues();
+
+			if(Gdn::Session()->ValidateTransientKey($Data['TransientKey']) && $Sender->Form->ButtonExists('Import')) {
+				// Export data
+				$ImportSettings = $Sender->Form->FormValues();
+				$ImportSettings['FileName'] = 'C:\Users\d.zanella\Documents\Projects\Web\personal\Vanilla Forums\Plugins\AwardsPlugin\Awards\export\vanilla_awards_20130417225919.zip';
+
+				$ImportResult = $this->AwardsImporter()->ImportData($ImportSettings);
+				$Sender->SetData('ImportResult', $ImportResult);
+				$Sender->SetData('ImportMessages', $AwardsImporter->GetMessages());
+			}
+		}
+
+		// Load Award Classes
+		$Sender->SetData('AwardClasses', $this->GetAwardClasses());
+		$Sender->SetData('DuplicateItemActions', $this->AwardsImporter()->DuplicateItemActions());
+
+		// Render the page
+		$Sender->Render($Caller->GetView('awards_import_view.php'));
 	}
 
 	/**
