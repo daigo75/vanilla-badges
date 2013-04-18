@@ -540,7 +540,7 @@ class AwardsManager extends BaseManager {
 							$Saved = $this->AssignAward($UserID, $AwardData, BaseAwardRule::ASSIGN_ONE);
 
 							if(!$Saved) {
-								$ErrorMsg = sprintf(T('Could not assign Award "%s" to User ID: %d. Operation aborted.'),
+								$ErrorMsg = sprintf(T('Could not assign Award "%s" to User ID: %d.') . ' ' . T('Operation aborted.'),
 																		$AwardData->AwardName,
 																		$UserID);
 								$this->Log()->error($ErrorMsg);

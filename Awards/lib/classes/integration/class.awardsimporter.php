@@ -56,7 +56,7 @@ class AwardsImporter extends BaseIntegration {
 		$this->Log()->info($this->StoreMessage(sprintf(T('Extracting data from file "%s"...'),
 																										 $FileName)));
 		if(!file_exists($FileName)) {
-			$this->Log()->error($this->StoreMessage(T('File does not exist. Operation aborted.')));
+			$this->Log()->error($this->StoreMessage(T('File does not exist') . ' ' . T('Operation aborted.')));
 			return AWARDS_ERR_FILE_NOT_FOUND;
 		}
 
@@ -169,11 +169,39 @@ class AwardsImporter extends BaseIntegration {
 
 		var_dump($Result); die();
 
+		Gdn::Database()->BeginTransaction();
+		try {
+			// TODO Import Award Classes
+			// TODO Import Awards
+			// TODO Import Award Images
+
+			$ImportResult = AWARDS_ERR_DUMMY_ERROR;
+
+			// Use a transaction to either save ALL data (Award and Rules)
+			// successfully, or none of it. This will prevent partial saves and
+			// reduce inconsistencies
+			if($ImportResult === AWARDS_OK) {
+				Gdn::Database()->CommitTransaction();
+			}
+			else {
+				Gdn::Database()->RollbackTransaction();
+			}
+		}
+		catch(Exception $e) {
+			Gdn::Database()->RollbackTransaction();
+			$ErrorMsg = sprintf(T('Exception occurred while importing Awards data. ' .
+																							'Error: %s.'),
+																						$e->getMessage());
+			$this->Log()->error($this->StoreMessage($ErrorMsg));
+			$this->Log()->error($this->StoreMessage(T('Operation aborted')));
+
+			return AWARDS_ERR_EXCEPTION_OCCURRED;
+		}
 
 		$this->Log()->info($this->StoreMessage(T('Cleaning up...')));
 		$this->Cleanup();
 
-		return $this->CompressData($ImportData, $ImagesToImport);
+		return AWARDS_OK;
 	}
 
 }
