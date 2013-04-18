@@ -50,4 +50,42 @@ class BaseIntegration extends BaseClass {
 		unset($Data->UpdateUser);
 		return $Data;
 	}
+
+	/**
+	 * Deletes a directory and all its content, recursively.
+	 *
+	 * @param string Directory The directory to be deleted.
+	 * @return bool True, if the operation succeeded, False otherwise.
+	 */
+	protected function DelTree($Directory) {
+		$this->Log()->info(sprintf(T('Deleting directory "%s" and all its content...'),
+															 $Directory));
+		$Files = array_diff(scandir($Directory), array('.','..'));
+    foreach($Files as $File) {
+			if(is_dir("$Directory/$File")) {
+				$Result = $this->DelTree("$Directory/$File");
+			}
+			else {
+				$this->Log()->trace(sprintf(T('Deleting file "%s"...'),
+																		$Directory . '/' . $File));
+				$Result = unlink("$Directory/$File");
+			}
+
+			// Stop on first error
+			if($Result === false) {
+				break;
+			}
+    }
+
+		if($Result === true)  {
+	    $Result = rmdir($Directory);
+		}
+
+		// Log deletion failure
+		if($Result === false) {
+			$this->Log()->error(sprintf(T('Deletion of directory "%s" failed.'),
+																	$Directory));
+		}
+		return $Result;
+  }
 }
