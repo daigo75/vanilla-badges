@@ -195,15 +195,6 @@ class AwardsExporter extends BaseIntegration {
 		$this->_Messages = array();
 		$this->Log()->info($this->StoreMessage(T('Exporting Awards...')));
 
-		// Create a temporary folder for the data to export
-		$TempFolder = '/tmp/' . (string)uniqid('awards_export_', true);
-		if(!mkdir($TempFolder)) {
-			$LogMsg = sprintf(T('Could not create temporary folder "%s". Export aborted.'),
-												$TempFolder);
-			$this->Log()->error($this->StoreMessage($LogMsg));
-			return AWARDS_ERR_COULD_NOT_CREATE_FOLDER;
-		}
-
 		// Create the result object
 		$ExportData = new stdClass();
 
