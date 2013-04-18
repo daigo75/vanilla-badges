@@ -70,7 +70,7 @@ class AwardsExporter extends BaseIntegration {
 		$this->Log()->info($this->StoreMessage(T('Storing Awards data...')));
 
 		// Store the Awards data in JSON format
-		$ExportDataFileName = 'awards_data.json';
+		$ExportDataFileName = self::AWARD_DATA_FILE_NAME;
 		// Store Awards data, in JSON format
 		if($Zip->addFromString($ExportDataFileName, json_encode($ExportData)) === false) {
 			$this->Log()->error($this->StoreMessage(T('Error storing export data.')));
