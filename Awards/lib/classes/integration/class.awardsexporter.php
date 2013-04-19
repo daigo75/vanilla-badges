@@ -81,7 +81,7 @@ class AwardsExporter extends BaseIntegration {
 			return AWARDS_ERR_COULD_NOT_COMPRESS_EXPORTDATA;
 		}
 		// Store hash of data
-		$FileHashes[] = md5($ExportData, true);
+		$FileHashes[] = md5($ExportData);
 
 		$this->Log()->info($this->StoreMessage(T('Storing images...')));
 
@@ -92,6 +92,8 @@ class AwardsExporter extends BaseIntegration {
 			$this->Log()->info($this->StoreMessage(sprintf(T('Storing files in folder "%s"...'),
 																										 $LocaDirName)));
 
+			// Remove duplicate images (i.e. images that are used by more than one entity)
+			$ImageFiles = array_unique($ImageFiles);
 			foreach($ImageFiles as $ImageFile) {
 				$this->Log()->info($this->StoreMessage(sprintf(T('Storing image file "%s"...'),
 																											 $ImageFile)));
@@ -102,7 +104,7 @@ class AwardsExporter extends BaseIntegration {
 				};
 
 				// Store hash of each image
-				$FileHashes[] = md5_file($ImageFile, true);
+				$FileHashes[] = md5_file($ImageFile);
 			}
 		}
 
