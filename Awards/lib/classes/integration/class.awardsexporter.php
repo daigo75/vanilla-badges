@@ -108,6 +108,7 @@ class AwardsExporter extends BaseIntegration {
 
 		$this->Log()->info($this->StoreMessage(T('Calculating and saving MD5 Checksum...')));
 		// Store the checksum of the compressed data into the archive
+		sort($FileHashes);
 		$ArchiveHash = md5(implode(',', $FileHashes));
 		$Zip->setArchiveComment('MD5: ' . $ArchiveHash);
 
