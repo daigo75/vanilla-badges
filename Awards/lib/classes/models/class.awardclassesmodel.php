@@ -169,7 +169,6 @@ class AwardClassesModel extends ModelEx {
    */
   public function Save($FormPostValues, $Settings = false) {
 		$AwardClassID = GetValue('AwardClassID', $FormPostValues);
-			var_dump($AwardClassID); die();
 
 		if(empty($AwardClassID)) {
 			// Check that the Award Class Name is Unique. This check cannot be performed by
