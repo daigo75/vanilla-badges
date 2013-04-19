@@ -64,6 +64,39 @@ class BaseIntegration extends BaseClass {
 	}
 
 	/**
+	 * Returns a list of all Files and, optionally, Directories found in a
+	 * directory.
+	 *
+	 * @param string Directory The directory to scan for files.
+	 * @param int Recursive Indicates if the directory should be scanned recursively.
+	 * @param int FilesOnly Indicates if resulting list should only contain files.
+	 * @result array A list of Files and, optionally, Directories.
+	 */
+	protected function GetFiles($Directory, $Recursive = true, $FilesOnly = true) {
+		$Files = array_diff(scandir($Directory), array('.', '..'));
+		$Result = array();
+
+		foreach($Files as $File) {
+			$FileName = $Directory . '/' . $File;
+			if(is_dir($FileName)) {
+				// If Recursive flag is set, find files in subdirectories
+				if($Recursive) {
+					$Result = array_merge($Result, $this->GetFiles($FileName));
+				}
+
+				// If only files are expected, move to next one (i.e. don't add
+				// directories) to the Result list
+				if($FilesOnly) {
+					continue;
+				}
+			}
+			$Result[] = $File;
+    }
+
+		return $Result;
+	}
+
+	/**
 	 * Deletes a directory and all its content, recursively.
 	 *
 	 * @param string Directory The directory to be deleted.
@@ -72,15 +105,16 @@ class BaseIntegration extends BaseClass {
 	protected function DelTree($Directory) {
 		$this->Log()->info(sprintf(T('Deleting directory "%s" and all its content...'),
 															 $Directory));
-		$Files = array_diff(scandir($Directory), array('.','..'));
+		$Files = array_diff(scandir($Directory), array('.', '..'));
     foreach($Files as $File) {
-			if(is_dir("$Directory/$File")) {
-				$Result = $this->DelTree("$Directory/$File");
+			$FileName = $Directory . '/' . $File;
+			if(is_dir($FileName)) {
+				$Result = $this->DelTree($FileName);
 			}
 			else {
 				$this->Log()->trace(sprintf(T('Deleting file "%s"...'),
-																		$Directory . '/' . $File));
-				$Result = unlink("$Directory/$File");
+																		$FileName));
+				$Result = unlink($FileName);
 			}
 
 			// Stop on first error
