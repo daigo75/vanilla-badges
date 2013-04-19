@@ -134,4 +134,16 @@ class BaseIntegration extends BaseClass {
 		}
 		return $Result;
   }
+
+	/**
+	 * Modifies an input string by appending a suffix composed by the "renamed"
+	 * keyword and a random string. It's useful to automatically rename items
+	 * during import phase, when an item with the same name exists.
+	 *
+	 * @param string OriginalName The original string to be modified.
+	 * @return string The modified string.
+	 */
+	protected function RandomRename($OriginalName) {
+		return $OriginalName . '-' . T('renamed') . '-' . md5(uniqid('', true));
+	}
 }
