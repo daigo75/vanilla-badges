@@ -53,6 +53,8 @@ class AwardsExporter extends BaseIntegration {
 	 * @return int A value that indicates the result of the operation.
 	 */
 	private function CompressData(stdClass $ExportData, array $ImagesToExport) {
+		$FileHashes = array();
+
 		// TODO Allow to configure another Export path
 		$this->_ZipFileName = AWARDS_PLUGIN_EXPORT_PATH . '/vanilla_awards_' . (string)date('YmdHis', $ExportData->ExportInfo->RawTimeStamp) . '.zip';
 
@@ -71,11 +73,15 @@ class AwardsExporter extends BaseIntegration {
 
 		// Store the Awards data in JSON format
 		$ExportDataFileName = self::AWARD_DATA_FILE_NAME;
+
 		// Store Awards data, in JSON format
-		if($Zip->addFromString($ExportDataFileName, json_encode($ExportData)) === false) {
+		$ExportData = json_encode($ExportData);
+		if($Zip->addFromString($ExportDataFileName, $ExportData) === false) {
 			$this->Log()->error($this->StoreMessage(T('Error storing export data.')));
 			return AWARDS_ERR_COULD_NOT_COMPRESS_EXPORTDATA;
 		}
+		// Store hash of data
+		$FileHashes[] = md5($ExportData, true);
 
 		$this->Log()->info($this->StoreMessage(T('Storing images...')));
 
@@ -94,8 +100,16 @@ class AwardsExporter extends BaseIntegration {
 																													$ImageFile)));
 					return AWARDS_ERR_COULD_NOT_COMPRESS_IMAGE;
 				};
+
+				// Store hash of each image
+				$FileHashes[] = md5_file($ImageFile, true);
 			}
 		}
+
+		$this->Log()->info($this->StoreMessage(T('Calculating and saving MD5 Checksum...')));
+		// Store the checksum of the compressed data into the archive
+		$ArchiveHash = md5(implode(',', $FileHashes));
+		$Zip->setArchiveComment('MD5: ' . $ArchiveHash);
 
 		$Zip->close();
 		$this->Log()->info($this->StoreMessage(T('Export completed successfully.')));
