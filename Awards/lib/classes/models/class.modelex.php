@@ -140,6 +140,11 @@ class ModelEx extends Gdn_Model {
       }
 			else {
         $PrimaryKeyValue = $this->Insert($Fields);
+
+				if($PrimaryKeyValue === false) {
+					$this->Log()->error(sprintf(T('Could not save data. Validation Results (JSON): "%s".'),
+																			json_encode($this->ValidationResults())));
+				}
       }
 	    return $PrimaryKeyValue;
 		}
