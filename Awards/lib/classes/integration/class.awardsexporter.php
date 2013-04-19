@@ -155,7 +155,7 @@ class AwardsExporter extends BaseIntegration {
 		foreach($AwardClasses as $AwardClass) {
 			$this->Log()->info($this->StoreMessage(sprintf(T('Processing Award Class "%s"...'),
 																											 $AwardClass->AwardClassName)));
-			$AwardClass = $this->CleanupData($AwardClass, array('AwardClassID'));
+			$AwardClass = $this->CleanupData($AwardClass, array('AwardClassID', 'TotalAwardsUsingClass'));
 
 			// Skip Classes without an image
 			if(empty($AwardClass->AwardClassImageFile)) {
