@@ -300,7 +300,7 @@ class AwardsPlugin extends Gdn_Plugin {
     }
 
 		// Add Plugin's menu items
-		$Menu->AddItem('Awards', T('Awards'), false, array('class' => 'Reputation'));
+		$Menu->AddItem('Awards', T('Awards'), 'Plugins.Awards.Manage', array('class' => 'Reputation'));
 		$Menu->AddLink('Awards',
 									 T('General Settings'),
 									 AWARDS_PLUGIN_GENERALSETTINGS_URL,
@@ -316,6 +316,10 @@ class AwardsPlugin extends Gdn_Plugin {
 		$Menu->AddLink('Awards',
 									 T('Export'),
 									 AWARDS_PLUGIN_EXPORT_URL,
+									 'Plugins.Awards.Manage');
+		$Menu->AddLink('Awards',
+									 T('Import'),
+									 AWARDS_PLUGIN_IMPORT_URL,
 									 'Plugins.Awards.Manage');
 
 		// If AfterUsers is defined, it means that the menu was spliced and it must
