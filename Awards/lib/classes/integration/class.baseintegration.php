@@ -44,14 +44,22 @@ class BaseIntegration extends BaseClass {
 	 * current system, and are not needed to import or export data.
 	 *
 	 * @param stdClass Data The data object to clean up.
+	 * @param array FieldsToRemove Additional Fields to remove from the object.
 	 * @return stdClass The cleaned up object.
 	 */
 	// TODO Move method to its own class
-	protected function CleanupData(stdClass $Data) {
+	protected function CleanupData(stdClass $Data, array $FieldsToRemove = array()) {
+		// Remove standard System fields
 		unset($Data->DateInserted);
 		unset($Data->InsertUser);
 		unset($Data->DateUpdated);
 		unset($Data->UpdateUser);
+
+		// Remove additional fields
+		foreach($FieldsToRemove as $Field) {
+			unset($Data->$Field);
+		}
+
 		return $Data;
 	}
 
