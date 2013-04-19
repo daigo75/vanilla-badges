@@ -47,6 +47,40 @@ class AwardsImporter extends BaseIntegration {
 	}
 
 	/**
+	 * Verifies that an archive's checksum matches the one calculated from its
+	 * content.
+	 *
+	 * @param string OriginalChecksum The checksum stored within the archive.
+	 * @return bool True, if the checksums match, False otherwise.
+	 */
+	private function VerifyArchiveChecksum($OriginalChecksum) {
+		$this->Log()->info($this->StoreMessage(sprintf(T('Verifying archive checksum...'))));
+		$FileHashes = array();
+
+		$ImageFiles = $this->GetFiles($this->_TempFolder);
+		//var_dump($ImageFiles); die();
+		foreach($ImageFiles as $ImageFile) {
+			$FileHashes[] = md5_file($ImageFile);
+		}
+		//var_dump($ImageFiles, $FileHashes);
+		sort($FileHashes);
+		$CalculatedChecksum = md5(implode(',', $FileHashes));
+		//var_dump($CalculatedChecksum, $OriginalChecksum);
+		$this->Log()->info($this->StoreMessage(sprintf(T('Original Checksum: %s. Calculated checksum: %s.'),
+																									 $OriginalChecksum,
+																									 $CalculatedChecksum)));
+
+		if($CalculatedChecksum != $OriginalChecksum) {
+			$this->Log()->info($this->StoreMessage(T('Checksum verification failed.')));
+			return false;
+		}
+		else {
+			$this->Log()->info($this->StoreMessage(T('Checksum verification passed.')));
+			return true;
+		}
+	}
+
+	/**
 	 * Extracts the content of a zip file to a temporary folder.
 	 *
 	 * @param string FileName The name of the file to uncompress.
@@ -56,7 +90,7 @@ class AwardsImporter extends BaseIntegration {
 		$this->Log()->info($this->StoreMessage(sprintf(T('Extracting data from file "%s"...'),
 																										 $FileName)));
 		if(!file_exists($FileName)) {
-			$this->Log()->error($this->StoreMessage(T('File does not exist') . ' ' . T('Operation aborted.')));
+			$this->Log()->error($this->StoreMessage(T('File does not exist')));
 			return AWARDS_ERR_FILE_NOT_FOUND;
 		}
 
@@ -64,15 +98,15 @@ class AwardsImporter extends BaseIntegration {
 		$this->_TempFolder = '/tmp/' . (string)uniqid('awards_import_', true);
 		$this->Log()->debug($this->StoreMessage(sprintf(T('Creating temporary folder "%s"...'),
 																										$this->_TempFolder)));
-		var_dump($this->_TempFolder);
+		//var_dump($this->_TempFolder);
 
 		if(!mkdir($this->_TempFolder)) {
-			$LogMsg = T('Could not create temporary folder. Import aborted.');
+			$LogMsg = T('Could not create temporary folder.');
 			$this->Log()->error($this->StoreMessage($LogMsg));
 			return AWARDS_ERR_COULD_NOT_CREATE_FOLDER;
 		}
 
-		// Import and compress the data and the images
+		// Extract the data and the images
 		$Zip = new ZipArchive();
 		// Open source Zip File
 		$ZipResult = $Zip->open($FileName);
@@ -83,57 +117,101 @@ class AwardsImporter extends BaseIntegration {
 		}
 		$this->Log()->info($this->StoreMessage(T('Extracting data...')));
 		if($Zip->extractTo($this->_TempFolder) === false) {
-			$LogMsg = sprintf(T('Could not extract data to temporary folder "%s". Import aborted.'),
+			$LogMsg = sprintf(T('Could not extract data to temporary folder "%s".'),
 												$this->_TempFolder);
 			return AWARDS_ERR_COULD_NOT_EXTRACT_EXPORTDATA;
 		}
 
+		$ArchiveChecksum = $Zip->getArchiveComment();
+		$Zip->close();
+
 		$this->Log()->info($this->StoreMessage(T('Data extraction completed.')));
+
+		// Verify archive integrity
+		if(!$this->VerifyArchiveChecksum($ArchiveChecksum)) {
+			return AWARDS_ERR_CHECKSUM_ERROR;
+		};
+
 		return AWARDS_OK;
 	}
 
+	/**
+	 * Loads a file containing exported Awards data in JSON format.
+	 *
+	 * @return string|bool A JSON representation of the data, or False on failure.
+	 */
+	private function LoadImportData() {
+		$DataFileName = $this->_TempFolder . '/' . self::AWARD_DATA_FILE_NAME;
+		$ImportData = file_get_contents($DataFileName);
+
+		if($ImportData === false) {
+			$this->Log()->error($this->StoreMessage(sprintf(T('Could not load data from file "%s"...'),
+																											$DataFileName)));
+		}
+		return $ImportData;
+	}
+
+	/**
+	 * Deletes temporary files and folders created during the import.
+	 */
 	private function Cleanup() {
 		$this->DelTree($this->_TempFolder);
 	}
 
-	private function GenerateImportMetaData(Gdn_Form $Form) {
-		$this->Log()->info($this->StoreMessage(T('Preparing Import MetaData...')));
+	private function ImportImages($SubFolder) {
+		$ImagesFolder = $this->_TempFolder . '/images/' . $SubFolder;
+		// TODO Implement images import
 
-		// Store Import metadata
-		$ImportMetaData = new stdClass();
-		$ImportMetaData->Version = self::EXPORT_V1;
-		$ImportMetaData->Label = $Form->GetValue('ImportLabel');
-		$ImportMetaData->Description = $Form->GetValue('ImportDescription');
-		$ImportMetaData->RawTimeStamp = now();
-		$ImportMetaData->TimeStamp = date('Y-m-d H:i:s', $ImportMetaData->RawTimeStamp);
-
-		return $ImportMetaData;
+		return AWARDS_OK;
 	}
 
-	private function GetAwardClassesData() {
+	private function ImportAwardClasses(stdClass $ImportData, array $ImportSettings) {
 		$this->Log()->info($this->StoreMessage(T('Importing Award Classes...')));
 
-		$ImagesToImport = array();
-		$AwardClasses = $this->AwardClassesModel()->Get()->Result();
+		// Retrieve the action to take when an item is Duplicated
+		$DuplicateItemAction = GetValue('DuplicateItemAction', $ImportSettings);
 
+		// Transform Award Classes object into an associative array. This is needed
+		// because each Class' data must be passed as an associative array to the model
+		$AwardClasses = json_decode(json_encode($ImportData->AwardClasses), true);
+
+		$Result = AWARDS_OK;
 		foreach($AwardClasses as $AwardClass) {
-			$this->Log()->info($this->StoreMessage(sprintf(T('Processing Award Class "%s"...'),
-																											 $AwardClass->AwardClassName)));
-			$AwardClass = $this->CleanupData($AwardClass);
+			$AwardClassName = GetValue('AwardClassName', $AwardClass);
+			$ExistingAwardClass = $this->AwardClassesModel()->GetAwardClassDataByName($AwardClassName);
 
-			// Skip Classes without an image
-			if(empty($AwardClass->AwardClassImageFile)) {
-				continue;
+			if($ExistingAwardClass !== false) {
+				switch($DuplicateItemAction) {
+					case self::DUPLICATE_ACTION_OVERWRITE:
+						$AwardClass['AwardClassID'] = GetValue('AwardClassID', $ExistingAwardClass);
+						break;
+					case self::DUPLICATE_ACTION_RENAME:
+						$AwardClass['AwardClassName'] .= uniqid('-', true);
+						break;
+					case self::DUPLICATE_ACTION_SKIP:
+					default:
+						continue 2;
+				}
+
+				unset($AwardClass['TotalAwardsUsingClass']);
+				var_dump($AwardClass);
+
+				// TODO Check why Award Classes are not saved correctly
+				if($this->AwardClassesModel()->Save($AwardClass) === false) {
+					$this->Log()->info($this->StoreMessage(sprintf(T('Could not import Award Class "%s". ' .
+																													 'Class details (JSON): %s.'),
+																												 $AwardClass['AwardClassName'],
+																												 json_encode($AwardClass))));
+					return AWARDS_ERR_COULD_NOT_IMPORT_AWARD_CLASS;
+				}
 			}
-			$ImagesToImport[] = PATH_ROOT . '/' . $AwardClass->AwardClassImageFile;
-			// Remove path info from the image
-			$AwardClass->AwardClassImageFile = basename($AwardClass->AwardClassImageFile);
 		}
-		$this->Log()->info($this->StoreMessage(T('OK')));
 
-		$Result = new stdClass();
-		$Result->ImagesToImport = &$ImagesToImport;
-		$Result->Data = &$AwardClasses;
+		if($Result === AWARDS_OK) {
+			// TODO Extract the images folder from the Award Classes data
+			$Result = $this->ImportImages('awardclasses');
+		}
+
 		return $Result;
 	}
 
@@ -167,41 +245,60 @@ class AwardsImporter extends BaseIntegration {
 
 		$Result = $this->ExtractData(GetValue('FileName', $ImportSettings));
 
-		var_dump($Result); die();
-
-		Gdn::Database()->BeginTransaction();
-		try {
-			// TODO Import Award Classes
-			// TODO Import Awards
-			// TODO Import Award Images
-
-			$ImportResult = AWARDS_ERR_DUMMY_ERROR;
-
-			// Use a transaction to either save ALL data (Award and Rules)
-			// successfully, or none of it. This will prevent partial saves and
-			// reduce inconsistencies
-			if($ImportResult === AWARDS_OK) {
-				Gdn::Database()->CommitTransaction();
-			}
-			else {
-				Gdn::Database()->RollbackTransaction();
-			}
+		// Load the data to import from the exported JSON
+		$ImportData = $this->LoadImportData();
+		if($ImportData === false) {
+			$Result = AWARDS_ERR_COULD_NOT_LOAD_DATA_FILE;
 		}
-		catch(Exception $e) {
-			Gdn::Database()->RollbackTransaction();
-			$ErrorMsg = sprintf(T('Exception occurred while importing Awards data. ' .
-																							'Error: %s.'),
-																						$e->getMessage());
-			$this->Log()->error($this->StoreMessage($ErrorMsg));
-			$this->Log()->error($this->StoreMessage(T('Operation aborted')));
 
-			return AWARDS_ERR_EXCEPTION_OCCURRED;
+		if($Result === AWARDS_OK) {
+			// Decode the JSON string into an object
+			$ImportData = json_decode($ImportData);
+			//var_dump($ImportData); die();
+
+			Gdn::Database()->BeginTransaction();
+			try {
+				// TODO Import Award Classes
+				$Result = $this->ImportAwardClasses($ImportData, $ImportSettings);
+
+				// TODO Import Awards
+				if($Result === AWARDS_OK) {
+					//$Result = $this->ImportAwards($ImportSettings);
+				}
+				// TODO Import Award Images
+
+				//$Result = AWARDS_ERR_DUMMY_ERROR;
+
+				// Use a transaction to either save ALL data (Award and Rules)
+				// successfully, or none of it. This will prevent partial saves and
+				// reduce inconsistencies
+				if($Result === AWARDS_OK) {
+					Gdn::Database()->CommitTransaction();
+				}
+				else {
+					Gdn::Database()->RollbackTransaction();
+				}
+			}
+			catch(Exception $e) {
+				Gdn::Database()->RollbackTransaction();
+				$ErrorMsg = sprintf(T('Exception occurred while importing Awards data. ' .
+																								'Error: %s. Trace: %s'),
+																							$e->getMessage(),
+																							$e->getTraceAsString());
+				$this->Log()->error($this->StoreMessage($ErrorMsg));
+
+				$Result = AWARDS_ERR_EXCEPTION_OCCURRED;
+			}
 		}
 
 		$this->Log()->info($this->StoreMessage(T('Cleaning up...')));
 		$this->Cleanup();
 
-		return AWARDS_OK;
+		if($Result !== AWARDS_OK) {
+			$this->Log()->info($this->StoreMessage(T('Operation aborted.')));
+		}
+
+		return $Result;
 	}
 
 }
