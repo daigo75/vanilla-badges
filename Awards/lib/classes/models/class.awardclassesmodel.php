@@ -88,6 +88,17 @@ class AwardClassesModel extends ModelEx {
 	}
 
 	/**
+	 * Convenience method to return the data of a single Award Class using its
+	 * name.
+	 *
+	 * @param int $AwardClassName The name of the Award Class for which to retrieve the data.
+	 * @return Gdn_DataSet A DataSet containing the data of the specified Award Class.
+	 */
+	public function GetAwardClassDataByName($AwardClassName) {
+		return $this->GetWhere(array('AwardClassName' => $AwardClassName));
+	}
+
+	/**
 	 * Returns a DataSet containing a list of the configured Award Classes.
 	 *
 	 * @param array WhereClauses An associative array of WHERE clauses. They should
@@ -158,6 +169,8 @@ class AwardClassesModel extends ModelEx {
    */
   public function Save($FormPostValues, $Settings = false) {
 		$AwardClassID = GetValue('AwardClassID', $FormPostValues);
+			var_dump($AwardClassID); die();
+
 		if(empty($AwardClassID)) {
 			// Check that the Award Class Name is Unique. This check cannot be performed by
 			// the automatic validation mechanism used with Forms, due its limitations
