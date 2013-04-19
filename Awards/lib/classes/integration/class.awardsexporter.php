@@ -138,7 +138,7 @@ class AwardsExporter extends BaseIntegration {
 		foreach($AwardClasses as $AwardClass) {
 			$this->Log()->info($this->StoreMessage(sprintf(T('Processing Award Class "%s"...'),
 																											 $AwardClass->AwardClassName)));
-			$AwardClass = $this->CleanupData($AwardClass);
+			$AwardClass = $this->CleanupData($AwardClass, array('AwardClassID'));
 
 			// Skip Classes without an image
 			if(empty($AwardClass->AwardClassImageFile)) {
@@ -171,7 +171,7 @@ class AwardsExporter extends BaseIntegration {
 		foreach($Awards as $Award) {
 			$this->Log()->info($this->StoreMessage(sprintf(T('Processing Award "%s"...'),
 																											 $Award->AwardName)));
-			$Award = $this->CleanupData($Award);
+			$Award = $this->CleanupData($Award, array('AwardID'));
 
 			$ImagesToExport[] = PATH_ROOT . '/' . $Award->AwardImageFile;
 			// Remove path info from the image
