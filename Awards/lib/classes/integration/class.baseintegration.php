@@ -90,7 +90,7 @@ class BaseIntegration extends BaseClass {
 					continue;
 				}
 			}
-			$Result[] = $File;
+			$Result[] = $FileName;
     }
 
 		return $Result;
