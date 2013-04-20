@@ -14,3 +14,6 @@ Award Plugin for Vanilla Forums 2.0 - Change Log
 
 13.04.15 beta
 - Added handling of image Previews for Awards
+
+13.04.20 beta
+- Added export and import of Award Classes
