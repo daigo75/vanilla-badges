@@ -73,7 +73,7 @@
 		<div id="Output" class="clearfix <?php echo $OutputCssClass; ?>">
 			<div class="Header">
 				<?php
-					$ResultMessage = ($ImportResult === AWARDS_OK) ? T('Success.') : T('Failure.');
+					$ResultMessage = ($ExportResult === AWARDS_OK) ? T('Success.') : T('Failure.');
 					echo Wrap(T('Export completed.') . ' ' . $ResultMessage, 'h2');
 					if(isset($ExportResult) && ($ExportResult !== AWARDS_OK)) {
 						echo Wrap(sprintf(T('Operation failed. Export result code: %d.'),
