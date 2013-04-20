@@ -461,12 +461,17 @@ img.Medium {
 	font-weight: bold;
 }
 
-.AwardsPlugin #AwardsList .Description {
-	width: 25em;
+.AwardsPlugin #AwardsList .Name,
+.AwardsPlugin #AwardClassesList .Name {
+	width: 15em;
 }
 
 .AwardsPlugin #AwardClassesList .Description {
 	width: 20em;
+}
+
+.AwardsPlugin #AwardsList .Description {
+	width: 25em;
 }
 
 .AwardsPlugin #AwardsList .RankPoints {
