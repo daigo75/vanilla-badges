@@ -78,7 +78,8 @@
 		<div id="Output" class="clearfix <?php echo $OutputCssClass; ?>">
 			<div class="Header">
 				<?php
-					echo Wrap(T('Import completed'), 'h2');
+					$ResultMessage = ($ImportResult === AWARDS_OK) ? T('Success.') : T('Failure.');
+					echo Wrap(T('Import completed.') . ' ' . $ResultMessage, 'h2');
 					if(isset($ImportResult) && ($ImportResult !== AWARDS_OK)) {
 						echo Wrap(sprintf(T('Operation failed. Import result code: %d.'),
 															$ImportResult),
