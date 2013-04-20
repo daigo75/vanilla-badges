@@ -7,15 +7,11 @@
  * Handles the import of Awards, Award Classes and related images.
  */
 class AwardsImporter extends BaseIntegration {
-	// @var int Indicates that duplicate items should be skipped
-	const DUPLICATE_ACTION_SKIP = 0;
-	// @var int Indicates that duplicate items should be overwritten
-	const DUPLICATE_ACTION_OVERWRITE = 1;
-	// @var int Indicates that duplicate items should be renamed
-	const DUPLICATE_ACTION_RENAME = 2;
-
 	// @var string Temporary folder where compressed data is extracted before the import
 	private $_TempFolder;
+
+	// @Var array A list of all the files that have been imported/copied by during the Import process
+	private $_ImportedFiles = array();
 
 	/**
 	 * Returns an instance of AwardsModel.
@@ -35,15 +31,6 @@ class AwardsImporter extends BaseIntegration {
 	 */
 	private function AwardClassesModel() {
 		return $this->GetInstance('AwardClassesModel');
-	}
-
-	// TODO Document method
-	public function DuplicateItemActions() {
-		return array(
-			self::DUPLICATE_ACTION_SKIP => T('Skip'),
-			self::DUPLICATE_ACTION_OVERWRITE => T('Overwrite'),
-			self::DUPLICATE_ACTION_RENAME => T('Rename'),
-		);
 	}
 
 	/**
@@ -122,13 +109,13 @@ class AwardsImporter extends BaseIntegration {
 			return AWARDS_ERR_COULD_NOT_EXTRACT_EXPORTDATA;
 		}
 
-		$ArchiveChecksum = $Zip->getArchiveComment();
+		$ExportInfo = json_decode($Zip->getArchiveComment());
 		$Zip->close();
 
 		$this->Log()->info($this->StoreMessage(T('Data extraction completed.')));
 
 		// Verify archive integrity
-		if(!$this->VerifyArchiveChecksum($ArchiveChecksum)) {
+		if(!$this->VerifyArchiveChecksum($ExportInfo->MD5)) {
 			return AWARDS_ERR_CHECKSUM_ERROR;
 		};
 
@@ -154,64 +141,164 @@ class AwardsImporter extends BaseIntegration {
 	/**
 	 * Deletes temporary files and folders created during the import.
 	 */
-	private function Cleanup() {
+	private function Cleanup($Result) {
 		$this->DelTree($this->_TempFolder);
+
+		// If Import failed, delete all the images imported so far. This is done
+		// so that the folders won't be polluted with "hanging" files
+		if($Result !== AWARDS_OK) {
+			$this->DeleteImportedFiles();
+		}
 	}
 
-	private function ImportImages($SubFolder) {
+	/**
+	 * Import Awards' and Award Classes' images.
+	 *
+	 * @param string SubFolder the subfolder, inside the compressed archive, where
+	 * the images to import are located.
+	 * @param string DestinationFolder The destination folder where to copy the
+	 * files.
+	 * @param int DuplicateItemAction Indicates what to do when a file with the
+	 * same name of the source exists in the destination folder. It can have the
+	 * following values:
+	 * - BaseIntegration::DUPLICATE_ACTION_SKIP
+	 * - BaseIntegration::DUPLICATE_ACTION_OVERWRITE
+	 * - BaseIntegration::DUPLICATE_ACTION_RENAME
+	 * @return int An integer value indicating the result of the operation.
+	 */
+	private function ImportImages($SubFolder, $DestinationFolder, $DuplicateItemAction = self::DUPLICATE_ACTION_SKIP) {
 		$ImagesFolder = $this->_TempFolder . '/images/' . $SubFolder;
 		// TODO Implement images import
+		$FilesList = $this->GetFiles($ImagesFolder, false);
+		//var_dump($FilesList);
 
-		return AWARDS_OK;
+		$Result = AWARDS_OK;
+		foreach($FilesList as $File) {
+			$this->Log()->info($this->StoreMessage(sprintf(T('Importing file "%s"...'),
+																										 $File)));
+
+			$FileInfo = pathinfo($File);
+			//var_dump($FileInfo);die();
+
+			$DestinationFile = $DestinationFolder . '/' . $FileInfo['basename'];
+			if(file_exists($DestinationFile)) {
+				$this->Log()->info($this->StoreMessage(T('File already exists')));
+				switch($DuplicateItemAction) {
+					case self::DUPLICATE_ACTION_OVERWRITE:
+						$this->Log()->info($this->StoreMessage(T('Overwriting')));
+						break;
+					case self::DUPLICATE_ACTION_RENAME:
+						$this->Log()->info($this->StoreMessage(T('Renaming')));
+						$DestinationFile = $DestinationFolder . '/' . $this->RandomRename($FileInfo['filename']) . '.' . $FileInfo['extension'];
+						break;
+					case self::DUPLICATE_ACTION_SKIP:
+					default:
+						$this->Log()->info($this->StoreMessage(T('Skipping')));
+						continue 2;
+				}
+			}
+			if(copy($File, $DestinationFile) === false) {
+				$this->Log()->error($this->StoreMessage(T('File copy failed.')));
+				$Result = AWARDS_ERR_COULD_NOT_COPY_FILE;
+				break;
+			}
+
+			// Store the details of the imported file
+			$ImportedFileInfo = new stdClass();
+			$ImportedFileInfo->SourceFile = $File;
+			$ImportedFileInfo->DestinationFile = $DestinationFile;
+			//var_dump($ImportedFileInfo);die();
+
+			$this->_ImportedFiles[$SubFolder . '/' . $FileInfo['basename']] = $ImportedFileInfo;
+		}
+
+		return $Result;
 	}
 
+	/**
+	 * Deletes all the imported files. This function is used during cleanup when
+	 * the import fails, to ensure that no "hanging" files are left around.
+	 */
+	private function DeleteImportedFiles() {
+		$this->Log()->info($this->StoreMessage(T('Deleting imported files...')));
+		foreach($this->_ImportedFiles as $FileBaseName => $FileInfo) {
+			$this->Log()->debug($this->StoreMessage(sprintf(T('Deleting File "%s"...'),
+																											$FileInfo->DestinationFile)));
+			if(unlink($FileInfo->DestinationFile)) {
+				$this->Log()->debug($this->StoreMessage(T('Success.')));
+			}
+			else {
+				$this->Log()->debug($this->StoreMessage(T('Failure.')));
+			}
+		}
+	}
+
+	/**
+	 * Imports the Award Classes.
+	 *
+	 * @param stdClass ImportData An object containing Award Classes data.
+	 * @param array ImportSettings An array of settings to use for the import.
+	 * @return int An integer value indicating the result of the operation.
+	 */
 	private function ImportAwardClasses(stdClass $ImportData, array $ImportSettings) {
 		$this->Log()->info($this->StoreMessage(T('Importing Award Classes...')));
 
 		// Retrieve the action to take when an item is Duplicated
 		$DuplicateItemAction = GetValue('DuplicateItemAction', $ImportSettings);
 
-		// Transform Award Classes object into an associative array. This is needed
-		// because each Class' data must be passed as an associative array to the model
-		$AwardClasses = json_decode(json_encode($ImportData->AwardClasses), true);
+		// Copy the Award Classes images to the destination folder
+		$Result = $this->ImportImages('awardclasses', AWARDS_PLUGIN_AWARDCLASSES_PICS_PATH, $DuplicateItemAction);
 
-		$Result = AWARDS_OK;
-		foreach($AwardClasses as $AwardClass) {
-			$AwardClassName = GetValue('AwardClassName', $AwardClass);
-			$ExistingAwardClass = $this->AwardClassesModel()->GetAwardClassDataByName($AwardClassName);
+		if($Result == AWARDS_OK) {
+			// Transform Award Classes object into an associative array. This is needed
+			// because each Class' data must be passed as an associative array to the model
+			$AwardClasses = json_decode(json_encode($ImportData->AwardClasses), true);
 
-			if($ExistingAwardClass !== false) {
-				switch($DuplicateItemAction) {
-					case self::DUPLICATE_ACTION_OVERWRITE:
-						$AwardClass['AwardClassID'] = GetValue('AwardClassID', $ExistingAwardClass);
-						break;
-					case self::DUPLICATE_ACTION_RENAME:
-						$AwardClass['AwardClassName'] .= uniqid('-', true);
-						break;
-					case self::DUPLICATE_ACTION_SKIP:
-					default:
-						continue 2;
+			foreach($AwardClasses as $AwardClass) {
+				$AwardClassName = GetValue('AwardClassName', $AwardClass);
+				$this->Log()->debug($this->StoreMessage(sprintf(T('Importing Class "%s"...'),
+																												$AwardClassName)));
+
+				$ExistingAwardClass = $this->AwardClassesModel()->GetAwardClassDataByName($AwardClassName);
+
+				if($ExistingAwardClass !== false) {
+					$this->Log()->debug($this->StoreMessage(T('Class already exists')));
+					switch($DuplicateItemAction) {
+						case self::DUPLICATE_ACTION_OVERWRITE:
+							$this->Log()->debug($this->StoreMessage(T('Overwriting')));
+							$AwardClass['AwardClassID'] = GetValue('AwardClassID', $ExistingAwardClass);
+							break;
+						case self::DUPLICATE_ACTION_RENAME:
+							$this->Log()->debug($this->StoreMessage(T('Renaming')));
+							$AwardClass['AwardClassName'] = $this->RandomRename($AwardClassName);
+							break;
+						case self::DUPLICATE_ACTION_SKIP:
+						default:
+							$this->Log()->debug($this->StoreMessage(T('Skipping')));
+							continue 2;
+					}
 				}
 
-				unset($AwardClass['TotalAwardsUsingClass']);
-				var_dump($AwardClass);
+				// Replace the simple base name of the image with the full path and name
+				// of the file that has been imported
+				$AwardClassImage = GetValue('AwardClassImageFile', $AwardClass, '');
+				if(!empty($AwardClassImage)) {
+					//var_dump($AwardClassImage, $this->_ImportedFiles);die();
+					$FileInfo = $this->_ImportedFiles['awardclasses/' . $AwardClassImage];
+					$AwardClass['AwardClassImageFile'] = $FileInfo->DestinationFile;
+					//var_dump($AwardClass['AwardClassImageFile']);die();
+				}
 
-				// TODO Check why Award Classes are not saved correctly
+				// Save Award Class
 				if($this->AwardClassesModel()->Save($AwardClass) === false) {
-					$this->Log()->info($this->StoreMessage(sprintf(T('Could not import Award Class "%s". ' .
-																													 'Class details (JSON): %s.'),
-																												 $AwardClass['AwardClassName'],
-																												 json_encode($AwardClass))));
-					return AWARDS_ERR_COULD_NOT_IMPORT_AWARD_CLASS;
+					$this->Log()->error($this->StoreMessage(sprintf(T('Could not import Award Class. ' .
+																														'Class details (JSON): %s.'),
+																													json_encode($AwardClass))));
+					$Result = AWARDS_ERR_COULD_NOT_IMPORT_AWARD_CLASS;
+					break;
 				}
 			}
 		}
-
-		if($Result === AWARDS_OK) {
-			// TODO Extract the images folder from the Award Classes data
-			$Result = $this->ImportImages('awardclasses');
-		}
-
 		return $Result;
 	}
 
@@ -238,9 +325,15 @@ class AwardsImporter extends BaseIntegration {
 		return $Result;
 	}
 
-	// TODO Move method to its own class
+	/**
+	 * Imports Awards, Award Classes and related images.
+	 *
+	 * @param array ImportSettings Settings to use for the import.
+	 * @return int An integer value indicating the result of the operation.
+	 */
 	public function ImportData($ImportSettings) {
 		$this->_Messages = array();
+		$this->_ImportedFiles = array();
 		$this->Log()->info($this->StoreMessage(T('Importing Awards...')));
 
 		$Result = $this->ExtractData(GetValue('FileName', $ImportSettings));
@@ -258,18 +351,16 @@ class AwardsImporter extends BaseIntegration {
 
 			Gdn::Database()->BeginTransaction();
 			try {
-				// TODO Import Award Classes
+				// TODO Use settings to determine if classes should be imported
+				// Import Award Classes
 				$Result = $this->ImportAwardClasses($ImportData, $ImportSettings);
 
 				// TODO Import Awards
 				if($Result === AWARDS_OK) {
 					//$Result = $this->ImportAwards($ImportSettings);
 				}
-				// TODO Import Award Images
 
-				//$Result = AWARDS_ERR_DUMMY_ERROR;
-
-				// Use a transaction to either save ALL data (Award and Rules)
+				// Use a transaction to either save ALL data (Awards and Award Classes)
 				// successfully, or none of it. This will prevent partial saves and
 				// reduce inconsistencies
 				if($Result === AWARDS_OK) {
@@ -292,13 +383,15 @@ class AwardsImporter extends BaseIntegration {
 		}
 
 		$this->Log()->info($this->StoreMessage(T('Cleaning up...')));
-		$this->Cleanup();
+		$this->Cleanup($Result);
 
-		if($Result !== AWARDS_OK) {
+		if($Result === AWARDS_OK) {
+			$this->Log()->info($this->StoreMessage(T('Import completed successfully.')));
+		}
+		else {
 			$this->Log()->info($this->StoreMessage(T('Operation aborted.')));
 		}
 
 		return $Result;
 	}
-
 }
