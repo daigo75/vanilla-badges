@@ -75,13 +75,13 @@ class AwardsExporter extends BaseIntegration {
 		$ExportDataFileName = self::AWARD_DATA_FILE_NAME;
 
 		// Store Awards data, in JSON format
-		$ExportData = json_encode($ExportData);
-		if($Zip->addFromString($ExportDataFileName, $ExportData) === false) {
+		$ExportDataJSON = json_encode($ExportData);
+		if($Zip->addFromString($ExportDataFileName, $ExportDataJSON) === false) {
 			$this->Log()->error($this->StoreMessage(T('Error storing export data.')));
 			return AWARDS_ERR_COULD_NOT_COMPRESS_EXPORTDATA;
 		}
 		// Store hash of data
-		$FileHashes[] = md5($ExportData);
+		$FileHashes[] = md5($ExportDataJSON);
 
 		$this->Log()->info($this->StoreMessage(T('Storing images...')));
 
@@ -108,14 +108,15 @@ class AwardsExporter extends BaseIntegration {
 			}
 		}
 
-		$this->Log()->info($this->StoreMessage(T('Calculating and saving MD5 Checksum...')));
+		$this->Log()->info($this->StoreMessage(T('Calculating MD5 Checksum...')));
 		// Store the checksum of the compressed data into the archive
 		sort($FileHashes);
 		$ArchiveHash = md5(implode(',', $FileHashes));
-		$Zip->setArchiveComment($ArchiveHash);
+
+		$ExportData->ExportInfo->MD5 = $ArchiveHash;
+		$Zip->setArchiveComment(json_encode($ExportData->ExportInfo, JSON_PRETTY_PRINT));
 
 		$Zip->close();
-		$this->Log()->info($this->StoreMessage(T('Export completed successfully.')));
 		return AWARDS_OK;
 	}
 
@@ -131,7 +132,7 @@ class AwardsExporter extends BaseIntegration {
 
 		// Store Export metadata
 		$ExportMetaData = new stdClass();
-		$ExportMetaData->Version = self::EXPORT_V1;
+		$ExportMetaData->ExportFormat = self::EXPORT_V1;
 		$ExportMetaData->Label = GetValue('ExportLabel', $Settings, '');
 		$ExportMetaData->Description = GetValue('ExportDescription', $Settings, '');
 		$ExportMetaData->RawTimeStamp = now();
@@ -235,6 +236,9 @@ class AwardsExporter extends BaseIntegration {
 		$ExportData->Awards = &$AwardsData->Data;
 
 		// Generate compressed file with all the data and the images
-		return $this->CompressData($ExportData, $ImagesToExport);
+		$Result = $this->CompressData($ExportData, $ImagesToExport);
+
+		$this->Log()->info($this->StoreMessage(T('Export completed successfully.')));
+		return $Result;
 	}
 }
