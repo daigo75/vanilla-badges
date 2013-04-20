@@ -687,6 +687,11 @@ class AwardsManager extends BaseManager {
 				$ImportResult = $this->AwardsImporter()->ImportData($ImportSettings);
 				$Sender->SetData('ImportResult', $ImportResult);
 				$Sender->SetData('ImportMessages', $this->AwardsImporter()->GetMessages());
+
+				// Fire ConfigChanged event to regenerate CSS file for Awards Classes
+				if($ImportResult == AWARDS_OK) {
+					$Caller->FireEvent('ConfigChanged');
+				}
 			}
 		}
 
