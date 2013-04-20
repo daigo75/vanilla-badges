@@ -320,7 +320,10 @@ class AwardClassesManager extends BaseManager {
 			$CSSEntries[] = $CSSDeclaration;
 		}
 
-		$this->WriteToFile(AWARDS_PLUGIN_AWARDCLASSES_CSS_FILE, implode("\n", $CSSEntries));
+		if(!$this->WriteToFile(AWARDS_PLUGIN_AWARDCLASSES_CSS_FILE, implode("\n", $CSSEntries))) {
+			$this->Log()->error(T('Award Classes CSS file could not be updated. Please save an ' .
+														'Award Class again to regenerate it.'));
+		}
 	}
 
 	/**
