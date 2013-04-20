@@ -73,10 +73,10 @@
 											array('class' => 'Image',));
 
 						// Output Award Class Name and Description
-						echo Wrap(Gdn_Format::Text($AwardClass->AwardClassName), 'td', array('class' => 'AwardClassName',));
+						echo Wrap(Gdn_Format::Text($AwardClass->AwardClassName), 'td', array('class' => 'Name',));
 						echo Wrap(Gdn_Format::Text($AwardClass->RankPoints), 'td', array('class' => 'RankPoints',));
 
-						echo Wrap(Gdn_Format::Text($AwardClass->AwardClassDescription), 'td', array('class' => 'AwardClassDescription',));
+						echo Wrap(Gdn_Format::Text($AwardClass->AwardClassDescription), 'td', array('class' => 'Description',));
 						echo Wrap(Gdn_Format::Text($AwardClass->TotalAwardsUsingClass), 'td', array('class' => 'TotalAwardsUsingClass',));
 
 						echo "<td class=\"Buttons\">\n";
