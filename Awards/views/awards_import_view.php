@@ -69,9 +69,9 @@
 				?>
 				<ul>
 					<li><?php
-						echo $this->Form->Checkbox('ExportClasses', T('Export Award Classes.'));
-									echo Wrap(T('Here you can export your Awards and Award Classes to an ' .
-									'external file, which you can then import in another forum.'),
+						echo $this->Form->Checkbox('ImportClasses', T('Import Award Classes.'));
+									echo Wrap(T('Import Award Classes, if Source File contains them. If this is left ' .
+									'unchecked, all Awards will be put under the Default Award Class.'),
 								'span');
 					?></li>
 				</ul>
