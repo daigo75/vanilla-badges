@@ -61,6 +61,21 @@
 					?></li>
 				</ul>
 			</div>
+			<div class="Column">
+				<?php
+					echo Wrap(T('Options'),
+										'h4',
+										array('class' => 'OptionsLabel'));
+				?>
+				<ul>
+					<li><?php
+						echo $this->Form->Checkbox('ExportClasses', T('Export Award Classes.'));
+									echo Wrap(T('Here you can export your Awards and Award Classes to an ' .
+									'external file, which you can then import in another forum.'),
+								'span');
+					?></li>
+				</ul>
+			</div>
 		</div>
 		<div class="Buttons">
 			<?php
