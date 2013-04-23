@@ -189,7 +189,7 @@ class AwardsExporter extends BaseIntegration {
 		foreach($Awards as $Award) {
 			$this->Log()->info($this->StoreMessage(sprintf(T('Processing Award "%s"...'),
 																											 $Award->AwardName)));
-			$Award = $this->CleanupData($Award, array('AwardID'));
+			$Award = $this->CleanupData($Award, array('AwardID', 'AwardClassID', 'AwardClassImageFile', 'AwardClassRankPoints'));
 
 			$ImagesToExport[] = PATH_ROOT . '/' . $Award->AwardImageFile;
 			// Remove path info from the image
