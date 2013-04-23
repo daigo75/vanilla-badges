@@ -228,7 +228,7 @@ class AwardsManager extends BaseManager {
 
 		if(!empty($AwardID)) {
 			// Load Award Data
-			$AwardData = $this->AwardsModel()->GetAwardData($AwardID)->FirstRow();
+			$AwardData = $this->AwardsModel()->GetAwardByID($AwardID)->FirstRow();
 			$Sender->Form->SetData($AwardData);
 
 			$Sender->SetData('RulesSettings', $this->GetRulesSettings($AwardData));
@@ -252,7 +252,7 @@ class AwardsManager extends BaseManager {
 			if(Gdn::Session()->ValidateTransientKey($Data['TransientKey']) && $Sender->Form->ButtonExists('Save')) {
 				try {
 					// Retrieve the URL of the Picture associated with the Award.
-					$ImageFile = PictureManager::GetPictureURL(AWARDS_PLUGIN_AWARD_PICS_PATH,
+					$ImageFile = PictureManager::GetPictureURL(AWARDS_PLUGIN_AWARDS_PICS_PATH,
 																										 'Picture',
 																										 $Sender->Form->GetFormValue('AwardImageFile'));
 					// Add the Picture URL to the Form
@@ -358,7 +358,7 @@ class AwardsManager extends BaseManager {
 		}
 
 		// Load Award Data
-		$AwardData = $this->AwardsModel()->GetAwardData($AwardID)->FirstRow();
+		$AwardData = $this->AwardsModel()->GetAwardByID($AwardID)->FirstRow();
 		if(empty($AwardData)) {
 			$this->Log()->error(sprintf(T('Requested cloning of invalid Award ID: %d. Request by User %s (ID: %d).'),
 																	$AwardID,
@@ -411,7 +411,7 @@ class AwardsManager extends BaseManager {
 			}
 
 			// Load the data of the Award to be deleted, if an Award ID is passed
-			$AwardData = $this->AwardsModel()->GetAwardData($AwardID)->FirstRow(DATASET_TYPE_ARRAY);
+			$AwardData = $this->AwardsModel()->GetAwardByID($AwardID)->FirstRow(DATASET_TYPE_ARRAY);
 
 			// Cannot proceed without a valid Award
 			if(empty($AwardData)) {
@@ -473,7 +473,7 @@ class AwardsManager extends BaseManager {
 			}
 
 			// Load the data of the Award to be deleted, if an Award ID is passed
-			$AwardData = $this->AwardsModel()->GetAwardData($AwardID)->FirstRow();
+			$AwardData = $this->AwardsModel()->GetAwardByID($AwardID)->FirstRow();
 
 			// Cannot proceed without a valid Award
 			if(empty($AwardData)) {
@@ -731,7 +731,7 @@ class AwardsManager extends BaseManager {
 		// Load Award Data
 		$AwardID = GetValue(1, $Sender->RequestArgs);
 		if(!empty($AwardID)) {
-			//$AwardData = $this->AwardsModel()->GetAwardData($AwardID)->FirstRow();
+			//$AwardData = $this->AwardsModel()->GetAwardByID($AwardID)->FirstRow();
 			$AwardData = $this->AwardsModel()
 												->GetWithTimesAwarded(array('VAAL.AwardID' => $AwardID),
 																							array('VAAL.AwardName asc'))
