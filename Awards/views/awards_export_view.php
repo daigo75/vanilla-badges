@@ -49,7 +49,7 @@
 				?>
 				<ul>
 					<li><?php
-						echo $this->Form->Checkbox('ExportClasses', T('Include Award Classes.'));
+						echo $this->Form->Checkbox('ExportClasses', T('Export Award Classes.'));
 									echo Wrap(T('Here you can export your Awards and Award Classes to an ' .
 									'external file, which you can then import in another forum.'),
 								'span');
