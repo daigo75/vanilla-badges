@@ -93,7 +93,7 @@ class AwardClassesManager extends BaseManager {
 		$Sender->Form->ShowErrors();
 
 		if(!empty($AwardClassID)) {
-			$AwardClassData = $this->AwardClassesModel()->GetAwardClassData($AwardClassID)->FirstRow();
+			$AwardClassData = $this->AwardClassesModel()->GetAwardClassByID($AwardClassID)->FirstRow();
 			//var_dump($AwardClassData);
 			$Sender->Form->SetData($AwardClassData);
 		}
@@ -197,7 +197,7 @@ class AwardClassesManager extends BaseManager {
 		}
 
 		// Load Award Class Data
-		$AwardClassData = $this->AwardClassesModel()->GetAwardClassData($AwardClassID)->FirstRow();
+		$AwardClassData = $this->AwardClassesModel()->GetAwardClassByID($AwardClassID)->FirstRow();
 		if(empty($AwardClassData)) {
 			$this->Log()->error(sprintf(T('Requested cloning of invalid Award Class ID: %d. Request by User %s (ID: %d).'),
 																	$AwardClassID,
@@ -242,7 +242,7 @@ class AwardClassesManager extends BaseManager {
 			$AwardClassID = $Sender->Request->GetValue(AWARDS_PLUGIN_ARG_AWARDCLASSID, null);
 
 			// Load the data of the Award Class to be edited, if an Award Class ID
-			$AwardClassData = $this->AwardClassesModel()->GetAwardClassData($AwardClassID)->FirstRow(DATASET_TYPE_ARRAY);
+			$AwardClassData = $this->AwardClassesModel()->GetAwardClassByID($AwardClassID)->FirstRow(DATASET_TYPE_ARRAY);
 
 			// If Class is in use, prevent its deletion
 			if(GetValue('TotalAwardsUsingClass', $AwardClassData) > 0) {

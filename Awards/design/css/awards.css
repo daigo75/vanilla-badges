@@ -365,7 +365,7 @@ img.Medium {
 }
 
 #AwardsPage #AwardsList .Name {
-	width: 40%;
+	/*width: 40%;*/
 }
 
 #AwardsPage #AwardsList .AwardImage {
@@ -452,7 +452,7 @@ img.Medium {
 }
 
 .AwardsPlugin .Name {
-	width: auto;
+	/*width: auto;*/
 }
 
 .AwardsPlugin .ClassUsage {
@@ -461,17 +461,18 @@ img.Medium {
 	font-weight: bold;
 }
 
-.AwardsPlugin #AwardsList .Name,
-.AwardsPlugin #AwardClassesList .Name {
-	width: 15em;
+.AwardsPlugin #AwardsList td .Name,
+.AwardsPlugin #AwardClassesList td .Name {
+	font-size: large;
 }
 
-.AwardsPlugin #AwardClassesList .Description {
-	width: 20em;
-}
-
-.AwardsPlugin #AwardsList .Description {
+.AwardsPlugin #AwardsList td .Description,
+.AwardsPlugin #AwardClassesList td .Description {
 	width: 25em;
+	padding: 0;
+	margin-top: 4px;
+	padding-top: 4px;
+	border-top: 1px dashed gray;
 }
 
 .AwardsPlugin #AwardsList .RankPoints {
@@ -480,6 +481,7 @@ img.Medium {
 
 .AwardsPlugin #AwardClassesList .RankPoints {
 	width: 4em;
+	text-align: center;
 }
 
 .AwardsPlugin .RankPoints .Total {
@@ -733,6 +735,7 @@ img.Medium {
 }
 
 /* Import Export pages */
+#Content .AwardsPlugin.Import .Column,
 #Content .AwardsPlugin.Export .Column {
 	width: 33%;
 }

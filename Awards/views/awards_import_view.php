@@ -23,6 +23,9 @@
 				<ul>
 					<li>
 						<?php
+							// TODO Add File input to upload the file to import
+							// TODO When a file is selected, automatically display its metadata (requires JavaScript)
+
 							echo $this->Form->Label(T('Default Award Class'), 'DefaultAwardClassID');
 							$AwardClassesPageLink = Anchor(T('Award Classes page'), AWARDS_PLUGIN_AWARDCLASSES_LIST_URL);
 							echo Wrap(sprintf(T('Select Award Class to which imported Awards ' .
@@ -69,7 +72,10 @@
 				?>
 				<ul>
 					<li><?php
-						echo $this->Form->Checkbox('ImportClasses', T('Import Award Classes.'));
+						echo $this->Form->Checkbox('ImportClasses',
+																			 T('Import Award Classes.'),
+																			 array('value' => 1,
+																						 'checked' => true));
 									echo Wrap(T('Import Award Classes, if Source File contains them. If this is left ' .
 									'unchecked, all Awards will be put under the Default Award Class.'),
 								'span');
@@ -79,7 +85,14 @@
 		</div>
 		<div class="Buttons">
 			<?php
-				echo $this->Form->Button(T('Import'), array('Name' => 'Import',));
+				echo $this->Form->Button(T('Import'),
+																 array('Name' => 'Import',
+																			 'Title' => 'Import Awards and Award Classes data.'));
+				echo $this->Form->Button(T('Test Import'),
+																 array('Name' => 'TestImport',
+																			 'Title' => 'Tests the import Awards and Award Classes data. ' .
+																									'It performs the same operations as the Import button, but ' .
+																									 'all changes are undone at the end of the import.'));
 			?>
 		</div>
 		<?php

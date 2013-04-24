@@ -128,7 +128,6 @@ $IsNewAward = empty($AwardID) ? true : false;
 					</li>
 					<li class="clearfix">
 						<?php
-							// TODO Extract image manipulation interface to a separate module or view
 							echo $this->Form->Label(T('Award Picture'), 'Picture');
 						?>
 						<div class="ImageColumn">
@@ -178,9 +177,13 @@ $IsNewAward = empty($AwardID) ? true : false;
 					<li>
 						<?php
 							echo $this->Form->Label(T('Award Description'), 'AwardDescription');
-							// TODO Link "Awards Page" to a public page where they can be displayed
-							echo Wrap(T('Enter a description for the Award. It will be displayed in ' .
-													'the public Awards page.'),
+							$AwardsPageLink = Anchor(T('public Awards page'),
+																			 AWARDS_PLUGIN_AWARDS_PAGE_URL,
+																			 'Standard',
+																			 array('title' => T('View public Awards Page.')));
+							echo Wrap(sprintf(T('Enter a description for the Award. It will be displayed in ' .
+																	'the %s.'),
+																$AwardsPageLink),
 												'div',
 												array('class' => 'Info',
 															));

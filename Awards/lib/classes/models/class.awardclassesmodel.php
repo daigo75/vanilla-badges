@@ -83,7 +83,7 @@ class AwardClassesModel extends ModelEx {
 	 * @param int AwardClassID The ID of the Award Class for which to retrieve the data.
 	 * @return Gdn_DataSet A DataSet containing the data of the specified Award Class.
 	 */
-	public function GetAwardClassData($AwardClassID) {
+	public function GetAwardClassByID($AwardClassID) {
 		return $this->GetWhere(array('AwardClassID' => $AwardClassID));
 	}
 
@@ -91,10 +91,10 @@ class AwardClassesModel extends ModelEx {
 	 * Convenience method to return the data of a single Award Class using its
 	 * name.
 	 *
-	 * @param int $AwardClassName The name of the Award Class for which to retrieve the data.
+	 * @param int AwardClassName The name of the Award Class for which to retrieve the data.
 	 * @return Gdn_DataSet A DataSet containing the data of the specified Award Class.
 	 */
-	public function GetAwardClassDataByName($AwardClassName) {
+	public function GetAwardClassByName($AwardClassName) {
 		return $this->GetWhere(array('AwardClassName' => $AwardClassName));
 	}
 

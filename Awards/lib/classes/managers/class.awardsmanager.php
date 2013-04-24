@@ -679,7 +679,7 @@ class AwardsManager extends BaseManager {
 			//var_dump($Sender->Form->FormValues());
 			$Data = $Sender->Form->FormValues();
 
-			if(Gdn::Session()->ValidateTransientKey($Data['TransientKey']) && $Sender->Form->ButtonExists('Import')) {
+			if(Gdn::Session()->ValidateTransientKey($Data['TransientKey']) && ($Sender->Form->ButtonExists('Import') || $Sender->Form->ButtonExists('TestImport'))) {
 				// Export data
 				$ImportSettings = $Sender->Form->FormValues();
 				$ImportSettings['FileName'] = 'C:\Users\d.zanella\Documents\Projects\Web\personal\Vanilla Forums\Plugins\AwardsPlugin\Awards\export\vanilla_awards_20130420001210.zip';
