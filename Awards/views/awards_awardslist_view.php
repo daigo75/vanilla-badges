@@ -5,7 +5,7 @@
 	// Indicates how many columns there are in the table that shows the list of
 	// configured Awards. It's mainly used to set the "colspan" attributes of
 	// single-valued table rows, such as Title, or the "No Results Found" message.
-	$AwardsTableColumns = 7;
+	$AwardsTableColumns = 6;
 
 	// The following HTML will be displayed when the DataSet is empty.
 	$OutputForEmptyDataSet = Wrap(T('No Awards configured.'),
@@ -45,10 +45,9 @@
 			<thead>
 				<tr>
 					<th class="Image"><?php echo T('Icon'); ?></th>
-					<th class="Name"><?php echo T('Award Name'); ?></th>
-					<th class="Name"><?php echo T('Class'); ?></th>
+					<th class="Description"><?php echo T('Award Name'); ?></th>
+					<th><?php echo T('Class'); ?></th>
 					<th class="RankPoints"><?php echo T('Rank Points'); ?></th>
-					<th class="Description"><?php echo T('Description'); ?></th>
 					<th class="TimesAwarded"><?php echo T('Times Awarded'); ?></th>
 					<th class="Enabled"><?php echo T('Enabled?'); ?></th>
 					<th>&nbsp;</th>
@@ -81,8 +80,15 @@
 											array('class' => 'Image',));
 
 						// Output Award Name and Description
-						echo Wrap(Gdn_Format::Text($Award->AwardName), 'td', array('class' => 'Name',));
-						echo Wrap(Gdn_Format::Text($Award->AwardClassName), 'td', array('class' => 'Name',));
+						$AwardName = Wrap(Gdn_Format::Text($Award->AwardName),
+															'div',
+															array('class' => 'Name',));
+						$AwardDescription = Wrap(Gdn_Format::Text($Award->AwardDescription),
+															'div',
+															array('class' => 'Description',));
+
+						echo Wrap($AwardName . $AwardDescription, 'td');
+						echo Wrap(Gdn_Format::Text($Award->AwardClassName), 'td');
 
 						// Calculate and format total points that will be given by the Award
 						$TotalAwardRankPoints = Wrap($Award->RankPoints + $Award->AwardClassRankPoints,
@@ -101,7 +107,7 @@
 																					array('class' => 'Detail'));
 						echo Wrap($TotalAwardRankPoints . $AwardRankPointsDetail, 'td', array('class' => 'RankPoints',));
 
-						echo Wrap(Gdn_Format::Text($Award->AwardDescription), 'td', array('class' => 'Description',));
+						//echo Wrap(Gdn_Format::Text($Award->AwardDescription), 'td', array('class' => 'Description',));
 						echo Wrap(Gdn_Format::Text($Award->TotalTimesAwarded), 'td', array('class' => 'TimesAwarded',));
 
 						// Output "Enabled" indicator
