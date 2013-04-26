@@ -116,7 +116,6 @@ class AwardsPlugin extends Gdn_Plugin {
 	 */
 	public function AwardsManager() {
 		return $this->GetInstance('AwardsManager');
-
 	}
 
 	/**
@@ -589,6 +588,47 @@ class AwardsPlugin extends Gdn_Plugin {
 	}
 
 	/**
+	 * Returns a formatted list of files from a folder. Used by the Server Side
+	 * File Browser.
+	 *
+	 * @param object Sender Sending controller instance.
+	 */
+	public function Controller_BrowseDir($Sender) {
+		$Sender->Permission('Plugins.Awards.Manage');
+
+		$Directory = $Sender->Request->GetValue('dir');
+		if(empty($Directory)) {
+			return '';
+		}
+		$RootDirs = array(AWARDS_PLUGIN_AWARDS_PICS_PATH, AWARDS_PLUGIN_AWARDCLASSES_PICS_PATH, PATH_UPLOADS);
+
+		$FileBrowser = new FileBrowser($RootDirs);
+		$Files = $FileBrowser->GetFiles($Directory, true);
+
+		// TODO Complete file nrowser
+		$Result = array();
+		//var_dump($Files);
+		foreach($Files as $File) {
+			$FileLink = Anchor(htmlentities($File),
+												 '#',
+												 '',
+												 array('rel' => htmlentities($Directory)));
+			if(is_dir($File)) {
+				$Result[] = Wrap($FileLink,
+												 'li',
+												 array('class' => 'directory collapsed'));
+			}
+			else {
+				$Result[] = Wrap($FileLink,
+												 'li',
+												 array('class' => 'file ext_'));
+			}
+		}
+
+		echo implode('', $Result); die();
+	}
+
+	/**
 	 * Renders the User Awards List page (in the Dashboard).
 	 *
 	 * @param object Sender Sending controller instance.
@@ -619,7 +659,7 @@ class AwardsPlugin extends Gdn_Plugin {
 	 * Loads and configures the User Award Module, which will generate the HTML
 	 * for the User Awards widget.
 	 *
- 	 * @param Controller Sender Sending controller instance.
+ 	 * @param Gdn_Controller Sender Sending controller instance.
  	 * @return UserAwardsModule An instance of the module.
  	 */
 	private function LoadUserAwardsModule($Sender) {
@@ -660,6 +700,12 @@ class AwardsPlugin extends Gdn_Plugin {
 		Gdn::SQL()->Delete('ActivityType', array('Name' => 'AwardEarned'));
 	}
 
+	/**
+	 * MenuModule_BeforeToString event handler.
+	 * Adds Awards-related menu entries to the main menu.
+	 *
+ 	 * @param Gdn_Controller Sender Sending controller instance.
+ 	 */
 	public function MenuModule_BeforeToString_Handler($Sender) {
 		// Link to Awards Page
 		$Sender->AddLink('Awards',
@@ -754,10 +800,7 @@ class AwardsPlugin extends Gdn_Plugin {
 	}
 
 	/**
-	 * Plugin cleanup
-	 *
-	 * This method is fired only once, immediately before the plugin is disabled, and is a great place to
-	 * perform cleanup tasks such as deletion of unsued files and folders.
+	 * Plugin cleanup on Disable.
 	 */
 	public function OnDisable() {
 		// Remove the Routes created by the Plugin.
@@ -765,7 +808,7 @@ class AwardsPlugin extends Gdn_Plugin {
 	}
 
 	/**
-	 * Plugin cleanup
+	 * Plugin cleanup on Remove.
 	 */
 	public function CleanUp() {
 		// Remove Plugin's configuration parameters
