@@ -34,7 +34,7 @@ $AwardsData = GetValue('AwardsData', $this->Data);
 $UserAwardData = GetValue('UserAwardData', $this->Data);
 //var_dump($UserAwardData);
 ?>
-<div id="AwardsPage" class="AwardsPlugin">
+<div id="AwardsPage" class="Aelia AwardsPlugin">
 	<div class="Header">
 		<?php echo Wrap(T('Awards'), 'h1'); ?>
 		<div class="Filters Tabs">

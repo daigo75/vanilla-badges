@@ -53,7 +53,7 @@ $UserAwardsData = GetValue('UserAwardsData', $this->Data);
 $AwardClassIDFilter = GetValue('AwardClassID', $this->Data);
 //var_dump($AwardClassesData);
 ?>
-<div id="AwardsLeaderboard" class="AwardsPlugin">
+<div id="AwardsLeaderboard" class="Aelia AwardsPlugin">
 	<div class="Header">
 		<?php
 			echo Wrap(T('Awards Leaderboard'), 'h1');

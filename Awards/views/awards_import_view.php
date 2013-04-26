@@ -4,7 +4,7 @@
 */
 
 ?>
-<div class="AwardsPlugin Import">
+<div class="Aelia AwardsPlugin Import">
 	<div class="Header">
 		<?php include('awards_admin_header.php'); ?>
 	</div>

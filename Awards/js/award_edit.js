@@ -39,5 +39,13 @@ jQuery(document).ready(function(){
 		if($(this).val()) {
 			$('.AwardImageWrapper').addClass('Preview');
 		}
-	})
+	});
+
+	var ServerSideFileBrowserCfg = {
+		root: '/',
+		script: 'browsedir'
+	};
+	$('#ServerSideBrowser').fileTree(ServerSideFileBrowserCfg, function(file) {
+        alert(file);
+  });
 });

@@ -3,7 +3,7 @@
 {licence}
 */
 ?>
-<div class="AwardsPlugin ConfirmationDialog">
+<div class="Aelia AwardsPlugin ConfirmationDialog">
 	<?php
 		echo $this->Form->Open();
 		echo $this->Form->Errors();

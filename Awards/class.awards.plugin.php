@@ -18,7 +18,7 @@ $PluginInfo['Awards'] = array(
 	'RequiredApplications' => array('Vanilla' => '2.0'),
 	'RequiredTheme' => FALSE,
 	'RequiredPlugins' => array('Logger' => '12.10.28',
-														 //'AeliaFoundationClasses' => '13.02.27',
+														 'AeliaFoundationClasses' => '13.04.26',
 														 ),
 	'HasLocale' => FALSE,
 	'MobileFriendly' => TRUE,
@@ -598,21 +598,30 @@ class AwardsPlugin extends Gdn_Plugin {
 
 		$Directory = $Sender->Request->GetValue('dir');
 		if(empty($Directory)) {
-			return '';
+			$Directory = '/';
 		}
-		$RootDirs = array(AWARDS_PLUGIN_AWARDS_PICS_PATH, AWARDS_PLUGIN_AWARDCLASSES_PICS_PATH, PATH_UPLOADS);
+		// Specify which directories can be browsed. Anything above them is off limits
+		$RootDirs = array(PATH_UPLOADS);
 
-		$FileBrowser = new FileBrowser($RootDirs);
+		$FileBrowser = new FileBrowser(PATH_UPLOADS, $RootDirs);
 		$Files = $FileBrowser->GetFiles($Directory, true);
+		natcasesort($Files);
 
-		// TODO Complete file nrowser
+		// Remove first and last directory separator
+		$FmtDirectory = preg_replace('/^(\\\\|\/)/', '', $Directory);
+		$FmtDirectory = preg_replace('/(\\\\|\/)$/', '', $FmtDirectory);
+
+		//var_dump($Files);die();
+		// TODO Complete file browser
 		$Result = array();
 		//var_dump($Files);
 		foreach($Files as $File) {
-			$FileLink = Anchor(htmlentities($File),
+			$FileExt = pathinfo($File, PATHINFO_EXTENSION);
+			$FileBaseName = basename($File);
+			$FileLink = Anchor(htmlentities($FileBaseName),
 												 '#',
 												 '',
-												 array('rel' => htmlentities($Directory)));
+												 array('rel' => htmlentities($FmtDirectory . $FileBaseName)));
 			if(is_dir($File)) {
 				$Result[] = Wrap($FileLink,
 												 'li',
@@ -621,11 +630,12 @@ class AwardsPlugin extends Gdn_Plugin {
 			else {
 				$Result[] = Wrap($FileLink,
 												 'li',
-												 array('class' => 'file ext_'));
+												 array('class' => 'file ext_' . $FileExt));
 			}
 		}
-
-		echo implode('', $Result); die();
+		echo Wrap(implode('', $Result),
+							'ul',
+							array('class' => 'jqueryFileTree'));
 	}
 
 	/**

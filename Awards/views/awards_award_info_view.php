@@ -12,7 +12,7 @@
 	$UserAwardData = GetValue('UserAwardData', $this->Data);
 	//var_dump($AwardData);
 ?>
-<div class="AwardsPlugin">
+<div class="Aelia AwardsPlugin">
 	<div class="AwardDetails clearfix">
 		<?php
 			if(empty($AwardData)) {

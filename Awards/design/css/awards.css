@@ -39,20 +39,6 @@ html[xmlns] .clearfix {
 .AwardsPlugin {
 }
 
-/* Style override for links that happen to be inside a <li> element, inside a
- * Tab. Such links become tab-looking due to Vanilla default styles.
- */
-.AwardsPlugin a.Help,
-.AwardsPlugin a.Standard {
-	border: none !important;
-	border-radius: 0;
-	background: none !important;
-	color: #2786C2;
-	top: 0 !important;
-	padding: 0 !important;
-	font-weight: normal !important;
-}
-
 #Content .AwardsPlugin a.Help {
 	border-bottom: 1px dotted gray !important;
 }
@@ -305,9 +291,10 @@ img.Medium {
 
 .ImageSelector {
 	min-height: 14em;
+	width:40%;
 	float: left;
 	margin-left: 1em;
-	padding-left: 1em;
+	padding: 1em;
 	border-left: 1px solid silver;
 }
 
@@ -800,4 +787,14 @@ img.Medium {
 .AwardEdit .AwardImageWrapper.Preview #ImageOverlay,
 .AwardEdit .AwardImageWrapper.Preview #RestoreImage {
 	display: inline-block;
+}
+
+
+/* Server Side image browser */
+.AwardsPlugin .FileTreeContainer {
+	width: 80%;
+}
+
+.AwardsPlugin .jqueryFileTree {
+	height: 20em;
 }

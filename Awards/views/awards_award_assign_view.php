@@ -4,7 +4,7 @@
 */
 
 ?>
-<div class="AwardsPlugin AssignAward">
+<div class="Aelia AwardsPlugin AssignAward">
 	<?php
 		echo $this->Form->Open();
 		echo $this->Form->Errors();

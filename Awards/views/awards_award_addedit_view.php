@@ -46,7 +46,7 @@ $OutputForNoRules = Wrap(T('No Award Rules installed.'),
 $AwardID = $this->Form->GetValue('AwardID');
 $IsNewAward = empty($AwardID) ? true : false;
 ?>
-<div class="AwardsPlugin AwardEdit">
+<div class="Aelia AwardsPlugin AwardEdit">
 	<?php
 		echo $this->Form->Open(array('enctype' => 'multipart/form-data'));
 		echo $this->Form->Errors();
@@ -99,6 +99,24 @@ $IsNewAward = empty($AwardID) ? true : false;
 						?>
 					</li>
 					<li>
+						<?php
+							echo $this->Form->Label(T('Award Description'), 'AwardDescription');
+							$AwardsPageLink = Anchor(T('public Awards page'),
+																			 AWARDS_PLUGIN_AWARDS_PAGE_URL,
+																			 'Standard',
+																			 array('title' => T('View public Awards Page.')));
+							echo Wrap(sprintf(T('Enter a description for the Award. It will be displayed in ' .
+																	'the %s.'),
+																$AwardsPageLink),
+												'div',
+												array('class' => 'Info',
+															));
+							echo $this->Form->TextBox('AwardDescription',
+																				array('multiline' => true,
+																							'rows' => 5,
+																							'cols' => 60,));
+						?>
+					</li>					<li>
 						<?php
 							echo $this->Form->Label(T('Award Class'), 'AwardClassID');
 							echo Wrap(T('The Award Class allows to group the Awards. For example, it could ' .
@@ -173,25 +191,19 @@ $IsNewAward = empty($AwardID) ? true : false;
 								echo $this->Form->Input('Picture', 'file');
 							?>
 						</div>
-					</li>
-					<li>
-						<?php
-							echo $this->Form->Label(T('Award Description'), 'AwardDescription');
-							$AwardsPageLink = Anchor(T('public Awards page'),
-																			 AWARDS_PLUGIN_AWARDS_PAGE_URL,
-																			 'Standard',
-																			 array('title' => T('View public Awards Page.')));
-							echo Wrap(sprintf(T('Enter a description for the Award. It will be displayed in ' .
-																	'the %s.'),
-																$AwardsPageLink),
-												'div',
-												array('class' => 'Info',
-															));
-							echo $this->Form->TextBox('AwardDescription',
-																				array('multiline' => true,
-																							'rows' => 5,
-																							'cols' => 60,));
-						?>
+						<div class="ImageSelector">
+							<?php
+								echo Wrap(T('Select a previously uploaded file'), 'h5');
+								echo Wrap(sprintf(T('Select a file that was uploaded in the <strong>Uploads</strong> ' .
+																		'folder (%s).'),
+																	realpath(PATH_UPLOADS)),
+													'p');
+
+							?>
+							<div id="ServerSideBrowser" class="FileTreeContainer">
+
+							</div>
+						</div>
 					</li>
 				</ul>
 			</div>
