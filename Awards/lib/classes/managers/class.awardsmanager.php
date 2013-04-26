@@ -210,8 +210,12 @@ class AwardsManager extends BaseManager {
 		// Load jQuery UI
 		$this->LoadJQueryUI($Sender);
 
+		$Sender->AddCssFile('jqueryFileTree.css', 'plugins/AeliaFoundationClasses/js/jqueryFileTree');
+		$Sender->AddJsFile('jqueryFileTree.js', 'plugins/AeliaFoundationClasses/js/jqueryFileTree');
+
 		// Load auxiliary files
 		$Sender->AddJsFile('award_edit.js', 'plugins/Awards/js');
+
 
 		// Retrieve the Award ID passed as an argument (if any)
 		$AwardID = $Sender->Request->GetValue(AWARDS_PLUGIN_ARG_AWARDID, null);
