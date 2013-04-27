@@ -31,6 +31,22 @@ $PluginInfo['Awards'] = array(
 );
 
 class AwardsPlugin extends Gdn_Plugin {
+	// @var Logger The Logger used by the class.
+	private $_Log;
+
+	/**
+	 * Returns the instance of the Logger used by the class.
+	 *
+	 * @param Logger An instance of the Logger.
+	 */
+	protected function Log() {
+		if(empty($this->_Log)) {
+			$this->_Log = LoggerPlugin::GetLogger(get_called_class());
+		}
+
+		return $this->_Log;
+	}
+
 	/* @var array Lists the applications in which the Award assignments will be
 	 * processed. This will allow the processing to happen only in the frontend,
 	 * without slowing down the Dashboard.
@@ -597,31 +613,32 @@ class AwardsPlugin extends Gdn_Plugin {
 		$Sender->Permission('Plugins.Awards.Manage');
 
 		$Directory = $Sender->Request->GetValue('dir');
-		if(empty($Directory)) {
-			$Directory = '/';
-		}
+		// Remove trailing directory separator
+		$Directory = preg_replace('/(\\\\|\/)$/', '', $Directory);
+
 		// Specify which directories can be browsed. Anything above them is off limits
 		$RootDirs = array(PATH_UPLOADS);
 
 		$FileBrowser = new FileBrowser(PATH_UPLOADS, $RootDirs);
 		$Files = $FileBrowser->GetFiles($Directory, true);
+		if($Files === null) {
+			$this->Log()->error('Invalid directory requested, no data returned.');
+			return '';
+		}
 		natcasesort($Files);
-
-		// Remove first and last directory separator
-		$FmtDirectory = preg_replace('/^(\\\\|\/)/', '', $Directory);
-		$FmtDirectory = preg_replace('/(\\\\|\/)$/', '', $FmtDirectory);
 
 		//var_dump($Files);die();
 		// TODO Complete file browser
 		$Result = array();
 		//var_dump($Files);
+		// Build the HTML required by the jQueryFileTree plugin
 		foreach($Files as $File) {
 			$FileExt = pathinfo($File, PATHINFO_EXTENSION);
 			$FileBaseName = basename($File);
 			$FileLink = Anchor(htmlentities($FileBaseName),
 												 '#',
 												 '',
-												 array('rel' => htmlentities($FmtDirectory . $FileBaseName)));
+												 array('rel' => htmlentities($Directory . '/' . $FileBaseName)));
 			if(is_dir($File)) {
 				$Result[] = Wrap($FileLink,
 												 'li',
