@@ -294,7 +294,7 @@ img.Medium {
 	width:40%;
 	float: left;
 	margin-left: 1em;
-	padding: 1em;
+	padding: 0 1em;
 	border-left: 1px solid silver;
 }
 
