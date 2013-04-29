@@ -52,6 +52,15 @@
 		</p>
 	</div>
 	<div>
+		<h2>Requirements</h2>
+		<ul>
+			<li>PHP 5.3+</li>
+			<li>Vanilla 2.0.18</li>
+			<li>Logger Plugin (either <a href="http://dev.pathtoenlightenment.net/shop/basic-logger-for-vanilla-forums-2-0/" title="Basic Logger">Basic</a> or <a href="http://dev.pathtoenlightenment.net/shop/advanced-logger-for-vanilla-forums-2-0/" title="Advanced Logger">Advanced</a> version) 12.10.28 or newer</li>
+			<li><a href="http://dev.pathtoenlightenment.net/shop/aelia-foundation-classes-for-vanilla-forums/" title="Aelia Foundation Classes">Aelia Foundation Classes</a> 13.04.26 or newer</li>
+		</ul>
+	</div>
+	<div>
 		<h2>Installation</h2>
 		<div>
 			<ol>
@@ -89,7 +98,29 @@
 		</p>
 		<h3>Award Classes</h3>
 		<p>
-			Awards are divided into <strong>Classes</strong>. This allows to group them, for example to distinguish the ones that are easy to earn from the most difficult ones. Classes can be configured easily:
+			Award Classes are a neat way to organise Awards. By creating Classes, you can group Awards together, for example to divide the common Awards from the most prestigious ones.<br />
+			The following is a generic set of Award Classes that could suit most Communities:
+		</p>
+		<ul>
+			<li>
+				<strong>Bronze</strong>. These would be the most common, easy to achieve Awards.
+			</li>
+			<li>
+				<strong>Silver</strong>. These would be the uncommon Awards, granted to Users who show effort and participation.
+			</li>
+			<li>
+				<strong>Gold</strong>. These would be the rarest Awards, obtained only by User who achieved excellent results.
+			</li>
+			<li>
+				<strong>Special</strong>. These would be Awards that are assigned in particular circumstances, usually only by Administrators, rather than automatically.
+			</li>
+		</ul>
+		<p>
+			As you can see, Award Classes can immediately make clear what Awards are the most valuable, incrementing the involvement of your forum Users.
+		</p>
+		<h4>How to configure Award Classes</h4>
+		<p>
+			Configuring an Award Class requires just a few steps:
 		</p>
 		<ul>
 			<li>In Vanilla Forums Admin area, click on Award Classes in the side menu.</li>
@@ -150,15 +181,25 @@
 		<p>
 			The possibility to revoke an Award is currently work in progress and it <strong>will be available in later versions</strong>.
 		</p>
-	</div>
-	<div>
-		<h2>Requirements</h2>
-		<ul>
-			<li>PHP 5.3+</li>
-			<li>Vanilla 2.0.18</li>
-			<li>Logger Plugin (either <a href="http://dev.pathtoenlightenment.net/shop/basic-logger-for-vanilla-forums-2-0/" title="Basic Logger">Basic</a> or <a href="http://dev.pathtoenlightenment.net/shop/advanced-logger-for-vanilla-forums-2-0/" title="Advanced Logger">Advanced</a> version) 12.10.28 or newer</li>
-			<li><a href="http://dev.pathtoenlightenment.net/shop/aelia-foundation-classes-for-vanilla-forums/" title="Aelia Foundation Classes"></a>Aelia Foundation Classes</a> 13.04.26 or newer</li>
-		</ul>
+
+		<h3>Importing and Exporting Awards</h3>
+		<p>
+			The plugin implements an Import/Export mechanism, which allows to export your Awards and Award Classes (together with their Images) and import them back at a later stage. This feature can be used as a simple backup mechanism, or as a way to package pre-configured Awards and distribute them.
+		</p>
+		<h4>Exporting Awards and Award Classes</h4>
+		<p>
+			To use the Export feature, go to Vanilla Admin Dashboard and click on the <strong>Export</strong> menu item in the <strong>Awards</strong> group. The interface is intuitive and it should be self-explanatory.
+		</p>
+		<h4>Importing Awards and Award Classes</h4>
+		<p>
+			To use the Import feature, go to Vanilla Admin Dashboard and click on the <strong>Import</strong> menu item in the <strong>Awards</strong> group. The interface is slightly more complex than the Export one, but it's easy to use.
+		</p>
+		<p>
+			One important feature that you should familiarise with is the <strong>Test Import</strong>. Such action performs the same operations as the normal <strong>Import</strong>, but all modifications are reverted at the end of the process. The purpose of this is testing if a file can be imported correctly, without risking to mix up the data should anything go wrong half way through the import.
+		</p>
+		<p>
+			<strong>IMPORTANT</strong>: always perform a backup of the forum before attempting to use the Import feature. This will ensure that, in the unlikely case of unexpected errors, you will be able to restore it to its original condition.
+		</p>
 	</div>
 	<div>
 		<h2>Notes</h2>
