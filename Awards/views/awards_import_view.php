@@ -10,7 +10,7 @@
 	</div>
 	<div class="Content">
 		<?php
-			echo $this->Form->Open();
+			echo $this->Form->Open(array('enctype' => 'multipart/form-data'));
 			echo $this->Form->Errors();
 		?>
 		<div class="Info"><?php
@@ -21,46 +21,13 @@
 		<div class="clearfix">
 			<div class="Column">
 				<ul>
-					<li>
-						<?php
-							// TODO Add File input to upload the file to import
-							// TODO When a file is selected, automatically display its metadata (requires JavaScript)
-
-							echo $this->Form->Label(T('Default Award Class'), 'DefaultAwardClassID');
-							$AwardClassesPageLink = Anchor(T('Award Classes page'), AWARDS_PLUGIN_AWARDCLASSES_LIST_URL);
-							echo Wrap(sprintf(T('Select Award Class to which imported Awards ' .
-																	'will be assigned when their original Class ' .
-																	'does not exist. If the dropdown list is empty, ' .
-																	'please go to %s to create one, then come back to ' .
-																	'this page.'),
-																$AwardClassesPageLink),
-												'div',
-												array('class' => 'Info',));
-							echo $this->Form->DropDown('DefaultAwardClassID',
-																				 GetValue('AwardClasses', $this->Data, array()),
-																				 array('ValueField' => 'AwardClassID',
-																							 'TextField' => 'AwardClassName'));
-						?>
-					</li>
 					<li><?php
-						echo $this->Form->Label(T('If an item is duplicated'), 'DuplicateItemAction');
-						echo Wrap(T('This information is for your reference ' .
-												'only.'),
-											'div',
-											array('class' => 'Info',));
-						echo $this->Form->DropDown('DuplicateItemAction',
-																			 GetValue('DuplicateItemActions', $this->Data, array()),
-																			 array());
-					?></li>
-					<li><?php
-						//echo $this->Form->Label(T('Import Description (optional)'), 'ImportDescription');
-						//echo Wrap(T('This information is for your reference ' .
-						//						'only.'),
-						//					'div',
-						//					array('class' => 'Info',));
-						//echo $this->Form->TextBox('ImportDescription',
-						//													array('MultiLine' => true,
-						//																'class' => 'TextBox'));
+						echo $this->Form->Label(T('File to import'), 'FileToImport');
+						echo Wrap(T('Select a file previously exported by the Awards plugin ' .
+												'to import in this forum. Such file will be uploaded and ' .
+												'processed automatically.'),
+											'p');
+						echo $this->Form->Input('FileToImport', 'file');
 					?></li>
 				</ul>
 			</div>
@@ -79,6 +46,35 @@
 									echo Wrap(T('Import Award Classes, if Source File contains them. If this is left ' .
 									'unchecked, all Awards will be put under the Default Award Class.'),
 								'span');
+					?></li>
+					<li><?php
+						// TODO Add File input to upload the file to import
+						// TODO When a file is selected, automatically display its metadata (requires JavaScript)
+
+						echo $this->Form->Label(T('Default Award Class'), 'DefaultAwardClassID');
+						$AwardClassesPageLink = Anchor(T('Award Classes page'), AWARDS_PLUGIN_AWARDCLASSES_LIST_URL);
+						echo Wrap(sprintf(T('Select Award Class to which imported Awards ' .
+																'will be assigned when their original Class ' .
+																'does not exist. If the dropdown list is empty, ' .
+																'please go to %s to create one, then come back to ' .
+																'this page.'),
+															$AwardClassesPageLink),
+											'div',
+											array('class' => 'Info',));
+						echo $this->Form->DropDown('DefaultAwardClassID',
+																			 GetValue('AwardClasses', $this->Data, array()),
+																			 array('ValueField' => 'AwardClassID',
+																						 'TextField' => 'AwardClassName'));
+					?></li>
+					<li><?php
+						echo $this->Form->Label(T('If an item is duplicated'), 'DuplicateItemAction');
+						echo Wrap(T('This information is for your reference ' .
+												'only.'),
+											'div',
+											array('class' => 'Info',));
+						echo $this->Form->DropDown('DuplicateItemAction',
+																			 GetValue('DuplicateItemActions', $this->Data, array()),
+																			 array());
 					?></li>
 				</ul>
 			</div>

@@ -763,6 +763,9 @@ img.Medium {
 	font-weight: bold;
 }
 
+input[type=file] {
+	width: 100%;
+}
 
 /* Award Add/Edit */
 .AwardEdit .AwardImageWrapper {
@@ -778,6 +781,10 @@ img.Medium {
 	opacity: 0.7;
 	font-size: large;
 	display: none;
+}
+
+.AwardEdit .AwardImageWrapper.Preview:hover #ImageOverlay {
+	opacity: 0.2;
 }
 
 .AwardEdit .AwardImageWrapper #RestoreImage {

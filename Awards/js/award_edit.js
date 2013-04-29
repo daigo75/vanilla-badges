@@ -3,6 +3,7 @@
 */
 jQuery(document).ready(function(){
 	var TabsList = $('<ul>');
+	var OriginalAwardImage = $('.AwardImageWrapper .AwardImage').attr('src');
 
 	// Add a link, which will be transformed into a Tab, for each Rule
 	$('.Tab').each(function() {
@@ -29,23 +30,32 @@ jQuery(document).ready(function(){
 
 	// Handle clearing of new image, restoring original one
 	$('.AwardImageWrapper').delegate('#RestoreImage', 'click', function() {
-		var ImageInput = $('#Form_Picture');
-		ImageInput.replaceWith(ImageInput = ImageInput.val('').clone(true));
+		ClearFileField('#Form_Picture');
 		$('.AwardImageWrapper').removeClass('Preview');
+		$('.AwardImageWrapper .AwardImage').attr('src', OriginalAwardImage);
 	});
 
 	// Display a Preview when a new Image has been selected
 	$('#Form_Picture').change(function() {
 		if($(this).val()) {
 			$('.AwardImageWrapper').addClass('Preview');
+			$('#Form_PreUploadedImageFile').val('');
 		}
 	});
 
+	// Configure and initialise the Server Side File Browser, which can be used
+	// to select a previously uploaded image
 	var ServerSideFileBrowserCfg = {
 		root: '/',
 		script: 'browsedir'
 	};
-	$('#ServerSideBrowser').fileTree(ServerSideFileBrowserCfg, function(file) {
-        alert(file);
+	$('#ServerSideBrowser').fileTree(ServerSideFileBrowserCfg, function(SelectedFile) {
+		ClearFileField('#Form_Picture');
+
+		var ImageFile = gdn.definition('path_uploads') + SelectedFile;
+		$('#Form_PreUploadedImageFile').val(ImageFile);
+		$('.AwardImageWrapper .AwardImage').attr('src', gdn.url('/uploads' + SelectedFile));
+		$('.AwardImageWrapper').addClass('Preview');
   });
+
 });

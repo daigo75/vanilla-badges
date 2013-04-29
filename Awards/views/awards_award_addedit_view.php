@@ -193,12 +193,12 @@ $IsNewAward = empty($AwardID) ? true : false;
 						</div>
 						<div class="ImageSelector">
 							<?php
-								echo Wrap(T('Select a previously uploaded file'), 'h5');
+								echo Wrap(T('Replace Image with a previously uploaded file'), 'h5');
 								echo Wrap(sprintf(T('Select a file that was uploaded in the <strong>Uploads</strong> ' .
 																		'folder (%s).'),
 																	realpath(PATH_UPLOADS)),
 													'p');
-
+								echo $this->Form->Hidden('PreUploadedImageFile');
 							?>
 							<div id="ServerSideBrowser" class="FileTreeContainer">
 

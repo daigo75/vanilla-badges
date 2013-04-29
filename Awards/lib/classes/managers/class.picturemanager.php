@@ -70,4 +70,16 @@ class PictureManager extends BaseManager {
 		// Build a picture URL from the uploaded file
 		return $DestinationDir . '/' . $UploadedFileName;
 	}
+
+	public static function IsValidImage($FileName) {
+		return (getimagesize($FileName) !== false);
+	}
+
+	public static function CopyImage($SourceFile, $DestinationFile) {
+		if(!self::IsValidImage($SourceFile)) {
+			return AWARDS_ERR_FILE_NOT_AN_IMAGE;
+		}
+
+		return (copy($SourceFile, $DestinationFile) === true) ? AWARDS_OK : AWARDS_ERR_COULD_NOT_COPY_FILE;
+	}
 }

@@ -254,17 +254,42 @@ class AwardsManager extends BaseManager {
 			// The field named "Save" is actually the Save button. If it exists, it means
 			// that the User chose to save the changes.
 			if(Gdn::Session()->ValidateTransientKey($Data['TransientKey']) && $Sender->Form->ButtonExists('Save')) {
-				try {
-					// Retrieve the URL of the Picture associated with the Award.
-					$ImageFile = PictureManager::GetPictureURL(AWARDS_PLUGIN_AWARDS_PICS_PATH,
-																										 'Picture',
-																										 $Sender->Form->GetFormValue('AwardImageFile'));
-					// Add the Picture URL to the Form
-					$Sender->Form->SetFormValue('AwardImageFile', $ImageFile);
+				$PreUploadedImageFile = $Sender->Form->GetFormValue('PreUploadedImageFile');
+				// Check if a pre-uploaded image should be used for the Award
+				if(!empty($PreUploadedImageFile)) {
+					$DestinationFile = AWARDS_PLUGIN_AWARDS_PICS_PATH . '/' . basename($PreUploadedImageFile);
+
+					$Result = PictureManager::CopyImage($PreUploadedImageFile, $DestinationFile);
+					if($Result === AWARDS_OK) {
+						$Sender->Form->SetFormValue('AwardImageFile', $DestinationFile);
+					}
+					else {
+						$this->Log()->error(sprintf(T('Could not use pre-uploaded image file "%s" for the Award. ' .
+																					'Error code: %d.'),
+																				$PreUploadedImageFile,
+																				$Result));
+						$Sender->Form->AddError(sprintf(T('Could not use selected pre-uploaded file. ' .
+																							'Please make sure that destination directory ' .
+																							'(%s) exists and is writable, and that selected file ' .
+																							'is an image.'),
+																						AWARDS_PLUGIN_AWARDS_PICS_PATH));
+					}
 				}
-				catch(Exception $e) {
-					$Sender->Form->AddError($e->getMessage());
+				else {
+					// Check if a new image has been uploaded for the Award
+					try {
+						// Retrieve the URL of the Picture associated with the Award.
+						$ImageFile = PictureManager::GetPictureURL(AWARDS_PLUGIN_AWARDS_PICS_PATH,
+																											 'Picture',
+																											 $Sender->Form->GetFormValue('AwardImageFile'));
+						// Add the Picture URL to the Form
+						$Sender->Form->SetFormValue('AwardImageFile', $ImageFile);
+					}
+					catch(Exception $e) {
+						$Sender->Form->AddError($e->getMessage());
+					}
 				}
+
 
 				// Validate settings for Award Rules
 				$RulesSettingsOK = $Caller->RulesManager()->ValidateRulesSettings($Sender->Form);
@@ -338,6 +363,9 @@ class AwardsManager extends BaseManager {
 
 		// Builds a structure that will be used to group the Rules in sections
 		$Sender->SetData('AwardRulesSections', $this->PrepareAwardRulesSections());
+
+		// Add some definitions
+		$Sender->AddDefinition('path_uploads', PATH_UPLOADS);
 
 		// Retrieve the View that will be used to configure the Award
 		$Sender->Render($Caller->GetView('awards_award_addedit_view.php'));
@@ -661,6 +689,33 @@ class AwardsManager extends BaseManager {
 		$Sender->Render($Caller->GetView('awards_export_view.php'));
 	}
 
+	private function _ValidateImport(Gdn_Controller $Sender, &$FileToImport) {
+		$Upload = new Gdn_Upload();
+		$TmpUploadedFile = $Upload->ValidateUpload('FileToImport', false);
+
+		if(!$TmpUploadedFile) {
+			$Sender->Form->AddError(T('No file was uploaded. Please select and upload the file ' .
+																'to import.'));
+			return AWARDS_ERR_INVALID_FILE_TO_IMPORT;
+		}
+
+		try {
+			$FileName = $_FILES['FileToImport']['name'];
+			$DestinationFile = AWARDS_PLUGIN_IMPORT_PATH . '/' . $FileName;
+			//var_dump($DestinationFile);die();
+			$FileInfo = $Upload->SaveAs($TmpUploadedFile, $DestinationFile);
+			$FileToImport = PATH_UPLOADS . '/' . $FileInfo['Name'];
+			//var_dump($FileToImport);die();
+		}
+		catch(Exception $e) {
+			$ErrorMsg = $e->getMessage();
+			$this->Log()->error($ErrorMsg);
+			$Sender->Form->AddError($ErrorMsg);
+			return AWARDS_ERR_EXCEPTION_OCCURRED;
+		}
+
+		return AWARDS_OK;
+	}
 
 	/**
 	 * Renders the page to import Awards and Awards Classes.
@@ -686,15 +741,21 @@ class AwardsManager extends BaseManager {
 			if(Gdn::Session()->ValidateTransientKey($Data['TransientKey']) && ($Sender->Form->ButtonExists('Import') || $Sender->Form->ButtonExists('TestImport'))) {
 				// Export data
 				$ImportSettings = $Sender->Form->FormValues();
-				$ImportSettings['FileName'] = 'C:\Users\d.zanella\Documents\Projects\Web\personal\Vanilla Forums\Plugins\AwardsPlugin\Awards\export\vanilla_awards_20130420001210.zip';
 
-				$ImportResult = $this->AwardsImporter()->ImportData($ImportSettings);
-				$Sender->SetData('ImportResult', $ImportResult);
-				$Sender->SetData('ImportMessages', $this->AwardsImporter()->GetMessages());
+				$FileToImport = '';
+				if($this->_ValidateImport($Sender, $FileToImport) === AWARDS_OK) {
+					//$ImportSettings['FileName'] = 'C:\Users\d.zanella\Documents\Projects\Web\personal\Vanilla Forums\Plugins\AwardsPlugin\Awards\export\vanilla_awards_20130420001210.zip';
+					$ImportSettings['FileName'] = $FileToImport;
 
-				// Fire ConfigChanged event to regenerate CSS file for Awards Classes
-				if($ImportResult == AWARDS_OK) {
-					$Caller->FireEvent('ConfigChanged');
+					$ImportResult = $this->AwardsImporter()->ImportData($ImportSettings);
+					$Sender->SetData('ImportResult', $ImportResult);
+					$Sender->SetData('ImportMessages', $this->AwardsImporter()->GetMessages());
+
+					// Fire ConfigChanged event to regenerate CSS file for Awards Classes
+					if($ImportResult == AWARDS_OK) {
+						$Caller->FireEvent('ConfigChanged');
+					}
+
 				}
 			}
 		}
