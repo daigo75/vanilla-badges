@@ -36,14 +36,12 @@ $UserAwardData = GetValue('UserAwardData', $this->Data);
 ?>
 <div id="AwardsPage" class="Aelia AwardsPlugin">
 	<div class="Header">
-		<?php echo Wrap(T('Awards'), 'h1'); ?>
-		<div class="Filters Tabs">
-			<?php
-				// Render Award Class Filters
-				AwardClassesManager::RenderAwardClassFilters(AWARDS_PLUGIN_AWARDS_PAGE_URL,
-																										 GetValue('AwardClassID', $this->Data));
-			?>
-		</div>
+		<?php
+			echo Wrap(T('Awards'), 'h1');
+			// Render Award Class Filters
+			AwardClassesManager::RenderAwardClassFilters(AWARDS_PLUGIN_AWARDS_PAGE_URL,
+																									 GetValue('AwardClassID', $this->Data));
+		?>
 	</div>
 	<div class="Content">
 		<table id="AwardsList">
