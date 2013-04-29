@@ -253,7 +253,6 @@ class AwardsPlugin extends Gdn_Plugin {
 	 * @param object Sender Sending controller instance.
 	 */
 	public function Controller_Index($Sender) {
-		//$this->Controller_Settings($Sender);
 		$this->Controller_AwardsPage($Sender);
 	}
 
@@ -294,6 +293,30 @@ class AwardsPlugin extends Gdn_Plugin {
 		}
 
 		$Sender->Render($this->GetView('awards_generalsettings_view.php'));
+	}
+
+	/**
+	 * Renders the Status page.
+	 *
+	 * @param object Sender Sending controller instance
+	 */
+	public function Controller_Status($Sender) {
+		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_STATUS_URL);
+		// Prevent non authorised Users from accessing this page
+		$Sender->Permission('Plugins.Awards.Manage');
+
+		// Stores the list of directories that should be writable
+		$RequiredWritableDirs = array(
+			AWARDS_PLUGIN_AWARDS_PICS_PATH,
+			AWARDS_PLUGIN_AWARDCLASSES_PICS_PATH,
+			dirname(AWARDS_PLUGIN_AWARDCLASSES_CSS_FILE),
+			AWARDS_PLUGIN_EXPORT_PATH,
+			PATH_UPLOADS . '/' . AWARDS_PLUGIN_IMPORT_PATH,
+		);
+
+		$Sender->SetData('RequiredWritableDirs', $RequiredWritableDirs);
+
+		$Sender->Render($this->GetView('awards_status_view.php'));
 	}
 
 	/**
