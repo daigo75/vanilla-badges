@@ -3,18 +3,6 @@
 {licence}
 */
 
-// Uncomment the block below to Register Rule with the Rule Manager
-//AwardRulesManager::RegisterRule(
-//	'SampleRule',
-//	array('Label' => T('Sample Rule'),
-//				'Description' => T('This is a sample rule. Use it as a skeleton for your own Rules.'),
-//				'Group' => AwardRulesManager::GROUP_GENERAL,
-//				'Type' => AwardRulesManager::TYPE_CONTENT,
-//				// Version is for reference only
-//				'Version' => '13.04.04',
-//				)
-//);
-
 
 /**
  * Sample Award Rule.
@@ -105,3 +93,15 @@ class SampleRule extends BaseAwardRule {
 		$this->_RequiredPlugins[] = 'QnA';
 	}
 }
+
+// Register the Rule with the Rule Manager
+AwardRulesManager::RegisterRule(
+	'SampleRule',
+	array('Label' => T('Sample Rule'),
+				'Description' => T('This is a sample rule. Use it as a skeleton for your own Rules.'),
+				'Group' => AwardRulesManager::GROUP_GENERAL,
+				'Type' => AwardRulesManager::TYPE_CONTENT,
+				// Version is for reference only
+				'Version' => '13.04.04',
+				)
+);

@@ -3,19 +3,6 @@
 {licence}
 */
 
-// Register Rule with the Rule Manager
-AwardRulesManager::RegisterRule(
-	'AnniversaryRule',
-	array('Label' => T('Anniversary'),
-				'Description' => T('Checks User\'s Anniversary of Registration'),
-				'Group' => AwardRulesManager::GROUP_GENERAL,
-				'Type' => AwardRulesManager::TYPE_USER,
-				// Version is for reference only
-				'Version' => '13.04.03',
-				)
-);
-
-
 /**
  * Anniversary Award Rule.
  */
@@ -116,3 +103,15 @@ class AnniversaryRule extends BaseAwardRule {
 		parent::__construct();
 	}
 }
+
+// Register Rule with the Rule Manager
+AwardRulesManager::RegisterRule(
+	'AnniversaryRule',
+	array('Label' => T('Anniversary'),
+				'Description' => T('Checks User\'s Anniversary of Registration'),
+				'Group' => AwardRulesManager::GROUP_GENERAL,
+				'Type' => AwardRulesManager::TYPE_USER,
+				// Version is for reference only
+				'Version' => '13.04.03',
+				)
+);

@@ -3,19 +3,6 @@
 {licence}
 */
 
-// Register Rule with the Rule Manager
-AwardRulesManager::RegisterRule(
-	'PhotogenicRule',
-	array('Label' => T('Post Count'),
-				'Description' => T('Checks if User uploaded a Profile Picture'),
-				'Group' => AwardRulesManager::GROUP_GENERAL,
-				'Type' => AwardRulesManager::TYPE_USER,
-				// Version is for reference only
-				'Version' => '13.04.04',
-				)
-);
-
-
 /**
  * Photogenic Award Rule.
  *
@@ -91,3 +78,15 @@ class PhotogenicRule extends BaseAwardRule {
 		return self::RULE_DISABLED;
 	}
 }
+
+// Register Rule with the Rule Manager
+AwardRulesManager::RegisterRule(
+	'PhotogenicRule',
+	array('Label' => T('Post Count'),
+				'Description' => T('Checks if User uploaded a Profile Picture'),
+				'Group' => AwardRulesManager::GROUP_GENERAL,
+				'Type' => AwardRulesManager::TYPE_USER,
+				// Version is for reference only
+				'Version' => '13.04.04',
+				)
+);

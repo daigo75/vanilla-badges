@@ -3,19 +3,6 @@
 {licence}
 */
 
-// Register Rule with the Rule Manager
-AwardRulesManager::RegisterRule(
-	'PostCountRule',
-	array('Label' => T('Post Count'),
-				'Description' => T('Checks User\'s Post count'),
-				'Group' => AwardRulesManager::GROUP_GENERAL,
-				'Type' => AwardRulesManager::TYPE_CONTENT,
-				// Version is for reference only
-				'Version' => '13.04.03',
-				)
-);
-
-
 /**
  * Post Count Award Rule.
  */
@@ -148,3 +135,15 @@ class PostCountRule extends BaseAwardRule {
 		parent::__construct();
 	}
 }
+
+// Register Rule with the Rule Manager
+AwardRulesManager::RegisterRule(
+	'PostCountRule',
+	array('Label' => T('Post Count'),
+				'Description' => T('Checks User\'s Post count'),
+				'Group' => AwardRulesManager::GROUP_GENERAL,
+				'Type' => AwardRulesManager::TYPE_CONTENT,
+				// Version is for reference only
+				'Version' => '13.04.03',
+				)
+);

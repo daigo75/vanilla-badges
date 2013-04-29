@@ -3,19 +3,6 @@
 {licence}
 */
 
-// Register Rule with the Rule Manager
-AwardRulesManager::RegisterRule(
-	'UserRolesRule',
-	array('Label' => T('User Groups'),
-				'Description' => T('Checks if a User has one or more Roles'),
-				'Group' => AwardRulesManager::GROUP_GENERAL,
-				'Type' => AwardRulesManager::TYPE_USER,
-				// Version is for reference only
-				'Version' => '13.04.03',
-			)
-);
-
-
 /**
  * UserRoles Award Rule.
  *
@@ -197,3 +184,15 @@ class UserRolesRule extends BaseAwardRule {
 		parent::__construct();
 	}
 }
+
+// Register Rule with the Rule Manager
+AwardRulesManager::RegisterRule(
+	'UserRolesRule',
+	array('Label' => T('User Groups'),
+				'Description' => T('Checks if a User has one or more Roles'),
+				'Group' => AwardRulesManager::GROUP_GENERAL,
+				'Type' => AwardRulesManager::TYPE_USER,
+				// Version is for reference only
+				'Version' => '13.04.03',
+			)
+);

@@ -49,6 +49,10 @@ class AwardRulesManager extends BaseManager {
 		if(empty($Type) || !isset(self::$RuleTypes[$Type])) {
 			self::$Rules[$RuleClass]['Type'] = self::TYPE_MISC;
 		}
+
+		// Store the file name where the Rule class was declared
+		$Reflector = new ReflectionClass($RuleClass);
+		self::$Rules[$RuleClass]['File'] = $Reflector->getFileName();
 	}
 
 	/**
@@ -97,10 +101,6 @@ class AwardRulesManager extends BaseManager {
 	 * @return void.
 	 */
 	protected function LoadRule($RuleClass) {
-		// Store the file name where the Rule class was declared
-		$Reflector = new ReflectionClass($RuleClass);
-		self::$Rules[$RuleClass]['File'] = $Reflector->getFileName();
-
 		// Instantiate the Rule to have it readily available when required. This will
 		// also prevent the need of instantiating the same rule multiple times
 		self::$Rules[$RuleClass]['Instance'] = new $RuleClass();

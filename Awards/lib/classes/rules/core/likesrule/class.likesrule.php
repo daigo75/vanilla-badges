@@ -3,19 +3,6 @@
 {licence}
 */
 
-// Register Rule with the Rule Manager
-AwardRulesManager::RegisterRule(
-	'LikesRule',
-	array('Label' => T('Likes'),
-				'Description' => T('Checks "Likes" received by the User'),
-				'Group' => AwardRulesManager::GROUP_GENERAL,
-				'Type' => AwardRulesManager::TYPE_CONTENT,
-				// Version is for reference only
-				'Version' => '13.04.04',
-				)
-);
-
-
 /**
  * Likes Award Rule.
  *
@@ -160,3 +147,15 @@ class LikesRule extends BaseAwardRule {
 		$this->_RequiredPlugins[] = 'LikeThis';
 	}
 }
+
+// Register Rule with the Rule Manager
+AwardRulesManager::RegisterRule(
+	'LikesRule',
+	array('Label' => T('Likes'),
+				'Description' => T('Checks "Likes" received by the User'),
+				'Group' => AwardRulesManager::GROUP_GENERAL,
+				'Type' => AwardRulesManager::TYPE_CONTENT,
+				// Version is for reference only
+				'Version' => '13.04.04',
+				)
+);
