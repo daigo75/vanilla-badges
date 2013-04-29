@@ -3,14 +3,7 @@
 {licence}
 */
 
-$RequiredWritableDirs = array(
-	AWARDS_PLUGIN_AWARDS_PICS_PATH,
-	AWARDS_PLUGIN_AWARDCLASSES_PICS_PATH,
-	dirname(AWARDS_PLUGIN_AWARDCLASSES_CSS_FILE),
-	AWARDS_PLUGIN_EXPORT_PATH,
-	PATH_UPLOADS . '/' . AWARDS_PLUGIN_IMPORT_PATH,
-);
-
+$RequiredWritableDirs = $this->Data['RequiredWritableDirs'];
 ?>
 <div class="Aelia AwardsPlugin StatusPage">
 	<div class="Header">
