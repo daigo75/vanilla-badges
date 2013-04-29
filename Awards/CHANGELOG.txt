@@ -17,3 +17,12 @@ Award Plugin for Vanilla Forums 2.0 - Change Log
 
 13.04.20 beta
 - Added export and import of Award Classes
+
+13.04.24
+- Added Awards Export feature
+
+13.04.28
+- Added Awards Import feature
+
+13.04.29
+- Added Server Side file browser. It allows to choose previously uploaded image files as images for the Awards
