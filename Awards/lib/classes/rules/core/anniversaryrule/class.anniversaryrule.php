@@ -113,5 +113,7 @@ AwardRulesManager::RegisterRule(
 				'Type' => AwardRulesManager::TYPE_USER,
 				// Version is for reference only
 				'Version' => '13.04.03',
+				'Author' => 'D.Zanella',
+				'AuthorEmail' => 'diego@pathtoenlightenment.net',
 				)
 );
