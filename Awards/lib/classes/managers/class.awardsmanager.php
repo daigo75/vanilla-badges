@@ -197,6 +197,55 @@ class AwardsManager extends BaseManager {
 	}
 
 	/**
+	 * Examines the values posted via the Award Add/Edit form to determine which
+	 * image will be used for the Award. The image is stored directly in the
+	 * Sender's form values.
+	 *
+	 * @param Gdn_Controller Sender Sending controller instance.
+	 * @return int An integer value indicating the result of the operation.
+	 */
+	private function _DetermineAwardImage($Sender) {
+		$PreUploadedImageFile = $Sender->Form->GetFormValue('PreUploadedImageFile');
+		// Check if a pre-uploaded image should be used for the Award
+		if(!empty($PreUploadedImageFile)) {
+			$DestinationFile = AWARDS_PLUGIN_AWARDS_PICS_PATH . '/' . basename($PreUploadedImageFile);
+
+			$Result = PictureManager::CopyImage($PreUploadedImageFile, $DestinationFile);
+			if($Result === AWARDS_OK) {
+				$Sender->Form->SetFormValue('AwardImageFile', $DestinationFile);
+			}
+			else {
+				$this->Log()->error(sprintf(T('Could not use pre-uploaded image file "%s" for the Award. ' .
+																			'Error code: %d.'),
+																		$PreUploadedImageFile,
+																		$Result));
+				$Sender->Form->AddError(sprintf(T('Could not use selected pre-uploaded file. ' .
+																					'Please make sure that destination directory ' .
+																					'(%s) exists and is writable, and that selected file ' .
+																					'is an image.'),
+																				AWARDS_PLUGIN_AWARDS_PICS_PATH));
+			}
+		}
+		else {
+			// Check if a new image has been uploaded for the Award
+			try {
+				// Retrieve the URL of the Picture associated with the Award.
+				$ImageFile = PictureManager::GetPictureURL(AWARDS_PLUGIN_AWARDS_PICS_PATH,
+																									 'Picture',
+																									 $Sender->Form->GetFormValue('AwardImageFile'));
+				// Add the Picture URL to the Form
+				$Sender->Form->SetFormValue('AwardImageFile', $ImageFile);
+				$Result = AWARDS_OK;
+			}
+			catch(Exception $e) {
+				$Sender->Form->AddError($e->getMessage());
+				$Result = AWARDS_ERR_EXCEPTION_OCCURRED;
+			}
+		}
+		return $Result;
+	}
+
+	/**
 	 * Renders the page to Add/Edit an Award.
 	 *
 	 * @param AwardsPlugin Caller The Plugin which called the method.
@@ -254,42 +303,8 @@ class AwardsManager extends BaseManager {
 			// The field named "Save" is actually the Save button. If it exists, it means
 			// that the User chose to save the changes.
 			if(Gdn::Session()->ValidateTransientKey($Data['TransientKey']) && $Sender->Form->ButtonExists('Save')) {
-				$PreUploadedImageFile = $Sender->Form->GetFormValue('PreUploadedImageFile');
-				// Check if a pre-uploaded image should be used for the Award
-				if(!empty($PreUploadedImageFile)) {
-					$DestinationFile = AWARDS_PLUGIN_AWARDS_PICS_PATH . '/' . basename($PreUploadedImageFile);
-
-					$Result = PictureManager::CopyImage($PreUploadedImageFile, $DestinationFile);
-					if($Result === AWARDS_OK) {
-						$Sender->Form->SetFormValue('AwardImageFile', $DestinationFile);
-					}
-					else {
-						$this->Log()->error(sprintf(T('Could not use pre-uploaded image file "%s" for the Award. ' .
-																					'Error code: %d.'),
-																				$PreUploadedImageFile,
-																				$Result));
-						$Sender->Form->AddError(sprintf(T('Could not use selected pre-uploaded file. ' .
-																							'Please make sure that destination directory ' .
-																							'(%s) exists and is writable, and that selected file ' .
-																							'is an image.'),
-																						AWARDS_PLUGIN_AWARDS_PICS_PATH));
-					}
-				}
-				else {
-					// Check if a new image has been uploaded for the Award
-					try {
-						// Retrieve the URL of the Picture associated with the Award.
-						$ImageFile = PictureManager::GetPictureURL(AWARDS_PLUGIN_AWARDS_PICS_PATH,
-																											 'Picture',
-																											 $Sender->Form->GetFormValue('AwardImageFile'));
-						// Add the Picture URL to the Form
-						$Sender->Form->SetFormValue('AwardImageFile', $ImageFile);
-					}
-					catch(Exception $e) {
-						$Sender->Form->AddError($e->getMessage());
-					}
-				}
-
+				// Determine the image to use for the Award
+				$this->_DetermineAwardImage($Sender);
 
 				// Validate settings for Award Rules
 				$RulesSettingsOK = $Caller->RulesManager()->ValidateRulesSettings($Sender->Form);
