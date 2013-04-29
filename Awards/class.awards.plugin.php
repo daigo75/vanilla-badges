@@ -628,9 +628,7 @@ class AwardsPlugin extends Gdn_Plugin {
 		natcasesort($Files);
 
 		//var_dump($Files);die();
-		// TODO Complete file browser
 		$Result = array();
-		//var_dump($Files);
 		// Build the HTML required by the jQueryFileTree plugin
 		foreach($Files as $File) {
 			$FileExt = pathinfo($File, PATHINFO_EXTENSION);

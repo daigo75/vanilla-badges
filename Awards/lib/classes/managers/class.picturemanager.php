@@ -45,8 +45,6 @@ class PictureManager extends BaseManager {
 																						self::DEFAULT_IMAGE_WIDTH,
 																						array('Crop' => true));
 
-		// TODO Check that uploaded image is cropped and saved correctly
-
 		$UploadedFileName = $UploadImage->GetUploadedFileName();
 		$PictureFileName = realpath($DestinationDir) . '/' . $UploadedFileName;
 

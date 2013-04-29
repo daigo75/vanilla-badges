@@ -318,7 +318,6 @@ class UserAwardsModel extends ModelEx {
 	 * @param UserAwardID The ID of the User Award to be deleted.
 	 */
 	public function Delete($UserAwardID) {
-		// TODO Transform physical deletion into a logical one
 		$this->SQL->Delete('UserAwards', array('UserAwardID' => $UserAwardID,));
 	}
 }

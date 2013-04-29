@@ -3,7 +3,14 @@
 {licence}
 */
 
-// TODO Document function
+/**
+ * Renders the UI for an Award Rule and displays it in the page.
+ *
+ * @param array AwardRulesSections An array containing the various sections of
+ * the page where the Rules will be displayed.
+ * @param array AwardRule An array containing details of the Rule.
+ * @see AwardRulesManager::GetRuleInfo().
+ */
 function AddRuleToUI(array &$AwardRulesSections, array &$AwardRule) {
 	$RuleGroup = GetValue('Group', $AwardRule);
 	$RuleType = GetValue('Type', $AwardRule);
