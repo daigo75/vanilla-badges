@@ -87,10 +87,13 @@ function GetCurrentAction(Gdn_Form $Form, $Data) {
 											array('class' => 'Info',
 														));
 						echo $this->Form->TextBox('AwardClassName');
-						echo Wrap(sprintf(T('This class is currently being used by %d Awards.'),
-															$this->Form->GetValue('TotalAwardsUsingClass')),
-											'div',
-											array('class' => 'ClassUsage'));
+
+						if($this->Form->GetValue('AwardClassID', false)) {
+							echo Wrap(sprintf(T('This class is currently being used by %d Awards.'),
+																$this->Form->GetValue('TotalAwardsUsingClass')),
+												'div',
+												array('class' => 'ClassUsage'));
+						}
 					?>
 				</li>
 				<li>
