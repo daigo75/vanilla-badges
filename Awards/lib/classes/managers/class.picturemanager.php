@@ -71,10 +71,24 @@ class PictureManager extends BaseManager {
 		return $DestinationDir . '/' . $UploadedFileName;
 	}
 
+	/**
+	 * Checks if a file is a valid image.
+	 *
+	 * @param string FileName The file to check.
+	 * @return bool True, if FileName is a valid image, False otherwise.
+	 */
 	public static function IsValidImage($FileName) {
 		return (getimagesize($FileName) !== false);
 	}
 
+	/**
+	 * Copies an image file from a source to a destination. It returns an error if
+	 * file is not an image.
+	 *
+	 * @param string SourceFile The source file.
+	 * @param string DestinationFile The destination file.
+	 * @return int A code indicating the result of the operation.
+	 */
 	public static function CopyImage($SourceFile, $DestinationFile) {
 		if(!self::IsValidImage($SourceFile)) {
 			return AWARDS_ERR_FILE_NOT_AN_IMAGE;
