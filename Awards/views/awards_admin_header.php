@@ -47,6 +47,7 @@
 				echo RenderTabItem(T('Export'), AWARDS_PLUGIN_EXPORT_URL, $TabsClasses);
 				echo RenderTabItem(T('Import'), AWARDS_PLUGIN_IMPORT_URL, $TabsClasses);
 				echo RenderTabItem(T('Loaded Rules'), AWARDS_PLUGIN_RULES_LIST_URL, $TabsClasses);
+				echo RenderTabItem(T('Status'), AWARDS_PLUGIN_STATUS_URL, $TabsClasses);
 			?>
 		</ul>
 	</div>
