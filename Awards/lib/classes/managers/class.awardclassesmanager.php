@@ -81,6 +81,9 @@ class AwardClassesManager extends BaseManager {
 		// Load jQuery UI
 		$this->LoadJQueryUI($Sender);
 
+		$Sender->AddCssFile('jqueryFileTree.css', 'plugins/AeliaFoundationClasses/js/jqueryFileTree');
+		$Sender->AddJsFile('jqueryFileTree.js', 'plugins/AeliaFoundationClasses/js/jqueryFileTree');
+
 		// Load auxiliary files
 		$Sender->AddJsFile('awardclass_edit.js', 'plugins/Awards/js');
 

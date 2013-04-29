@@ -7,6 +7,9 @@
 }
 
 /* General styles */
+.AwardsPlugin textarea.TextBox {
+	width: 30em;
+}
 
 /* ClearFix */
 .clearfix:after {
@@ -48,7 +51,7 @@ html[xmlns] .clearfix {
 }
 
 #Content .AwardsPlugin h4 {
-	padding: 0;
+	/*padding: 0;*/
 }
 
 #Content .AwardsPlugin .Info {
@@ -272,6 +275,7 @@ img.Medium {
 	position: relative;
 }
 
+#Form_AwardClasses .AwardClassImageWrapper .AwardClassImage,
 #Form_Awards .AwardImageWrapper .AwardImage {
 	padding: 8px;
 	border: 1px dashed silver;
@@ -335,8 +339,8 @@ img.Medium {
 }
 
 /* Awards Frontend Page */
-#AwardsPage {
-
+#AwardsPage .Header {
+	border-bottom: 1px solid #8bc1de;
 }
 
 #AwardsPage #AwardsList {
@@ -352,7 +356,11 @@ img.Medium {
 }
 
 #AwardsPage #AwardsList .Name {
-	/*width: 40%;*/
+	white-space: nowrap;
+}
+
+#AwardsPage #AwardsList .AwardName {
+	display: inline-block;
 }
 
 #AwardsPage #AwardsList .AwardImage {
@@ -718,7 +726,6 @@ img.Medium {
 	float: left;
 	text-indent: -99999px;
 	margin: 2px 0 0 0.5em;
-	vertical-align:
 }
 
 /* Import Export pages */
@@ -768,11 +775,13 @@ input[type=file] {
 }
 
 /* Award Add/Edit */
-.AwardEdit .AwardImageWrapper {
+.AwardClassImageWrapper,
+.AwardImageWrapper {
 	position: relative;
 }
 
-.AwardEdit .AwardImageWrapper #ImageOverlay {
+.AwardClassImageWrapper #ImageOverlay,
+.AwardImageWrapper #ImageOverlay {
 	width: 100%;
 	position: absolute;
 	top: 45px;
@@ -783,16 +792,20 @@ input[type=file] {
 	display: none;
 }
 
-.AwardEdit .AwardImageWrapper.Preview:hover #ImageOverlay {
+.AwardClassImageWrapper.Preview:hover #ImageOverlay,
+.AwardImageWrapper.Preview:hover #ImageOverlay {
 	opacity: 0.2;
 }
 
-.AwardEdit .AwardImageWrapper #RestoreImage {
+.AwardClassImageWrapper #RestoreImage,
+.AwardImageWrapper #RestoreImage {
 	display: none;
 }
 
-.AwardEdit .AwardImageWrapper.Preview #ImageOverlay,
-.AwardEdit .AwardImageWrapper.Preview #RestoreImage {
+.AwardClassImageWrapper.Preview #ImageOverlay,
+.AwardClassImageWrapper.Preview #RestoreImage,
+.AwardImageWrapper.Preview #ImageOverlay,
+.AwardImageWrapper.Preview #RestoreImage {
 	display: inline-block;
 }
 
@@ -800,4 +813,42 @@ input[type=file] {
 /* Server Side image browser */
 .AwardsPlugin .FileTreeContainer {
 	width: 80%;
+}
+
+
+/* Side help for Admin pages */
+#Content .AwardsPlugin .Aside {
+	width: 30em;
+}
+
+#Content .AwardsPlugin .Aside .Title {
+	padding: 0.5em 10px 0;
+}
+
+#Content .AwardsPlugin .Aside li {
+	font-size: 100%;
+}
+
+#Content .AwardsPlugin .Aside .Info {
+	margin: 0.5em 0 0 0;
+}
+
+/* Status page */
+.AwardsPlugin.StatusPage #Directories li {
+	margin-left: 20px;
+}
+
+.AwardsPlugin.StatusPage #Directories ul {
+	list-style-type: circle;
+	list-style-position: inside;
+}
+
+.AwardsPlugin .Writable {
+	color: green;
+	font-weight: bold;
+}
+
+.AwardsPlugin .NotWritable {
+	color: maroon;
+	font-weight: bold;
 }

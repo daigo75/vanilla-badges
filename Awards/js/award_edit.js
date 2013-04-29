@@ -3,7 +3,9 @@
 */
 jQuery(document).ready(function(){
 	var TabsList = $('<ul>');
-	var OriginalAwardImage = $('.AwardImageWrapper .AwardImage').attr('src');
+	var ImageWrapper = $('.AwardImageWrapper');
+	var ImageElement = ImageWrapper.find('.AwardImage');
+	var OriginalImage = ImageElement.attr('src');
 
 	// Add a link, which will be transformed into a Tab, for each Rule
 	$('.Tab').each(function() {
@@ -29,17 +31,18 @@ jQuery(document).ready(function(){
 	TabsElement.tabs();
 
 	// Handle clearing of new image, restoring original one
-	$('.AwardImageWrapper').delegate('#RestoreImage', 'click', function() {
+	ImageWrapper.delegate('#RestoreImage', 'click', function() {
 		ClearFileField('#Form_Picture');
-		$('.AwardImageWrapper').removeClass('Preview');
-		$('.AwardImageWrapper .AwardImage').attr('src', OriginalAwardImage);
+		ImageWrapper.removeClass('Preview');
+		ImageElement.attr('src', OriginalImage);
 	});
 
 	// Display a Preview when a new Image has been selected
 	$('#Form_Picture').change(function() {
 		if($(this).val()) {
-			$('.AwardImageWrapper').addClass('Preview');
+			ImageWrapper.addClass('Preview');
 			$('#Form_PreUploadedImageFile').val('');
+			// TODO Display preview of image
 		}
 	});
 
@@ -54,8 +57,7 @@ jQuery(document).ready(function(){
 
 		var ImageFile = gdn.definition('path_uploads') + SelectedFile;
 		$('#Form_PreUploadedImageFile').val(ImageFile);
-		$('.AwardImageWrapper .AwardImage').attr('src', gdn.url('/uploads' + SelectedFile));
-		$('.AwardImageWrapper').addClass('Preview');
+		ImageElement.attr('src', gdn.url('/uploads' + SelectedFile));
+		ImageWrapper.addClass('Preview');
   });
-
 });
