@@ -114,7 +114,7 @@ class AwardsExporter extends BaseIntegration {
 		$ArchiveHash = md5(implode(',', $FileHashes));
 
 		$ExportData->ExportInfo->MD5 = $ArchiveHash;
-		$Zip->setArchiveComment(json_encode($ExportData->ExportInfo, JSON_PRETTY_PRINT));
+		$Zip->setArchiveComment(json_encode($ExportData->ExportInfo));
 
 		$Zip->close();
 		return AWARDS_OK;

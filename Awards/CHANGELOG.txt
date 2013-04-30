@@ -31,3 +31,4 @@ Award Plugin for Vanilla Forums 2.0 - Change Log
 - Fixed issues with Server Side file browser
 - Added automatic preview of Images for Awards and Award Classes
 - Added QnA Award Rule
+- Fixed bug in export function which prevented it from working with PHP 5.3
