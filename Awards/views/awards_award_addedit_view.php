@@ -93,6 +93,12 @@ $IsNewAward = empty($AwardID) ? true : false;
 																					 'manually. They will be displayed for Users who ' .
 																					 'already obtained them.'),
 																				 array('value' => 1,));
+							echo Wrap(T('<strong>Note</strong>: if you wish to prevent the Award from being ' .
+													'processed as soon as you save it, make sure to <strong>uncheck</strong> ' .
+													'this box. This will allow you to review the Award at a later time and ' .
+													'enable it only when it will be time for it to be processed.'),
+												'div',
+												array('class' => 'Info',));
 						?>
 					</li>
 					<li>
@@ -100,8 +106,7 @@ $IsNewAward = empty($AwardID) ? true : false;
 							echo $this->Form->Label(T('Award Name'), 'AwardName');
 							echo Wrap(T('Enter a name for the Award. It must be unique amongst the Awards.'),
 												'div',
-												array('class' => 'Info',
-															));
+												array('class' => 'Info',));
 							echo $this->Form->TextBox('AwardName');
 						?>
 					</li>
