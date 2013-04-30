@@ -15,19 +15,25 @@ $RequiredWritableDirs = $this->Data['RequiredWritableDirs'];
 				echo Wrap(T('Directories'), 'h4');
 				echo '<ul>';
 				foreach($RequiredWritableDirs as $Dir) {
-					if(is_writable($Dir)) {
-						$DirStatus = T('Writable');
-						$CssClass = 'Writable';
+					if(is_dir($Dir)) {
+						if(is_writable($Dir)) {
+							$DirStatus = T('Writable');
+							$CssClass = 'Writable';
+						}
+						else {
+							$DirStatus = T('Not writable');
+							$CssClass = 'NotWritable';
+						}
 					}
 					else {
-						$DirStatus = T('Not writable');
+						$DirStatus = T('Not existing');
 						$CssClass = 'NotWritable';
 					}
 					$DirStatus = Wrap($DirStatus,
 										'span',
 										array('class' => $CssClass));
 					echo Wrap(sprintf('%s: %s',
-														realpath($Dir),
+														$Dir,
 														$DirStatus),
 										'li');
 				}

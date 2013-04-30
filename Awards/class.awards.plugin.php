@@ -307,8 +307,8 @@ class AwardsPlugin extends Gdn_Plugin {
 
 		// Stores the list of directories that should be writable
 		$RequiredWritableDirs = array(
-			AWARDS_PLUGIN_AWARDS_PICS_PATH,
-			AWARDS_PLUGIN_AWARDCLASSES_PICS_PATH,
+			PATH_ROOT . '/' . AWARDS_PLUGIN_AWARDS_PICS_PATH,
+			PATH_ROOT . '/' . AWARDS_PLUGIN_AWARDCLASSES_PICS_PATH,
 			dirname(AWARDS_PLUGIN_AWARDCLASSES_CSS_FILE),
 			AWARDS_PLUGIN_EXPORT_PATH,
 			PATH_UPLOADS . '/' . AWARDS_PLUGIN_IMPORT_PATH,
@@ -840,7 +840,6 @@ class AwardsPlugin extends Gdn_Plugin {
 		Gdn::Router()->SetRoute('^awards(/?.*)$',
 														AWARDS_PLUGIN_BASE_URL . '$1',
 														'Internal');
-
 
 		// Create Database Objects needed by the Plugin
 		require('install/awards.schema.php');

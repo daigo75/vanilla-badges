@@ -706,6 +706,13 @@ class AwardsManager extends BaseManager {
 		$Sender->Render($Caller->GetView('awards_export_view.php'));
 	}
 
+	/**
+	 * Validates the parameters received for the Import.
+	 *
+	 * @param Gdn_Controller Sender Sending controller instance.
+	 * @param string Output. The file that will have to be imported.
+	 * return int An integer value indicating the result of the validation.
+	 */
 	private function _ValidateImport(Gdn_Controller $Sender, &$FileToImport) {
 		$Upload = new Gdn_Upload();
 		$TmpUploadedFile = $Upload->ValidateUpload('FileToImport', false);
@@ -718,6 +725,19 @@ class AwardsManager extends BaseManager {
 
 		try {
 			$FileName = $_FILES['FileToImport']['name'];
+
+			// Create directory for Import, if it doesn't exist
+			$ImportPath = realpath(PATH_UPLOADS . '/' . AWARDS_PLUGIN_IMPORT_PATH);
+			if(!is_dir($ImportPath)) {
+				if(!mkdir($ImportPath, 0775)) {
+					$ErrorMsg = sprintf(T('Could not create import directory "%s". ' .
+																				'Please create it manually and make it writable.'),
+															$ImportPath);
+					$this->Log()->error($ErrorMsg);
+					throw new Exception($ErrorMsg);
+				}
+			}
+
 			$DestinationFile = AWARDS_PLUGIN_IMPORT_PATH . '/' . $FileName;
 			//var_dump($DestinationFile);die();
 			$FileInfo = $Upload->SaveAs($TmpUploadedFile, $DestinationFile);
