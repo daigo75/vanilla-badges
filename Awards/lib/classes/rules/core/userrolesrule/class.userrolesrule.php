@@ -188,7 +188,7 @@ class UserRolesRule extends BaseAwardRule {
 // Register Rule with the Rule Manager
 AwardRulesManager::RegisterRule(
 	'UserRolesRule',
-	array('Label' => T('User Groups'),
+	array('Label' => T('User Roles'),
 				'Description' => T('Checks if a User has one or more Roles'),
 				'Group' => AwardRulesManager::GROUP_GENERAL,
 				'Type' => AwardRulesManager::TYPE_USER,
