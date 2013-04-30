@@ -392,8 +392,8 @@ img.Medium {
 }
 
 /* Awards Leaderboard Page */
-#AwardsLeaderboard {
-
+#AwardsLeaderboard .Header {
+	border-bottom: 1px solid #8bc1de;
 }
 
 #AwardsLeaderboard #TopUsers {
