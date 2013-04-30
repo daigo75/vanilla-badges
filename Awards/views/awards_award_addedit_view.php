@@ -172,7 +172,8 @@ $IsNewAward = empty($AwardID) ? true : false;
 							// Dummy Image to use when none has been selected
 							$DummyImageFile = AWARDS_PLUGIN_UI_PICS_PATH . '/dummy-award-img.png';
 							$AwardImage = Wrap(Img($this->Form->GetValue('AwardImageFile', $DummyImageFile),
-																		 array('class' => 'AwardImage Large',)),
+																		 array('id' => 'AwardImagePreview',
+																					 'class' => 'AwardImage Large',)),
 																 'div');
 
 							echo Wrap($ImagePreviewOverlay .

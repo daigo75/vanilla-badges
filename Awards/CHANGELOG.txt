@@ -26,3 +26,7 @@ Award Plugin for Vanilla Forums 2.0 - Change Log
 
 13.04.29
 - Added Server Side file browser. It allows to choose previously uploaded image files as images for the Awards
+
+13.04.30
+- Fixed issues with Server Side file browser
+- Added automatic preview of Images for Awards and Award Classes

@@ -146,9 +146,9 @@ function GetCurrentAction(Gdn_Form $Form, $Data) {
 						// Dummy Image to use when none has been selected
 						$DummyImageFile = AWARDS_PLUGIN_UI_PICS_PATH . '/dummy-award-img.png';
 						$AwardClassImage = Wrap(Img($this->Form->GetValue('AwardClassImageFile', $DummyImageFile),
-																				array('class' => 'AwardClassImage Large',)),
+																				array('id' => 'AwardClassImagePreview',
+																							'class' => 'AwardClassImage Large',)),
 																		'div');
-
 						echo Wrap($ImagePreviewOverlay .
 											$AwardClassImage .
 											$RestoreButton,

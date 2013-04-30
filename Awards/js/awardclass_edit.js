@@ -11,6 +11,8 @@ jQuery(document).ready(function(){
 		ClearFileField('#Form_Picture');
 		ImageWrapper.removeClass('Preview');
 		ImageElement.attr('src', OriginalImage);
+		// Remove the element eventually used to display the Preview Image in IE
+		$('#ImagePreviewIE').remove();
 	});
 
 	// Display a Preview when a new Image has been selected
@@ -18,7 +20,9 @@ jQuery(document).ready(function(){
 		if($(this).val()) {
 			ImageWrapper.addClass('Preview');
 			$('#Form_PreUploadedImageFile').val('');
-			// TODO Display preview of image
+
+			// Display preview of image
+			AutoPreview(this, 'AwardClassImagePreview');
 		}
 	});
 
@@ -30,6 +34,8 @@ jQuery(document).ready(function(){
 	};
 	$('#ServerSideBrowser').fileTree(ServerSideFileBrowserCfg, function(SelectedFile) {
 		ClearFileField('#Form_Picture');
+		// Remove the element eventually used to display the Preview Image in IE
+		$('#ImagePreviewIE').remove();
 
 		var ImageFile = gdn.definition('path_uploads') + SelectedFile;
 		$('#Form_PreUploadedImageFile').val(ImageFile);

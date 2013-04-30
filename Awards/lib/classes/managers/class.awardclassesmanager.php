@@ -84,6 +84,9 @@ class AwardClassesManager extends BaseManager {
 		$Sender->AddCssFile('jqueryFileTree.css', 'plugins/AeliaFoundationClasses/js/jqueryFileTree');
 		$Sender->AddJsFile('jqueryFileTree.js', 'plugins/AeliaFoundationClasses/js/jqueryFileTree');
 
+		$Sender->AddJsFile('image_preview.js', 'plugins/Awards/js');
+		$Sender->AddJsFile('image_preview_ie.js', 'plugins/Awards/js', array('IE' => 'gte IE 8'));
+
 		// Load auxiliary files
 		$Sender->AddJsFile('awardclass_edit.js', 'plugins/Awards/js');
 
