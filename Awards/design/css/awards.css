@@ -51,7 +51,7 @@ html[xmlns] .clearfix {
 }
 
 #Content .AwardsPlugin h4 {
-	/*padding: 0;*/
+	padding: 0;
 }
 
 #Content .AwardsPlugin .Info {
@@ -845,8 +845,8 @@ input[type=file] {
 }
 
 /* Status page */
-.AwardsPlugin.StatusPage #Directories li {
-	margin-left: 20px;
+.AwardsPlugin.StatusPage #Directories {
+	padding: 1em 20px;
 }
 
 .AwardsPlugin.StatusPage #Directories ul {
