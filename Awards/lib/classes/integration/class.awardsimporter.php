@@ -191,6 +191,7 @@ class AwardsImporter extends BaseIntegration {
 			$FileInfo = pathinfo($File);
 			//var_dump($FileInfo);die();
 
+			$CopyFile = true;
 			$DestinationFile = $DestinationFolder . '/' . $FileInfo['basename'];
 			if(file_exists($DestinationFile)) {
 				$this->Log()->info($this->StoreMessage(T('File already exists')));
@@ -204,14 +205,18 @@ class AwardsImporter extends BaseIntegration {
 						break;
 					case self::DUPLICATE_ACTION_SKIP:
 					default:
+						$CopyFile = false;
 						$this->Log()->info($this->StoreMessage(T('Skipping')));
-						continue 2;
+						break;
 				}
 			}
-			if(copy($File, $DestinationFile) === false) {
-				$this->Log()->error($this->StoreMessage(T('File copy failed.')));
-				$Result = AWARDS_ERR_COULD_NOT_COPY_FILE;
-				break;
+
+			if($CopyFile === true) {
+				if(copy($File, $DestinationFile) === false) {
+					$this->Log()->error($this->StoreMessage(T('File copy failed.')));
+					$Result = AWARDS_ERR_COULD_NOT_COPY_FILE;
+					break;
+				}
 			}
 
 			// Store the details of the imported file
@@ -270,7 +275,7 @@ class AwardsImporter extends BaseIntegration {
 				$this->Log()->debug($this->StoreMessage(sprintf(T('Importing Award Class "%s"...'),
 																												$AwardClassName)));
 
-				$ExistingAwardClass = $this->AwardClassesModel()->GetAwardClassByName($AwardClassName);
+				$ExistingAwardClass = $this->AwardClassesModel()->GetAwardClassByName($AwardClassName)->FirstRow();
 
 				if($ExistingAwardClass !== false) {
 					$this->Log()->debug($this->StoreMessage(T('Award Class already exists')));
@@ -372,7 +377,7 @@ class AwardsImporter extends BaseIntegration {
 				$this->Log()->debug($this->StoreMessage(sprintf(T('Importing Award "%s"...'),
 																												$AwardName)));
 
-				$ExistingAward = $this->AwardsModel()->GetAwardByName($AwardName);
+				$ExistingAward = $this->AwardsModel()->GetAwardByName($AwardName)->FirstRow();
 
 				if($ExistingAward !== false) {
 					$this->Log()->debug($this->StoreMessage(T('Award already exists')));

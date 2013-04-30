@@ -122,6 +122,7 @@ class BaseIntegration extends BaseClass {
 	 * @return bool True, if the operation succeeded, False otherwise.
 	 */
 	protected function DelTree($Directory) {
+		$Result = true;
 		$this->Log()->info(sprintf(T('Deleting directory "%s" and all its content...'),
 															 $Directory));
 		$Files = array_diff(scandir($Directory), array('.', '..'));
