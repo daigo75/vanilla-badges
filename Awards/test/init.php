@@ -3,6 +3,7 @@
 {licence}
 */
 
+echo "Starting Vanilla Forums Bootstrap...\n";
 // 1. Define the constants we need to get going.
 define('APPLICATION', 'Vanilla');
 define('DS', '/');
@@ -38,4 +39,8 @@ echo sprintf("Loading bootstrap file: %s.\n" .
 						 "not completed correctly.\n",
 						 PATH_ROOT . '/bootstrap.php');
 require_once(PATH_ROOT . '/bootstrap.php');
-echo 'Bootstrap completed.';
+echo "Vanilla Bootstrap completed.\n";
+
+echo "Loading Base Classes...\n";
+require_once('vanillatestcase.php');
+echo "Base Classes Loaded.\n";
