@@ -14,6 +14,7 @@ class AwardsPluginTests extends VanillaTestCase {
 		// the one to be tested.
 		$this->EnablePlugin('Logger');
 		$this->EnablePlugin('AeliaFoundationClasses');
+		$this->EnablePlugin('Awards');
 
 		// Instantiate the plugin to be tested.
 		$this->AwardsPlugin = Gdn::PluginManager()->GetPluginInstance('AwardsPlugin');
