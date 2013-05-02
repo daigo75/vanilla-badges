@@ -12,18 +12,18 @@ class VanillaTestCase extends PHPUnit_Framework_TestCase {
 		if(!$PluginManager->CheckPlugin($PluginName)) {
 			$Validation = new Gdn_Validation();
 			if(Gdn::PluginManager()->EnablePlugin($PluginName, $Validation)) {
-				printf('Plugin %s has been enabled successfully.', $PluginName);
+				printf("Plugin %s has been enabled successfully.\n", $PluginName);
 				$Result = true;
 			}
 			else {
-				printf('Plugin %s could not be enabled. Validation Results: %s.',
+				printf("Plugin %s could not be enabled. Validation Results: %s.\n",
 							 $PluginName,
 							 $Validation->ResultsText());
 				$Result = false;
 			}
 		}
 		if(!$Result && $ThrowExceptionOnError) {
-			throw new Exception('Plugin enabling failed.');
+			throw new Exception("Plugin enabling failed.\n");
 		}
 
 		return $Result;
