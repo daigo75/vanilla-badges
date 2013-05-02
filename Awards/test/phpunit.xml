@@ -26,4 +26,8 @@
 		<log type="junit" target="tests/artifacts/phpunit/phpunit.xml" logIncompleteSkipped="true" />
 		<log type="testdox-html" target="./logs/testdox.html" />
 	</logging>
+
+	<listeners>
+		<listener class="TeamCityListener" file="TeamCityListener.php"/>
+	</listeners>
 </phpunit>
