@@ -8,6 +8,6 @@
   <string id="phpCommentStyle">//,#</string>
   <string id="phpConfigFile">C:\wamp\bin\php\php5.4.3\php.ini</string>
   <string id="phpDefaultInterpreter"></string>
-  <string id="phpExtraPaths">C:\wamp\www\vanilla</string>
+  <string id="phpExtraPaths">C:\wamp\www\vanilla;C:\wamp\bin\php\php5.4.3\pear</string>
 </preference-set>
 </project>

@@ -16,6 +16,9 @@
 		<testsuite name="Awards Plugin">
 			<file>tests/plugin/class.awardsplugin.test.php</file>
 		</testsuite>
+		<testsuite name="Awards Models">
+			<directory suffix="test.php">tests/models</directory>
+		</testsuite>
 	</testsuites>
 
 	<logging>

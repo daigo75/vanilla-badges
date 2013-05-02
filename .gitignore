@@ -4,3 +4,6 @@
 /Images/*
 /Awards/design/images/awards/*.png
 /Awards/design/images/awards/*.jpg
+
+/Awards/test/phpunit_vanilla_testcase.php
+/Awards/test/init.php
