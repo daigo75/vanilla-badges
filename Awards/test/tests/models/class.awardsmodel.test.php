@@ -3,7 +3,7 @@
 {licence}
 */
 
-class AwardsPluginTests extends PHPUnit_Vanilla_TestCase {
+class AwardsModelTests extends PHPUnit_Vanilla_TestCase {
 	/**
 	 * Returns some Award Data that can be used to save an Award. Each test can
 	 * modify such data to save more tha one award/
