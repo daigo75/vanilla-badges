@@ -30,9 +30,10 @@ class AwardsModelTests extends PHPUnit_Vanilla_TestCase {
 	protected function setUp() {
 		//// Use function EnablePlugin() to enable all the plugins required, including
 		//// the one to be tested.
-		//$this->EnablePlugin('Logger');
-		//$this->EnablePlugin('AeliaFoundationClasses');
-		//$this->EnablePlugin('Awards');
+		$this->EnablePlugin('Logger');
+		$this->EnablePlugin('AeliaFoundationClasses');
+		$this->EnablePlugin('Awards');
+		
 		$this->AwardsModel = new AwardsModel();
 	}
 
