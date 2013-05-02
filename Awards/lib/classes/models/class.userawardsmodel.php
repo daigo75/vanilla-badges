@@ -11,7 +11,7 @@
  * This model is used to retrieve the data related to the Awards assigned to the
  * Users.
  */
-class UserAwardsModel extends ModelEx {
+class UserAwardsModel extends AwardsPluginBaseModel {
 	/**
 	 * Defines the related database table name.
 	 */

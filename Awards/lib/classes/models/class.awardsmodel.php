@@ -10,7 +10,7 @@
 /**
  * This model is used to retrieve the data related to the Awards.
  */
-class AwardsModel extends ModelEx {
+class AwardsModel extends AwardsPluginBaseModel {
 	// @var int Indicates that the Award has been assigned to the User
 	const STATUS_ASSIGNED = 1000;
 	// @var int Indicates that the Award has been revoked from the User
@@ -266,7 +266,7 @@ class AwardsModel extends ModelEx {
 	/**
    * Saves an Award.
    *
-   * @see ModelEx::Save()
+   * @see AwardsPluginBaseModel::Save()
    */
   public function Save($FormPostValues, $Settings = false) {
 		$AwardID = GetValue('AwardID', $FormPostValues);

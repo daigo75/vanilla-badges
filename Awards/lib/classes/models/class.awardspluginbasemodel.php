@@ -7,7 +7,7 @@
  * Extends base Gdn_Model by adding a Logger to it. This way, plugins that want
  * to use logging capabilities won't have to instantiate the Logger every time.
  */
-class ModelEx extends Gdn_Model {
+class AwardsPluginBaseModel extends Gdn_Model {
 	// @var Logger The Logger used by the class.
 	private $_Log;
 

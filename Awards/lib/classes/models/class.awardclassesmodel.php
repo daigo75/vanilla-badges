@@ -10,7 +10,7 @@
 /**
  * This model is used to retrieve the data related to the AwardClasses.
  */
-class AwardClassesModel extends ModelEx {
+class AwardClassesModel extends AwardsPluginBaseModel {
 	/**
 	 * Defines the related database table name.
 	 *
@@ -165,7 +165,7 @@ class AwardClassesModel extends ModelEx {
 	/**
    * Saves an Award Class.
    *
-   * @see ModelEx::Save()
+   * @see AwardsPluginBaseModel::Save()
    */
   public function Save($FormPostValues, $Settings = false) {
 		$AwardClassID = GetValue('AwardClassID', $FormPostValues);
