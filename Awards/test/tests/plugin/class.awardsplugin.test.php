@@ -17,7 +17,7 @@ class AwardsPluginTests extends PHPUnit_Vanilla_TestCase {
 		$this->EnablePlugin('Awards');
 
 		// Instantiate the plugin to be tested.
-		$this->AwardsPlugin = $this->GetPluginInstance('AwardsPlugin');
+		$this->AwardsPlugin = $this->GetPluginInstance('Awards');
 	}
 
 	/**
