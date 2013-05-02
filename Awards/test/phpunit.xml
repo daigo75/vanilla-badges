@@ -13,13 +13,13 @@
 	strict="false">
 
 	<testsuites>
-		<testsuite name="Awards Plugin">
+		<testsuite name="Plugin">
 			<file>tests/plugin/class.awardsplugin.test.php</file>
 		</testsuite>
-		<testsuite name="Awards Models">
-			<directory suffix="test.php">tests/models</directory>
+<!--		<testsuite name="Models">
+			<directory suffix="test.php">./tests/models</directory>
 		</testsuite>
-	</testsuites>
+-->	</testsuites>
 
 	<logging>
 		<log type="coverage-clover" target="tests/artifacts/phpunit/coverage.xml" />
