@@ -3,7 +3,7 @@
 {licence}
 */
 
-class AwardsPluginTests extends VanillaTestCase {
+class AwardsPluginTests extends PHPUnit_Vanilla_TestCase {
 	protected $AwardsPlugin;
 
 	/**
