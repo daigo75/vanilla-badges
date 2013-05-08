@@ -71,6 +71,7 @@ class AwardClassesModelTests extends PHPUnit_Vanilla_TestCase {
 		$AwardClassData['AwardClassID'] = $this->NewAwardClassID;
 		$AwardClassData['AwardClassName'] = 'New-Class-Name';
 
-		$this->assertTrue(is_numeric($this->AwardClassesModel->Save($AwardClassData)), sprintf('Operation failed. Validation results: %s', $this->AwardClassesModel->Validation->ResultsText()));
+		$this->assertTrue(is_numeric($this->AwardClassesModel->Save($AwardClassData)),
+											sprintf('Operation failed. Validation results: %s', $this->AwardClassesModel->Validation->ResultsText()));
 	}
 }
