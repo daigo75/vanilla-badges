@@ -28,7 +28,7 @@ class AwardsPluginTestSuite extends PHPUnit_Vanilla_TestSuite {
 		$Result = array();
 		foreach(self::$_TestFiles as $Dir => $FilesList) {
 			foreach($FilesList as $File) {
-				$Result[] = $Dir . '/' . $File;
+				$Result[] = __DIR__ . '/' . $Dir . '/' . $File;
 			}
 		}
 
@@ -44,7 +44,6 @@ class AwardsPluginTestSuite extends PHPUnit_Vanilla_TestSuite {
 	 */
 	public static function suite() {
 		$TestSuite = new AwardsPluginTestSuite();
-		var_dump("TEST FILES", self::_GetTestFiles());
 		$TestSuite->addTestFiles(self::_GetTestFiles());
 		return $TestSuite;
 	}
