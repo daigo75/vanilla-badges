@@ -13,9 +13,10 @@ class AwardClassesModelTests extends PHPUnit_Vanilla_TestCase {
 	private function _SampleAwardClassData() {
 		return array(
 			'AwardClassID' => 1,
-			'AwardClassName' => 'Test-Award-Class ',
+			'AwardClassName' => 'Test Award Class',
 			'AwardClassDescription' => 'Test Award Class 1 - Description',
 			'AwardClassImageFile' => 'plugins/Awards/design/images/awardclasses/dummyfile.png',
+			'AwardClassCSSClass' => 'Test-Award-Class',
 			'AwardClassCSS' => '',
 			'RankPoints' => 1,
 		);
@@ -35,11 +36,11 @@ class AwardClassesModelTests extends PHPUnit_Vanilla_TestCase {
 		unset($this->AwardClassesModel);
 	}
 
-	public function testInsert_WrongName() {
+	public function testInsert_InvalidCSSClass() {
 		$AwardClassData = $this->_SampleAwardClassData();
 		unset($AwardClassData['AwardClassID']);
 
-		$AwardClassData['AwardClassName'] = 'Invalid Name (not respecting CSS naming convention)';
+		$AwardClassData['AwardClassCSSClass'] = 'Invalid CSS Class (not respecting CSS naming convention)';
 		$this->assertFalse($this->AwardClassesModel->Save($AwardClassData));
 	}
 
@@ -62,7 +63,7 @@ class AwardClassesModelTests extends PHPUnit_Vanilla_TestCase {
 	}
 
 	/**
-	 * @depends testUpdate
+	 * @depends testInsert
 	 */
 	public function testUpdate() {
 		$AwardClassData = $this->_SampleAwardClassData();
