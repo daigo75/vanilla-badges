@@ -13,7 +13,7 @@ class AwardClassesModelTests extends PHPUnit_Vanilla_TestCase {
 	private function _SampleAwardClassData() {
 		return array(
 			'AwardClassID' => 1,
-			'AwardClassName' => 'Test Award Class ',
+			'AwardClassName' => 'Test-Award-Class ',
 			'AwardClassDescription' => 'Test Award Class 1 - Description',
 			'AwardClassImageFile' => 'plugins/Awards/design/images/awardclasses/dummyfile.png',
 			'AwardClassCSS' => '',
@@ -35,14 +35,41 @@ class AwardClassesModelTests extends PHPUnit_Vanilla_TestCase {
 		unset($this->AwardClassesModel);
 	}
 
-	/**
-	 * Sample test. Verify that internal Plugin variable has been initialized.
-	 */
-	public function testAwardClassInsert() {
+	public function testInsert_WrongName() {
 		$AwardClassData = $this->_SampleAwardClassData();
 		unset($AwardClassData['AwardClassID']);
 
-		$NewAwardClassID = $this->AwardClassesModel->Save($AwardClassData);
-		$this->assertTrue(is_numeric($NewAwardClassID), sprintf('Operation failed. Validation results: %s', $this->AwardClassesModel->Validation->ResultsText()));
+		$AwardClassData['AwardClassName'] = 'Invalid Name (not respecting CSS naming convention)';
+		$this->assertFalse($this->AwardClassesModel->Save($AwardClassData));
+	}
+
+	public function testInsert() {
+		$AwardClassData = $this->_SampleAwardClassData();
+		unset($AwardClassData['AwardClassID']);
+
+		$this->NewAwardClassID = $this->AwardClassesModel->Save($AwardClassData);
+		$this->assertTrue(is_numeric($this->NewAwardClassID), sprintf('Operation failed. Validation results: %s', $this->AwardClassesModel->Validation->ResultsText()));
+	}
+
+	/**
+	 * @depends testInsert
+	 */
+	public function testInsert_Duplicate() {
+		$AwardClassData = $this->_SampleAwardClassData();
+		unset($AwardClassData['AwardClassID']);
+
+		$this->assertFalse($this->AwardClassesModel->Save($AwardClassData));
+	}
+
+	/**
+	 * @depends testUpdate
+	 */
+	public function testUpdate() {
+		$AwardClassData = $this->_SampleAwardClassData();
+
+		$AwardClassData['AwardClassID'] = $this->NewAwardClassID;
+		$AwardClassData['AwardClassName'] = 'New-Class-Name';
+
+		$this->assertTrue(is_numeric($this->AwardClassesModel->Save($AwardClassData)), sprintf('Operation failed. Validation results: %s', $this->AwardClassesModel->Validation->ResultsText()));
 	}
 }
