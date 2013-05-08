@@ -10,16 +10,16 @@ class AwardsPluginTestSuite extends PHPUnit_Vanilla_TestSuite {
 
 	private static $_TestFiles = array(
 		// Tests for Plugin's main class
-		PLUGIN_TESTS_DIR => array(
+		self::PLUGIN_TESTS_DIR => array(
 			'class.awardsplugin.test.php',
 		),
 		// Tests for Plugin's Models
-		MODELS_TESTS_DIR => array(
+		self::MODELS_TESTS_DIR => array(
 			'class.awardclassessmodel.test.php',
 			'class.awardsmodel.test.php',
 		),
 		// Tests for Plugin's Managers (Controllers)
-		MANAGERS_TESTS_DIR => array(
+		self::MANAGERS_TESTS_DIR => array(
 
 		),
 	);
@@ -44,6 +44,7 @@ class AwardsPluginTestSuite extends PHPUnit_Vanilla_TestSuite {
 	 */
 	public static function suite() {
 		$TestSuite = new AwardsPluginTestSuite();
+		var_dump("TEST FILES", self::_GetTestFiles());
 		$TestSuite->addTestFiles(self::_GetTestFiles());
 		return $TestSuite;
 	}
