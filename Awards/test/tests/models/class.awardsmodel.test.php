@@ -33,7 +33,7 @@ class AwardsModelTests extends PHPUnit_Vanilla_TestCase {
 		$this->EnablePlugin('Logger');
 		$this->EnablePlugin('AeliaFoundationClasses');
 		$this->EnablePlugin('Awards');
-		
+
 		$this->AwardsModel = new AwardsModel();
 	}
 
@@ -52,6 +52,7 @@ class AwardsModelTests extends PHPUnit_Vanilla_TestCase {
 		unset($AwardData['AwardID']);
 
 		$NewAwardID = $this->AwardsModel->Save($AwardData);
+		var_dump("AWARD TEST:", $AwardData, $NewAwardID);
 		$this->assertTrue(is_numeric($NewAwardID));
 	}
 }
