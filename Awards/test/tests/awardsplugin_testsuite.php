@@ -15,7 +15,7 @@ class AwardsPluginTestSuite extends PHPUnit_Vanilla_TestSuite {
 		),
 		// Tests for Plugin's Models
 		self::MODELS_TESTS_DIR => array(
-			'class.awardclassessmodel.test.php',
+			'class.awardclassesmodel.test.php',
 			'class.awardsmodel.test.php',
 		),
 		// Tests for Plugin's Managers (Controllers)
@@ -24,6 +24,11 @@ class AwardsPluginTestSuite extends PHPUnit_Vanilla_TestSuite {
 		),
 	);
 
+	/**
+	 * Returns a list of the test case files that will be loaded by the Test Suite.
+	 *
+	 * @return array An array of file names.
+	 */
 	private static function _GetTestFiles() {
 		$Result = array();
 		foreach(self::$_TestFiles as $Dir => $FilesList) {
