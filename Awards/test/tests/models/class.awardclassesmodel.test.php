@@ -38,8 +38,9 @@ class AwardClassesModelTests extends PHPUnit_Vanilla_TestCase {
 	/**
 	 * Sample test. Verify that internal Plugin variable has been initialized.
 	 */
-	public function testAwardInsert() {
+	public function testAwardClassInsert() {
 		$AwardClassData = $this->_SampleAwardClassData();
+		var_dump("AWARD CLASS DATA:", $AwardClassData);
 		unset($AwardClassData['AwardClassID']);
 
 		$NewAwardClassID = $this->AwardClassesModel->Save($AwardClassData);
