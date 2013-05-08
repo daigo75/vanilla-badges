@@ -40,10 +40,9 @@ class AwardClassesModelTests extends PHPUnit_Vanilla_TestCase {
 	 */
 	public function testAwardClassInsert() {
 		$AwardClassData = $this->_SampleAwardClassData();
-		var_dump("AWARD CLASS DATA:", $AwardClassData);
 		unset($AwardClassData['AwardClassID']);
 
 		$NewAwardClassID = $this->AwardClassesModel->Save($AwardClassData);
-		$this->assertTrue(is_numeric($NewAwardClassID));
+		$this->assertTrue(is_numeric($NewAwardClassID), sprintf('Operation failed. Validation results: %s', $this->AwardClassesModel->Validation->ResultsText()));
 	}
 }
