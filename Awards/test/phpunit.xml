@@ -13,11 +13,8 @@
 	strict="false">
 
 	<testsuites>
-		<testsuite name="Plugin">
-			<file>tests/plugin/class.awardsplugin.test.php</file>
-		</testsuite>
-		<testsuite name="Models">
-			<directory suffix="test.php">./tests/models</directory>
+		<testsuite name="All Tests">
+			<file>tests/awardsplugin_testsuite.php</file>
 		</testsuite>
 	</testsuites>
 
