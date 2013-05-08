@@ -8,7 +8,7 @@ class AwardsPluginTestSuite extends PHPUnit_Vanilla_TestSuite {
 	const MODELS_TESTS_DIR = 'models';
 	const MANAGERS_TESTS_DIR = 'managers';
 
-	private static $_TestFiles = array(
+	protected static $_TestFiles = array(
 		// Tests for Plugin's main class
 		self::PLUGIN_TESTS_DIR => array(
 			'class.awardsplugin.test.php',
