@@ -48,4 +48,22 @@ class AwardsPluginTestSuite extends PHPUnit_Vanilla_TestSuite {
 		$TestSuite->addTestFiles(self::_GetTestFiles());
 		return $TestSuite;
 	}
+
+	/**
+	 * Test Suite setup.
+	 */
+	protected function setUp() {
+		// Use function EnablePlugin() to enable all the plugins required, including
+		// the one to be tested.
+		$this->EnablePlugin('Logger');
+		$this->EnablePlugin('AeliaFoundationClasses');
+		$this->EnablePlugin('Awards');
+  }
+
+	/**
+	 * Test Suite teardown.
+	 */
+  protected function tearDown() {
+    print "\nMySuite::tearDown()";
+	}
 }

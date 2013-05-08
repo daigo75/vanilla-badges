@@ -10,12 +10,6 @@ class AwardsPluginTests extends PHPUnit_Vanilla_TestCase {
 	 * Test Suite initialization.
 	 */
 	protected function setUp() {
-		// Use function EnablePlugin() to enable all the plugins required, including
-		// the one to be tested.
-		$this->EnablePlugin('Logger');
-		$this->EnablePlugin('AeliaFoundationClasses');
-		$this->EnablePlugin('Awards');
-
 		// Instantiate the plugin to be tested.
 		$this->AwardsPlugin = $this->GetPluginInstance('Awards');
 	}
