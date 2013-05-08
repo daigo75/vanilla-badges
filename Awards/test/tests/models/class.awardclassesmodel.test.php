@@ -25,7 +25,7 @@ class AwardClassesModelTests extends PHPUnit_Vanilla_TestCase {
 	 * Test Suite initialization.
 	 */
 	protected function setUp() {
-		$this->AwardClassesModel = new AwardsModel();
+		$this->AwardClassesModel = new AwardClassesModel();
 	}
 
 	/**
