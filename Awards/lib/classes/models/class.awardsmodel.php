@@ -58,6 +58,7 @@ class AwardsModel extends AwardsPluginBaseModel {
 			->Select('VAAL.DateUpdated')
 			->Select('VAAL.RulesSettings')
 			->Select('VAAL.AwardClassName')
+			->Select('VAAL.AwardClassCSSClass')
 			->Select('VAAL.AwardClassImageFile')
 			->Select('VAAL.AwardClassRankPoints')
 			->From('v_awards_awardslist VAAL');
@@ -169,6 +170,7 @@ class AwardsModel extends AwardsPluginBaseModel {
 				'VAAL.DateUpdated',
 				'VAAL.RulesSettings',
 				'VAAL.AwardClassName',
+				'VAAL.AwardClassCSSClass',
 				'VAAL.AwardClassImageFile',));
 
 		return $this->GetWhere($Wheres, $OrderBy, $Limit, $Offset);

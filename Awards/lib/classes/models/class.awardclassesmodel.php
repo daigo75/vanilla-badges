@@ -31,8 +31,8 @@ class AwardClassesModel extends AwardsPluginBaseModel {
 		$Validation->AddRule('ValidateCSSClassName', 'function:ValidateCSSClassName');
 
 		// Validation rules for Allowed Anonymous IP List
-		$Validation->ApplyRule('AwardClassName', 'ValidateCSSClassName',
-													 T('Award Class Name must respect CSS Class Name specifications (see field ' .
+		$Validation->ApplyRule('AwardClassCSSClass', 'ValidateCSSClassName',
+													 T('CSS Class must respect CSS Class Name specifications (see field ' .
 														 'description for a list of allowed characters).'));
 
 		// Set additional Validation Rules here. Please note that formal validation
@@ -51,6 +51,7 @@ class AwardClassesModel extends AwardsPluginBaseModel {
 			->Select('VAAC.AwardClassName')
 			->Select('VAAC.AwardClassDescription')
 			->Select('VAAC.AwardClassImageFile')
+			->Select('VAAC.AwardClassCSSClass')
 			->Select('VAAC.AwardClassCSS')
 			->Select('VAAC.RankPoints')
 			->Select('VAAC.DateInserted')
@@ -178,6 +179,7 @@ class AwardClassesModel extends AwardsPluginBaseModel {
 				return false;
 			}
 		}
+
 		return parent::Save($FormPostValues, $Settings);
 	}
 }

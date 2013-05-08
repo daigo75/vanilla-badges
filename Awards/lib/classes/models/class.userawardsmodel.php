@@ -54,6 +54,7 @@ class UserAwardsModel extends AwardsPluginBaseModel {
 			->Select('VAUAL.RankPoints')
 			->Select('VAUAL.AwardClassID')
 			->Select('VAUAL.AwardClassName')
+			->Select('VAUAL.AwardClassCSSClass')
 			->Select('VAUAL.AwardClassRankPoints')
 			->From('v_awards_userawardslist VAUAL');
 		return $Query;

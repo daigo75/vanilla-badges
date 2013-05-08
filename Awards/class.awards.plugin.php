@@ -14,7 +14,7 @@ require(AWARDS_PLUGIN_LIB_PATH . '/awards.validation.php');
 $PluginInfo['Awards'] = array(
 	'Name' => 'Awards Plugin',
 	'Description' => 'Awards Plugin for Vanilla Forums',
-	'Version' => '13.05.02 rc1',
+	'Version' => '13.05.08 rc1',
 	'RequiredApplications' => array('Vanilla' => '2.0'),
 	'RequiredTheme' => FALSE,
 	'RequiredPlugins' => array('Logger' => '12.10.28',
@@ -787,6 +787,7 @@ class AwardsPlugin extends Gdn_Plugin {
 			->LeftJoin('Awards AWDS', '(t.RouteCode = \'' . self::AWARD_ROUTECODE . '\') AND (AWDS.AwardID = a.Route)')
 			->LeftJoin('AwardClasses AWCS', '(AWCS.AwardClassID = AWDS.AwardClassID)')
 			->Select('AWCS.AwardClassName')
+			->Select('AWCS.AwardClassCSSClass')
 			->Select('AWDS.AwardImageFile', 'COALESCE(CONCAT(\'' . $BaseURL . '\', %s), au.Photo)', 'ActivityPhoto')
 			->Select('AWDS.AwardName', 'COALESCE(%s, t.RouteCode)', 'RouteCode')
 			->Select('AWDS.AwardID', 'COALESCE(CONCAT(\'' . AWARDS_PLUGIN_AWARD_INFO_URL . '/\', %s), a.Route)', 'Route');
@@ -803,7 +804,7 @@ class AwardsPlugin extends Gdn_Plugin {
 		$CssClass = &$Sender->EventArguments['CssClass'];
 
 		if(InArrayI($Activity->ActivityType, $this->AwardActivities)) {
-			$CssClass .= ' AwardActivity ' . $Activity->AwardClassName;
+			$CssClass .= ' AwardActivity ' . $Activity->AwardClassCSSClass;
 		}
 	}
 

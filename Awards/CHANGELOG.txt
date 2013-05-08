@@ -36,3 +36,6 @@ Award Plugin for Vanilla Forums 2.0 - Change Log
 
 13.05.02
 - Fixed bug that could cause a conflict with other plugins
+
+13.05.08
+- Added a separate field for Award Classes' CSS Class

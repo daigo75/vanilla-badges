@@ -104,7 +104,7 @@ $AwardClassIDFilter = GetValue('AwardClassID', $this->Data);
 							//var_dump($UserAward);die();
 							$UserAwardImage = Img($UserAward->AwardImageFile,
 																		array('alt' => $UserAward->AwardName,
-																					'class' => 'AwardImage Medium ' . $UserAward->AwardClassName,
+																					'class' => 'AwardImage Medium ' . $UserAward->AwardClassCSSClass,
 																					'title' => $UserAward->AwardName . ' ' .
 																											sprintf(T('(%d points)'), $UserAward->AwardedRankPoints)));
 

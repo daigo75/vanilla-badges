@@ -72,7 +72,7 @@
 						}
 						else {
 							$ImageCellContent = Img($Award->AwardImageFile,
-																			array('class' => 'AwardImage Medium ' . $Award->AwardClassName,
+																			array('class' => 'AwardImage Medium ' . $Award->AwardClassCSSClass,
 																						'alt' => $Award->AwardName));
 						}
 						echo Wrap($ImageCellContent,

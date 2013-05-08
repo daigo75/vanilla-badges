@@ -16,6 +16,7 @@ class AwardsSchema extends PluginSchema {
 			->Column('AwardClassName', 'varchar(100)', false, 'unique')
 			->Column('AwardClassDescription', 'text')
 			->Column('AwardClassImageFile', 'text', true)
+			->Column('AwardClassCSSClass', 'varchar(100)', false)
 			->Column('AwardClassCSS', 'text', true)
 			->Column('RankPoints', 'uint', 0)
 			->Column('DateInserted', 'datetime', false)
@@ -111,6 +112,7 @@ class AwardsSchema extends PluginSchema {
 			,A.DateUpdated
 			,A.RulesSettings
 			,AC.AwardClassName
+			,AC.AwardClassCSSClass
 			,AC.AwardClassImageFile
 			,AC.RankPoints AS AwardClassRankPoints
 		FROM
@@ -133,6 +135,7 @@ class AwardsSchema extends PluginSchema {
 			,AC.AwardClassName
 			,AC.AwardClassDescription
 			,AC.AwardClassImageFile
+			,AC.AwardClassCSSClass
 			,AC.AwardClassCSS
 			,AC.RankPoints
 			,AC.DateInserted
@@ -148,6 +151,9 @@ class AwardsSchema extends PluginSchema {
 			,AC.AwardClassName
 			,AC.AwardClassDescription
 			,AC.AwardClassImageFile
+			,AC.AwardClassCSSClass
+			,AC.AwardClassCSS
+			,AC.RankPoints
 			,AC.DateInserted
 			,AC.DateUpdated
 		";
@@ -178,6 +184,7 @@ class AwardsSchema extends PluginSchema {
 				,A.DateUpdated
 				,AC.AwardClassID
 				,AC.AwardClassName
+				,AC.AwardClassCSSClass
 				,AC.AwardClassImageFile
 				,AC.RankPoints AS AwardClassRankPoints
 			FROM

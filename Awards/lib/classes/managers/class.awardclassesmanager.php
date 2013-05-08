@@ -48,6 +48,19 @@ class AwardClassesManager extends BaseManager {
 	}
 
 	/**
+	 * Transforms an Award Class Name into a valid CSS Class.
+	 *
+	 * @param string AwardClassName The Award Class Name to process.
+	 * @return string A valid CSS Class, containing only alphanumeric characters,
+	 * hyphens and underscores.
+	 */
+	private function TransformIntoCSSClass($AwardClassName) {
+		$Result = preg_replace('/[^a-zA-Z0-9\s\-_]+/', '', trim($AwardClassName));
+		$Result = str_replace(' ', '-', $Result);
+		return $Result;
+	}
+
+	/**
 	 * Renders the AwardClasses List page.
 	 *
 	 * @param AwardsPlugin Caller The Plugin who called the method.
@@ -134,9 +147,13 @@ class AwardClassesManager extends BaseManager {
 
 				Gdn::Database()->BeginTransaction();
 				try{
-					// Trim Award Class name. Such name will become a CSS class, whose name
-					// cannot contain non-printable characters
-					$Sender->Form->SetFormValue('AwardClassName', trim($Sender->Form->GetValue('AwardClassName')));
+					// If a CSS Class was not specified for the Award Class, generate one
+					// from its name
+					$AwardClassCSSClass = $Sender->Form->GetValue('AwardClassCSSClass');
+					if(empty($AwardClassCSSClass)) {
+						$AwardClassCSSClass = $this->TransformIntoCSSClass($Sender->Form->GetValue('AwardClassName'));
+						$Sender->Form->SetFormValue('AwardClassCSSClass', $AwardClassCSSClass);
+					}
 
 					// Save AwardClasses settings
 					$Saved = $Sender->Form->Save();
@@ -301,7 +318,7 @@ class AwardClassesManager extends BaseManager {
 		$CSSEntries = array(T("/**\n" .
 													"* This file contains all the CSS Classes related derived from Award Classes and\n" .
 													"* it's generated automatically by Awards Plugin. Don't change it manually,\n" .
-													"* all changes will be overwritten by the Plugin when it runs.\n" .
+													"* all changes will be overwritten by the Plugin.\n" .
 													"*/\n"));
 
 		// Add CSS for each Class
@@ -312,9 +329,9 @@ class AwardClassesManager extends BaseManager {
 			// page. Such page doesn't allow to assign a specific CSS Class to the images,
 			// therefore we have to use a trick to assign the propers styles to them, by
 			// assigning a special class to their container.
-			$CSSDeclaration = '.Activities .AwardActivity.' . $AwardClassData->AwardClassName . ' a.Photo img' . ",\n";
+			$CSSDeclaration = '.Activities .AwardActivity.' . $AwardClassData->AwardClassCSSClass . ' a.Photo img' . ",\n";
 			// Generate class for Award Images. It's assigned to every award image in most places
-			$CSSDeclaration .= 'img.' . $AwardClassData->AwardClassName . " {\n";
+			$CSSDeclaration .= 'img.' . $AwardClassData->AwardClassCSSClass . " {\n";
 
 			// Add the background image using the uploaded image
 			if(!empty($AwardClassData->AwardClassImageFile)) {

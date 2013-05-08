@@ -21,7 +21,7 @@
 			else {
 				$AwardImage = Img($AwardData->AwardImageFile,
 													array('alt' => $AwardData->AwardClassName,
-																'class' => 'AwardImage Large ' . $AwardData->AwardClassName));
+																'class' => 'AwardImage Large ' . $AwardData->AwardClassCSSClass));
 				echo Wrap($AwardImage,
 									'div',
 									array('class' => 'AwardImageWrapper'));

@@ -60,7 +60,7 @@ $UserAwardData = GetValue('UserAwardData', $this->Data);
 							//var_dump($Award);die();
 							$AwardImage = Img($Award->AwardImageFile,
 																array('alt' => $Award->AwardName,
-																			'class' => 'AwardImage Medium ' . $Award->AwardClassName));
+																			'class' => 'AwardImage Medium ' . $Award->AwardClassCSSClass));
 							// Build link to Award page
 							$AwardImgLink = Anchor($AwardImage,
 																		 AWARDS_PLUGIN_AWARD_INFO_URL . '/' . $Award->AwardID,

@@ -60,7 +60,7 @@ class UserAwardsModule extends ModuleEx {
 		// Show a list of User's Awards
 		foreach($this->_UserAwardsDataSet->Result() as $Award) {
 			$AwardImage = Wrap(Img($Award->AwardImageFile,
-														 array('class' => 'AwardImage Medium ' . $Award->AwardClassName,
+														 array('class' => 'AwardImage Medium ' . $Award->AwardClassCSSClass,
 																	 'alt' => $Award->AwardName,
 																	 'title' => $Award->AwardName)),
 												 'td',

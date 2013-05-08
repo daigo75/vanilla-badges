@@ -124,6 +124,19 @@ function GetCurrentAction(Gdn_Form $Form, $Data) {
 						echo $this->Form->TextBox('RankPoints');
 					?>
 				</li>
+				<li>
+					<?php
+						echo $this->Form->Label(T('CSS Class'), 'AwardClassCSSClass');
+						echo Wrap(T('Enter a CSS Class to be used by the Award Class. It must respect ' .
+												'specifications for CSS class names (i.e. it can only contain letters, ' .
+												'numbers, hyphens and underscores). If you leave this field empty, the ' .
+												'its value will be generated from the Award Class name.'),
+											'div',
+											array('class' => 'Info',
+														));
+						echo $this->Form->TextBox('AwardClassCSSClass');
+					?>
+				</li>
 				<li class="clearfix">
 					<?php
 						// TODO Display Award Class Picture to the left of the Upload File control
