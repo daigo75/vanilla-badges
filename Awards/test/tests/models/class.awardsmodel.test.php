@@ -17,9 +17,9 @@ class AwardsModelTests extends PHPUnit_Vanilla_TestCase {
 			'AwardName' => 'Test Award 1',
 			'AwardDescription' => 'Test Award 1 - Description',
 			'Recurring' => 0,
-			'RulesSettings' => '',
+			'RulesSettings' => json_encode(array()),
 			'AwardIsEnabled' => 1,
-			'AwardImageFile' => '',
+			'AwardImageFile' => 'plugins/Awards/design/images/awards/dummyfile.png',
 			'RankPoints' => 1
 		);
 	}
