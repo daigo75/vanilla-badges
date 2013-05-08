@@ -31,7 +31,7 @@ class AwardsPluginTestSuite extends PHPUnit_Vanilla_TestSuite {
 	 * @return PHPUnit_Vanilla_TestSuite A Test Suite instance.
 	 */
 	public static function suite() {
-		$TestSuite = new AwardsPluginTestSuite();
+		$TestSuite = new AwardsPluginTestSuite(__DIR__);
 		$TestSuite->addTestFiles(self::_GetTestFiles());
 		return $TestSuite;
 	}
