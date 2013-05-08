@@ -17,6 +17,7 @@ class AwardClassesModelTests extends PHPUnit_Vanilla_TestCase {
 			'AwardClassDescription' => 'Test Award Class 1 - Description',
 			'AwardClassImageFile' => 'plugins/Awards/design/images/awardclasses/dummyfile.png',
 			'AwardClassCSS' => '',
+			'RankPoints' => 1,
 		);
 	}
 
