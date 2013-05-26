@@ -39,9 +39,5 @@ $this->Form->SetFormValue('Comments_Amount', GetValue('Amount', $CommentsSetting
 			?>
 			</div>
 		</li>
-		<?php
-			// TODO Implement interface for "at/every" X questions
-			// TODO Implement interface for "at/every" X answers
-		?>
 	</ul>
 </div>

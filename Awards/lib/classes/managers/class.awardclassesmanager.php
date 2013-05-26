@@ -311,7 +311,6 @@ class AwardClassesManager extends BaseManager {
 	 * @param Gdn_Pluggable Sender Sending controller instance.
 	 */
 	public function GenerateAwardClassesCSS(Gdn_Pluggable $Sender) {
-		// TODO Implement automatic generation of CSS file containing the styles for each Award Class
 		$AwardClassesDataSet = $this->AwardClassesModel()->Get();
 
 		// Prepare the notice to put at the beginning of the generated CSS file

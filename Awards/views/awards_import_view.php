@@ -48,9 +48,6 @@
 								'span');
 					?></li>
 					<li><?php
-						// TODO Add File input to upload the file to import
-						// TODO When a file is selected, automatically display its metadata (requires JavaScript)
-
 						echo $this->Form->Label(T('Default Award Class'), 'DefaultAwardClassID');
 						$AwardClassesPageLink = Anchor(T('Award Classes page'), AWARDS_PLUGIN_AWARDCLASSES_LIST_URL);
 						echo Wrap(sprintf(T('Select Award Class to which imported Awards ' .

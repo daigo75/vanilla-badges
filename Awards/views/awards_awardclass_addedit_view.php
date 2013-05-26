@@ -139,7 +139,6 @@ function GetCurrentAction(Gdn_Form $Form, $Data) {
 				</li>
 				<li class="clearfix">
 					<?php
-						// TODO Display Award Class Picture to the left of the Upload File control
 						echo $this->Form->Label(T('Award Class Picture'), 'Picture');
 					?>
 					<div class="ImageColumn">

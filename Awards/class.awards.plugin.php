@@ -14,7 +14,7 @@ require(AWARDS_PLUGIN_LIB_PATH . '/awards.validation.php');
 $PluginInfo['Awards'] = array(
 	'Name' => 'Awards Plugin',
 	'Description' => 'Awards Plugin for Vanilla Forums',
-	'Version' => '13.05.08 rc1',
+	'Version' => '13.05.26',
 	'RequiredApplications' => array('Vanilla' => '2.0'),
 	'RequiredTheme' => FALSE,
 	'RequiredPlugins' => array('Logger' => '12.10.28',
@@ -681,15 +681,15 @@ class AwardsPlugin extends Gdn_Plugin {
 	 *
 	 * @param object Sender Sending controller instance.
 	 */
-	public function Controller_UserAwardsList($Sender) {
-		$Sender->SetData('CurrentPath', AWARDS_PLUGIN_USERAWARDS_LIST_URL);
-		// Prevent non authorised Users from accessing this page
-		$Sender->Permission('Plugins.Awards.Manage');
-
-		// TODO Implement User Awards List page
-
-		$Sender->Render($this->GetView('awards_userawardslist_view.php'));
-	}
+	//public function Controller_UserAwardsList($Sender) {
+	//	$Sender->SetData('CurrentPath', AWARDS_PLUGIN_USERAWARDS_LIST_URL);
+	//	// Prevent non authorised Users from accessing this page
+	//	$Sender->Permission('Plugins.Awards.Manage');
+	//
+	//	// TODO Implement User Awards List page
+	//
+	//	$Sender->Render($this->GetView('awards_userawardslist_view.php'));
+	//}
 
 	/**
 	 * ProfileController_Render_Before event handler.
