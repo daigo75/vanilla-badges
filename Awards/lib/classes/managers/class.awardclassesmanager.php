@@ -355,10 +355,10 @@ class AwardClassesManager extends BaseManager {
 	 * @param int CurrentAwardClassID The ID of the currently selected Award Class.
 	 * If empty, the view is considered unfiltered.
 	 */
-	public static function RenderAwardClassFilters($PageURL, $CurrentAwardClassID) {
+	public static function RenderAwardClassFilters($PageURL, $CurrentAwardClassID, array $OrderBy = array('RankPoints desc')) {
 		// Retrieve Award Classes
 		$AwardClassesModel = new AwardClassesModel();
-		$AwardClassesData = $AwardClassesModel->GetWhere(array(), array('AwardClassName asc'));
+		$AwardClassesData = $AwardClassesModel->GetWhere(array(), $OrderBy);
 
 		if(empty($AwardClassesData)) {
 			return '';
