@@ -47,3 +47,4 @@ Award Plugin for Vanilla Forums 2.0 - Change Log
 - Sorted Class Filters by Rank Points (descending)
 
 13.06.07
+- Fixed bug that caused Awards to be assigned even if not all Rules were satisfied
