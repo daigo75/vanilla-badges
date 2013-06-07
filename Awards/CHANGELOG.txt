@@ -45,3 +45,5 @@ Award Plugin for Vanilla Forums 2.0 - Change Log
 
 13.05.21
 - Sorted Class Filters by Rank Points (descending)
+
+13.06.07

@@ -334,8 +334,6 @@ class AwardRulesManager extends BaseManager {
 
 			$this->Log()->debug(sprintf(T('Rule returned %s.'), $AwardAssignCountFromRule));
 
-			//var_dump($AwardAssignCountFromRule);
-
 			/* A Rule returning NULL means "Rule doesn't have to be processed". In
 			 * such case, processing can continue.
 			 */
@@ -349,7 +347,7 @@ class AwardRulesManager extends BaseManager {
 			 * remaining ones.
 			 */
 			if($AwardAssignCountFromRule <= 0) {
-				$Result = BaseAwardRule::NO_ASSIGNMENTS;
+				$AwardAssignCounts[] = BaseAwardRule::NO_ASSIGNMENTS;
 				break;
 			}
 
