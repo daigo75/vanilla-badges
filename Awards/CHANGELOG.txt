@@ -48,3 +48,6 @@ Award Plugin for Vanilla Forums 2.0 - Change Log
 
 13.06.07
 - Fixed bug that caused Awards to be assigned even if not all Rules were satisfied
+
+13.07.01
+- Fixed bug in creation of Activity Type for Award assignments

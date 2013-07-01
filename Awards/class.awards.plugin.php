@@ -14,7 +14,7 @@ require(AWARDS_PLUGIN_LIB_PATH . '/awards.validation.php');
 $PluginInfo['Awards'] = array(
 	'Name' => 'Awards Plugin',
 	'Description' => 'Awards Plugin for Vanilla Forums',
-	'Version' => '13.06.07',
+	'Version' => '13.07.01',
 	'RequiredApplications' => array('Vanilla' => '2.0'),
 	'RequiredTheme' => FALSE,
 	'RequiredPlugins' => array('Logger' => '12.10.28',
@@ -732,8 +732,8 @@ class AwardsPlugin extends Gdn_Plugin {
 															'RouteCode' => self::AWARD_ROUTECODE,
 															// Send notifications when Awards are earned
 															'Notify' => '1',
-															// Make Awards public
-															'Public' => '0',
+															// Make Award activity public
+															'Public' => '1',
 															// Message showing "You earned the XYZ Award
 															'ProfileHeadline' => '%3$s earned the %8$s Award.',
 															// Message showing "User earned the XYZ Award
