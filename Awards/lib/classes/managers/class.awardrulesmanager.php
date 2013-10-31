@@ -94,8 +94,7 @@ class AwardRulesManager extends BaseManager {
  	}
 
 	/**
-	 * Install an Rule Class's auxiliary classes into Vanilla Factories, for
-	 * later use.
+	 * Loads a rule class and stores its instance for later use.
 	 *
 	 * @param Rule The Class of the Rule.
 	 * @return void.
