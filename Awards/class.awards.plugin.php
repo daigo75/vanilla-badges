@@ -203,10 +203,8 @@ class AwardsPlugin extends Gdn_Plugin {
 	 */
 	public function Base_Render_Before(Gdn_Controller $Sender) {
 		// Files for frontend
-		if(InArrayI($Sender->Application, $this->_AllowedApplications)) {
-			$Sender->AddCssFile('awards.css', 'plugins/Awards/design/css');
-			$Sender->AddJsFile('awards.js', 'plugins/Awards/js');
-		}
+		$Sender->AddCssFile('awards.css', 'plugins/Awards/design/css');
+		$Sender->AddJsFile('awards.js', 'plugins/Awards/js');
 		// Common files
 		$Sender->AddCssFile('awardclasses.css', 'plugins/Awards/design/css');
 	}
