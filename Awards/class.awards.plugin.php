@@ -14,7 +14,7 @@ require(AWARDS_PLUGIN_LIB_PATH . '/awards.validation.php');
 $PluginInfo['Awards'] = array(
 	'Name' => 'Awards Plugin',
 	'Description' => 'Awards Plugin for Vanilla Forums',
-	'Version' => '13.07.01',
+	'Version' => '13.11.01',
 	'RequiredApplications' => array('Vanilla' => '2.0'),
 	'RequiredTheme' => FALSE,
 	'RequiredPlugins' => array('Logger' => '12.10.28',
@@ -47,12 +47,19 @@ class AwardsPlugin extends Gdn_Plugin {
 		return $this->_Log;
 	}
 
+	/* @var array default lists the applications in which the Award assignments
+	 * will be processed.
+	 */
+	private $_DefaultAllowedApplications = array(
+		'vanilla',
+		'conversations',
+	);
+
 	/* @var array Lists the applications in which the Award assignments will be
 	 * processed. This will allow the processing to happen only in the frontend,
 	 * without slowing down the Dashboard.
 	 */
 	private $_AllowedApplications = array(
-		'dashboard',
 		'vanilla',
 		'conversations',
 	);
@@ -114,6 +121,15 @@ class AwardsPlugin extends Gdn_Plugin {
 		return $this->$FieldName;
 	}
 
+	protected function GetAvailableApplications() {
+		$Result = array();
+		$ApplicationManager = new Gdn_ApplicationManager();
+		foreach($ApplicationManager->AvailableVisibleApplications() as $ApplicationID => $ApplicationInfo) {
+			$Result[$ApplicationID] = GetValue('Name', $ApplicationInfo, $ApplicationID);
+		}
+    return $Result;
+	}
+
 	/**
 	 * Returns an instance of RulesManager.
 	 *
@@ -164,6 +180,7 @@ class AwardsPlugin extends Gdn_Plugin {
 	public function __construct() {
 		parent::__construct();
 
+		$this->_AllowedApplications = C('Plugin.Awards.AllowedApplications', $this->_DefaultAllowedApplications);
 		// Instantiate specialised Controllers
 		//$this->RulesManager();
 		//$this->AwardsManager();
@@ -275,10 +292,13 @@ class AwardsPlugin extends Gdn_Plugin {
 		$ConfigurationModel->SetField(array(
 			// Set default configuration values
 			'Plugin.Awards.MinSearchLength' => AWARDS_PLUGIN_MINSEARCHLENGTH,
+			'Plugin.Awards.AllowedApplications' => $this->_DefaultAllowedApplications,
 		));
 
 		// Set the model on the form.
 		$Sender->Form->SetModel($ConfigurationModel);
+
+    $Sender->SetData('AvailableApplications', $this->GetAvailableApplications());
 
 		// If seeing the form for the first time...
 		if($Sender->Form->AuthenticatedPostBack() === FALSE) {
@@ -833,6 +853,7 @@ class AwardsPlugin extends Gdn_Plugin {
 
 		// Miscellaneous default settings
 		SaveToConfig('Plugin.Awards.MinSearchLength', AWARDS_PLUGIN_MINSEARCHLENGTH);
+		SaveToConfig('Plugin.Awards.AllowedApplications', $this->_DefaultAllowedApplications);
 
 		// Set up the Activity Types related to the Awards
 		$this->AddAwardsActivityTypes();
