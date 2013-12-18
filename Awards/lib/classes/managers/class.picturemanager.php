@@ -1,7 +1,5 @@
 <?php if(!defined('APPLICATION')) exit();
-/**
-{licence}
-*/
+
 
 /**
  * Implements some methods to manage the pictures required by the plugin.

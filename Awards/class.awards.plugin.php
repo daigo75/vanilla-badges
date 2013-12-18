@@ -1,6 +1,15 @@
 <?php if(!defined('APPLICATION')) exit();
-/**
-{licence}
+
+/* Copyright 2013 Diego Zanella (support@pathtoenlightenment.net)
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License, version 3, as
+   published by the Free Software Foundation.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+   GPL3: http://www.gnu.org/licenses/gpl-3.0.txt
 */
 
 // File awards.defines.php must be included by manually specifying the whole

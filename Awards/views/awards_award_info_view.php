@@ -1,7 +1,5 @@
 <?php if(!defined('APPLICATION')) exit();
-/**
-{licence}
-*/
+
 	// The following HTML will be displayed when the DataSet is empty.
 	$OutputForEmptyDataSet = Wrap(T('Award not found.'),
 																'div',

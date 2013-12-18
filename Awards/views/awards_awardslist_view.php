@@ -1,7 +1,5 @@
 <?php if(!defined('APPLICATION')) exit();
-/**
-{licence}
-*/
+
 	// Indicates how many columns there are in the table that shows the list of
 	// configured Awards. It's mainly used to set the "colspan" attributes of
 	// single-valued table rows, such as Title, or the "No Results Found" message.

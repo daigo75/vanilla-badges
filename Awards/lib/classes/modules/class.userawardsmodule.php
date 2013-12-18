@@ -1,7 +1,5 @@
 <?php if (!defined('APPLICATION')) exit();
-/**
-{licence}
-*/
+
 
 /**
  * Renders the widget that displays the Awards earned by the User.

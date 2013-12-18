@@ -1,7 +1,5 @@
 <?php if(!defined('APPLICATION')) exit();
-/**
-{licence}
-*/
+
 
 /**
  * Base Manager. Implements a set of common properties and methods.

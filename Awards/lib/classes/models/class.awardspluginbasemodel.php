@@ -1,7 +1,5 @@
 <?php if(!defined('APPLICATION')) exit();
-/**
-{licence}
-*/
+
 
 /**
  * Extends base Gdn_Model by adding a Logger to it. This way, plugins that want

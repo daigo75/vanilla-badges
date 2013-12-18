@@ -1,7 +1,5 @@
 <?php if(!defined('APPLICATION')) exit();
-/**
-{licence}
-*/
+
 
 if(!function_exists('ValidatePositiveInteger')) {
 	/**

@@ -1,7 +1,5 @@
 <?php	if(!defined('APPLICATION')) exit();
-/**
-{licence}
-*/
+
 ?>
 <div class="Footer Credits">
 	<?php

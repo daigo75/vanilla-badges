@@ -1,7 +1,5 @@
 <?php if(!defined('APPLICATION')) exit();
-/**
-{licence}
-*/
+
 
 /**
  * Handles the import of Awards, Award Classes and related images.

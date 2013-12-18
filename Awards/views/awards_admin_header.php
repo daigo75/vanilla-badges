@@ -1,7 +1,5 @@
 <?php	if(!defined('APPLICATION')) exit();
-/**
-{licence}
-*/
+
 
 	// This array will be used to assign specific Classes to each Tab in the page.
 	// As of 18/03/2012, it just contains one entry, where they key is the current

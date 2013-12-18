@@ -1,7 +1,5 @@
 <?php if(!defined('APPLICATION')) exit();
-/**
-{licence}
-*/
+
 
 $RoleModel = new RoleModel();
 $AvailableRoles = $RoleModel->Get();

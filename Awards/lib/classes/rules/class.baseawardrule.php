@@ -1,7 +1,5 @@
 <?php if(!defined('APPLICATION')) exit();
-/**
-{licence}
-*/
+
 
 /* simple_html_dom library is required to manipulate Form fields, to allow
  * grouping Rule fields together

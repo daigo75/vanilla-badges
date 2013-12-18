@@ -1,7 +1,5 @@
 <?php if(!defined('APPLICATION')) exit();
-/**
-{licence}
-*/
+
 
 /* Rules Settings have to be "moved" manually to Form Values because they are
  * decoded from their JSON format and, therefore, returned as properties of an

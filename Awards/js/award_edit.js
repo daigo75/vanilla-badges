@@ -1,6 +1,4 @@
-/**
-{licence}
-*/
+
 jQuery(document).ready(function(){
 	var TabsList = $('<ul>');
 	var ImageWrapper = $('.AwardImageWrapper');

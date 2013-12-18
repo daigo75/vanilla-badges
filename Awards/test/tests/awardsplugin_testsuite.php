@@ -1,7 +1,5 @@
 <?php
-/**
-{licence}
-*/
+
 
 class AwardsPluginTestSuite extends PHPUnit_Vanilla_TestSuite {
 	const PLUGIN_TESTS_DIR = 'plugin';

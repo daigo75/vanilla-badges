@@ -1,6 +1,4 @@
-/**
-{licence}
-*/
+
 jQuery(document).ready(function(){
 	var ImageWrapper = $('.AwardClassImageWrapper');
 	var ImageElement = ImageWrapper.find('.AwardClassImage');

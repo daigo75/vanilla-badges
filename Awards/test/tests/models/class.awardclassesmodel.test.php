@@ -1,7 +1,5 @@
 <?php
-/**
-{licence}
-*/
+
 
 class AwardClassesModelTests extends PHPUnit_Vanilla_TestCase {
 	/**

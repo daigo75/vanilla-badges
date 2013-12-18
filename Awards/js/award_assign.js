@@ -1,6 +1,4 @@
-/**
-{licence}
-*/
+
 jQuery(document).ready(function(){
 	// Provide indexOf function for IE8
 	if(!Array.prototype.indexOf) {

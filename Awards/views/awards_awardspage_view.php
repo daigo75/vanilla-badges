@@ -1,7 +1,5 @@
 <?php if(!defined('APPLICATION')) exit();
-/**
-{licence}
-*/
+
 
 function RenderUserAward($AwardID, $UserAwardData) {
 	$UserAward = GetValue($AwardID, $UserAwardData);

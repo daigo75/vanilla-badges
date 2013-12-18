@@ -1,7 +1,5 @@
 <?php
-/**
-{licence}
-*/
+
 
 class AwardsPluginTests extends PHPUnit_Vanilla_TestCase {
 	protected $AwardsPlugin;
