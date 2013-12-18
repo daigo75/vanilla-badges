@@ -1,5 +1,8 @@
 #Award Plugin for Vanilla Forums 2.0 - Change Log
 
+####13.12.18
+- Made plugin GPL
+
 ####13.11.01
 - Added possibility of specifying in which applications the Awards should be processed.
 
