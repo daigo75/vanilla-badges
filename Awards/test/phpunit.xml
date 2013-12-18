@@ -14,7 +14,7 @@
 
 	<testsuites>
 		<testsuite name="All Tests">
-			<file>tests/awardsplugin_testsuite.php</file>
+			<!--<file>tests/awardsplugin_testsuite.php</file>-->
 		</testsuite>
 	</testsuites>
 
